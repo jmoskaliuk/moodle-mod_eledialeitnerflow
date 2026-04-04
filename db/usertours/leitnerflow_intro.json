@@ -1,0 +1,48 @@
+{
+  "name": "LeitnerFlow — First steps",
+  "description": "Introduces students to the LeitnerFlow spaced repetition activity on their first visit.",
+  "pathmatch": "/mod/leitnerflow/view.php%",
+  "enabled": 1,
+  "display_step_numbers": 1,
+  "endtourlabel": "OK",
+  "sortorder": 0,
+  "configdata": "{\"filtervalues\":{\"accessdate\":{\"enabled\":0},\"role\":{\"enabled\":1,\"roles\":[\"student\"]},\"course\":{\"enabled\":0},\"category\":{\"enabled\":0},\"theme\":{\"enabled\":0},\"cssselector\":{\"enabled\":0}}}",
+  "steps": [
+    {
+      "title": "{mlang en}Welcome to LeitnerFlow!{mlang}{mlang de}Willkommen bei LeitnerFlow!{mlang}",
+      "content": "{mlang en}This activity uses spaced repetition to help you learn. Cards move through boxes as you answer correctly — the more you practice, the better you remember!{mlang}{mlang de}Diese Aktivität nutzt das Leitner-Karteikartensystem, um dir beim Lernen zu helfen. Karten wandern durch Boxen, wenn du richtig antwortest — je mehr du übst, desto besser merkst du dir den Stoff!{mlang}",
+      "targettype": "unattached",
+      "targetvalue": "",
+      "placement": "bottom",
+      "delay": 0,
+      "backdrop": 0
+    },
+    {
+      "title": "{mlang en}Your Leitner Boxes{mlang}{mlang de}Deine Leitner-Boxen{mlang}",
+      "content": "{mlang en}Each box represents a learning level. New cards start in Box 1. Answer correctly and they move forward. Get it wrong and they go back. Click on a box to practice just those cards!{mlang}{mlang de}Jede Box ist eine Lernstufe. Neue Karten starten in Box 1. Richtig beantwortet → weiter. Falsch → zurück. Klicke auf eine Box, um nur diese Karten zu üben!{mlang}",
+      "targettype": "selector",
+      "targetvalue": ".leitnerflow-boxes",
+      "placement": "bottom",
+      "delay": 0,
+      "backdrop": 1
+    },
+    {
+      "title": "{mlang en}Progress Bar{mlang}{mlang de}Fortschrittsbalken{mlang}",
+      "content": "{mlang en}This bar shows your overall progress. Each color represents a box. As cards move to the right, the green 'Learned' section grows.{mlang}{mlang de}Dieser Balken zeigt deinen Gesamtfortschritt. Jede Farbe steht für eine Box. Wenn Karten nach rechts wandern, wächst der grüne „Gelernt"-Bereich.{mlang}",
+      "targettype": "selector",
+      "targetvalue": ".progress.mb-1",
+      "placement": "bottom",
+      "delay": 0,
+      "backdrop": 1
+    },
+    {
+      "title": "{mlang en}Start a Session{mlang}{mlang de}Session starten{mlang}",
+      "content": "{mlang en}Click here to begin a study session. You'll be shown a set of questions — answer them and watch your cards progress through the boxes!{mlang}{mlang de}Klicke hier, um eine Lernsession zu starten. Du bekommst Fragen gestellt — beantworte sie und sieh zu, wie deine Karten durch die Boxen wandern!{mlang}",
+      "targettype": "selector",
+      "targetvalue": ".btn-primary",
+      "placement": "top",
+      "delay": 0,
+      "backdrop": 1
+    }
+  ]
+}

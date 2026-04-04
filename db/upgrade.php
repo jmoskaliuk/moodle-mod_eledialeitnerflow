@@ -61,5 +61,12 @@ function xmldb_leitnerflow_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024120109, 'leitnerflow');
     }
 
+    // Import user tour for existing installations.
+    if ($oldversion < 2024120110) {
+        require_once(__DIR__ . '/install.php');
+        _leitnerflow_import_user_tour();
+        upgrade_mod_savepoint(true, 2024120110, 'leitnerflow');
+    }
+
     return true;
 }

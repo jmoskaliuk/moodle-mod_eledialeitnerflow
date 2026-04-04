@@ -191,6 +191,8 @@ $PAGE->set_title(format_string($leitnerflow->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 $PAGE->add_body_class('mod-leitnerflow-attempt');
+// Hide activity description on attempt page — not needed during a session.
+$PAGE->activityheader->set_description('');
 
 // Display options for question rendering.
 $displayoptions = new question_display_options();
@@ -213,31 +215,6 @@ $animok      = optional_param('ok', 0, PARAM_INT);
 $animlearned = optional_param('learned', 0, PARAM_INT);
 
 echo $OUTPUT->header();
-
-// ---- Transition feedback banner (auto-fades) ----
-if ($showanim) {
-    if ($animok) {
-        if ($animlearned) {
-            $feedbackmsg = get_string('cardlearned', 'mod_leitnerflow');
-        } else {
-            $feedbackmsg = get_string('movedtobox', 'mod_leitnerflow', $animtobox);
-        }
-        $feedbackclass = 'alert alert-success';
-    } else {
-        if ($animfrombox !== $animtobox) {
-            $feedbackmsg = get_string('cardbackone', 'mod_leitnerflow');
-        } else {
-            $feedbackmsg = get_string('incorrect', 'mod_leitnerflow');
-        }
-        $feedbackclass = 'alert alert-warning';
-    }
-    echo html_writer::div($feedbackmsg, $feedbackclass . ' text-center lf-feedback-banner');
-
-    // Load fade-out JS.
-    $PAGE->requires->js_call_amd('mod_leitnerflow/card_transition', 'init', [
-        $animfrombox, $animtobox, $animok, $animlearned,
-    ]);
-}
 
 // ---- Centered question container (like Moodle Quiz) ----
 echo html_writer::start_div('leitnerflow-attempt-container');
@@ -281,6 +258,35 @@ echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'attempt', '
 echo $quba->render_question($slot, $displayoptions, ($currentindex + 1) . '');
 
 echo html_writer::end_tag('form');
+
+// ---- Transition feedback banner (below question, auto-fades) ----
+if ($showanim) {
+    if ($animok) {
+        if ($animlearned) {
+            $feedbackmsg = get_string('cardlearned', 'mod_leitnerflow');
+        } else {
+            $feedbackmsg = get_string('movedtobox', 'mod_leitnerflow', $animtobox);
+        }
+        $feedbackclass = 'alert alert-success';
+    } else {
+        if ($animfrombox !== $animtobox) {
+            $feedbackmsg = get_string('cardbackone', 'mod_leitnerflow');
+        } else {
+            $feedbackmsg = get_string('incorrect', 'mod_leitnerflow');
+        }
+        $feedbackclass = 'alert alert-warning';
+    }
+    echo html_writer::div(
+        $feedbackmsg,
+        $feedbackclass . ' text-center lf-feedback-banner mt-2 py-2',
+        ['style' => 'font-size: 0.9rem;']
+    );
+
+    // Load fade-out JS.
+    $PAGE->requires->js_call_amd('mod_leitnerflow/card_transition', 'init', [
+        $animfrombox, $animtobox, $animok, $animlearned,
+    ]);
+}
 
 // ---- Bottom navigation (like Moodle Quiz: secondary left, info right) ----
 $cancelurl = new moodle_url('/mod/leitnerflow/view.php', [

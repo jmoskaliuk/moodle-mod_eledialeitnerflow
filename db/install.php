@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version file for mod_leitnerflow.
+ * Post-install tasks for mod_leitnerflow.
  *
  * @package    mod_leitnerflow
  * @copyright  2024 eLeDia GmbH
@@ -24,8 +24,23 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_leitnerflow';
-$plugin->version   = 2024120110;
-$plugin->requires  = 2024042200; // Moodle 4.4+
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '1.7.0';
+function xmldb_leitnerflow_install() {
+    // Import the introductory user tour.
+    _leitnerflow_import_user_tour();
+}
+
+/**
+ * Import the LeitnerFlow user tour from the bundled JSON file.
+ */
+function _leitnerflow_import_user_tour(): void {
+    $tourfile = __DIR__ . '/usertours/leitnerflow_intro.json';
+    if (!file_exists($tourfile)) {
+        return;
+    }
+    // Only import if tool_usertours is available.
+    if (!class_exists('\tool_usertours\manager')) {
+        return;
+    }
+    $json = file_get_contents($tourfile);
+    \tool_usertours\manager::import_tour_from_json($json);
+}
