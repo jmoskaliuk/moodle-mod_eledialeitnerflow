@@ -232,5 +232,28 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024120121, 'eledialeitnerflow');
     }
 
+    // Re-import teacher tour (may have been missed if plugin was already at 2024120121).
+    if ($oldversion < 2024120123) {
+        global $DB;
+
+        // Delete any existing teacher tour to avoid duplicates.
+        try {
+            $oldtours = $DB->get_records_select('tool_usertours_tours',
+                "pathmatch LIKE '%/mod/eledialeitnerflow/report.php%'");
+            foreach ($oldtours as $tour) {
+                $DB->delete_records('tool_usertours_steps', ['tourid' => $tour->id]);
+                $DB->delete_records('tool_usertours_tours', ['id' => $tour->id]);
+            }
+        } catch (\Exception $e) {
+            debugging('LeitnerFlow: Could not clean old teacher tours: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
+
+        // Re-import teacher tour.
+        require_once(__DIR__ . '/install.php');
+        _eledialeitnerflow_import_user_tour('eledialeitnerflow_teacher');
+
+        upgrade_mod_savepoint(true, 2024120123, 'eledialeitnerflow');
+    }
+
     return true;
 }
