@@ -210,16 +210,14 @@ if ($canattempt) {
         }
         echo html_writer::end_div();
 
-        // Labels below progress bar.
-        $opencount = $stats->total - $stats->learned;
-        echo html_writer::start_div('d-flex justify-content-between small text-muted mt-1 mb-3');
-        echo html_writer::span($opencount . ' ' . get_string('open', 'mod_leitnerflow'));
-        echo html_writer::span(
+        // Label below progress bar — centered, prominent.
+        echo html_writer::div(
             $stats->learned . ' / ' . $stats->total . ' '
             . get_string('learned', 'mod_leitnerflow')
-            . ' (' . round($pctlearned) . '%)'
+            . ' (' . round($pctlearned) . '%)',
+            'text-center text-muted mt-2 mb-3',
+            ['style' => 'font-size: 1.05rem;']
         );
-        echo html_writer::end_div();
     }
 
     echo html_writer::end_div(); // card-body

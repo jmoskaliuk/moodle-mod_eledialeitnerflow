@@ -62,7 +62,7 @@ $string['startsession']            = 'Lernsession starten';
 $string['continuesession']         = 'Session fortsetzen';
 $string['sessioninprogress']       = 'Session läuft';
 $string['nosessionactive']         = 'Keine aktive Session';
-$string['yourprogress']            = 'Dein Lernfortschritt';
+$string['yourprogress']            = 'Mein Lernfortschritt';
 $string['totalcards']              = 'Karten gesamt';
 $string['learned']                 = 'Gelernt';
 $string['open']                    = 'Offen';
@@ -75,7 +75,7 @@ $string['nocardsinpool']           = 'Keine Fragen in der gewählten Kategorie g
 $string['nounlearnedcards']        = 'Alle Karten sind bereits gelernt! Du kannst deinen Fortschritt zurücksetzen, um neu zu beginnen.';
 
 // Progress Dashboard — Session-Historie.
-$string['sessionhistory']     = 'Session-Verlauf';
+$string['sessionhistory']     = 'Meine Sessions';
 $string['sessioncorrectof']   = '{$a->correct} / {$a->total}';
 $string['sessionpercent']     = '{$a}%';
 $string['sessionduration']    = 'Dauer';

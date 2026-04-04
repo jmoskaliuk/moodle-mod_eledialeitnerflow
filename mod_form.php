@@ -74,7 +74,7 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
         }
 
         $mform->addElement('autocomplete', 'questioncategoryids_array',
-            get_string('questioncategory', 'mod_leitnerflow'), $categories,
+            get_string('categories'), $categories,
             ['multiple' => true]);
         $mform->addHelpButton('questioncategoryids_array', 'questioncategory', 'mod_leitnerflow');
         $mform->addRule('questioncategoryids_array', null, 'required');

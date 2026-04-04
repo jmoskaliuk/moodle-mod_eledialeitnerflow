@@ -78,7 +78,7 @@ $string['cancelsession']      = 'Cancel session';
 $string['sessioncancelled']   = 'Session cancelled.';
 $string['sessioninprogress']  = 'Session in progress';
 $string['nosessionactive']    = 'No active session';
-$string['yourprogress']       = 'Your learning progress';
+$string['yourprogress']       = 'My learning progress';
 $string['learned']            = 'Learned';
 $string['open']               = 'Open';
 $string['witherrors']         = 'With errors';
@@ -94,7 +94,7 @@ $string['resetandrestart']    = 'Reset and start over';
 $string['current']            = 'current';
 
 // Progress dashboard — session history.
-$string['sessionhistory']     = 'Session history';
+$string['sessionhistory']     = 'My sessions';
 $string['sessioncorrectof']   = '{$a->correct} / {$a->total}';
 $string['sessionpercent']     = '{$a}%';
 $string['sessionduration']    = 'Duration';
