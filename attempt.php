@@ -173,16 +173,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $DB->update_record('leitnerflow_sessions', $session);
 
-    // Redirect to next question (with animation params if enabled).
-    $urlparams = ['id' => $cmid, 'sessid' => $sessid];
+    // If animation is enabled, re-render the CURRENT question with feedback overlay,
+    // then auto-redirect to the next question after 1 second via JavaScript.
     if (!empty($leitnerflow->showanimation)) {
-        $urlparams['anim']    = 1;
-        $urlparams['frombox'] = $oldbox;
-        $urlparams['tobox']   = $newbox;
-        $urlparams['ok']      = $correct ? 1 : 0;
-        $urlparams['learned'] = $islearned ? 1 : 0;
+        $nexturl = new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
+        _leitnerflow_render_with_animation(
+            $leitnerflow, $cm, $course, $session, $quba, $slot, $currentindex, $totalquestions,
+            $oldbox, $newbox, $correct, $islearned, $nexturl
+        );
+        exit;
     }
-    redirect(new moodle_url('/mod/leitnerflow/attempt.php', $urlparams));
+
+    // No animation — redirect immediately to next question.
+    redirect(new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]));
 }
 
 // ---- Render the current question -------------------------------------------
@@ -206,13 +209,6 @@ $displayoptions->correctness     = question_display_options::HIDDEN;
 $questionid = $questionids[$currentindex];
 $cardstate  = leitner_engine::get_card_state($leitnerflow->id, $USER->id, $questionid);
 $currentbox = $cardstate ? (int)$cardstate->currentbox : 1;
-
-// Animation params from previous answer (passed via URL).
-$showanim   = optional_param('anim', 0, PARAM_INT);
-$animfrombox = optional_param('frombox', 0, PARAM_INT);
-$animtobox   = optional_param('tobox', 0, PARAM_INT);
-$animok      = optional_param('ok', 0, PARAM_INT);
-$animlearned = optional_param('learned', 0, PARAM_INT);
 
 echo $OUTPUT->header();
 
@@ -259,35 +255,6 @@ echo $quba->render_question($slot, $displayoptions, ($currentindex + 1) . '');
 
 echo html_writer::end_tag('form');
 
-// ---- Transition feedback banner (below question, auto-fades) ----
-if ($showanim) {
-    if ($animok) {
-        if ($animlearned) {
-            $feedbackmsg = get_string('cardlearned', 'mod_leitnerflow');
-        } else {
-            $feedbackmsg = get_string('movedtobox', 'mod_leitnerflow', $animtobox);
-        }
-        $feedbackclass = 'alert alert-success';
-    } else {
-        if ($animfrombox !== $animtobox) {
-            $feedbackmsg = get_string('cardbackone', 'mod_leitnerflow');
-        } else {
-            $feedbackmsg = get_string('incorrect', 'mod_leitnerflow');
-        }
-        $feedbackclass = 'alert alert-warning';
-    }
-    echo html_writer::div(
-        $feedbackmsg,
-        $feedbackclass . ' text-center lf-feedback-banner mt-2 py-2',
-        ['style' => 'font-size: 0.9rem;']
-    );
-
-    // Load fade-out JS.
-    $PAGE->requires->js_call_amd('mod_leitnerflow/card_transition', 'init', [
-        $animfrombox, $animtobox, $animok, $animlearned,
-    ]);
-}
-
 // ---- Bottom navigation (like Moodle Quiz: secondary left, info right) ----
 $cancelurl = new moodle_url('/mod/leitnerflow/view.php', [
     'id' => $cm->id,
@@ -311,6 +278,101 @@ echo html_writer::end_div();
 echo html_writer::end_div(); // leitnerflow-attempt-container
 
 echo $OUTPUT->footer();
+
+// ---- Helper: render current question with animation overlay, then redirect --
+function _leitnerflow_render_with_animation(
+    stdClass $leitnerflow, stdClass $cm, stdClass $course, stdClass $session,
+    question_usage_by_activity $quba, int $slot, int $answeredindex, int $totalquestions,
+    int $frombox, int $tobox, bool $correct, bool $islearned, moodle_url $nexturl
+): void {
+    global $OUTPUT, $PAGE, $USER;
+
+    $cmid = $cm->id;
+    $PAGE->set_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $session->id]);
+    $PAGE->set_title(format_string($leitnerflow->name));
+    $PAGE->set_heading(format_string($course->fullname));
+    $PAGE->set_context(\core\context\module::instance($cmid));
+    $PAGE->add_body_class('mod-leitnerflow-attempt');
+    $PAGE->activityheader->set_description('');
+
+    // Display the answered question in readonly/feedback mode.
+    $displayoptions = new question_display_options();
+    $displayoptions->marks           = question_display_options::MAX_ONLY;
+    $displayoptions->feedback        = question_display_options::VISIBLE;
+    $displayoptions->generalfeedback = question_display_options::HIDDEN;
+    $displayoptions->rightanswer     = question_display_options::VISIBLE;
+    $displayoptions->history         = question_display_options::HIDDEN;
+    $displayoptions->correctness     = question_display_options::VISIBLE;
+    $displayoptions->readonly        = true;
+
+    echo $OUTPUT->header();
+    echo html_writer::start_div('leitnerflow-attempt-container');
+
+    // Box-flow pills — highlight the TARGET box after answer.
+    $boxcount = (int) $leitnerflow->boxcount;
+    echo html_writer::start_div('text-center my-3');
+    echo html_writer::start_div('d-inline-flex align-items-center gap-2');
+    for ($b = 1; $b <= $boxcount; $b++) {
+        $pillclass = 'badge rounded-pill px-3 py-2 ';
+        if ($b === $tobox) {
+            $pillclass .= 'bg-primary fs-6';
+        } else {
+            $pillclass .= 'bg-light text-dark border';
+        }
+        echo html_writer::span(
+            get_string('box_n', 'mod_leitnerflow', $b),
+            $pillclass,
+            ['data-box' => $b]
+        );
+        if ($b < $boxcount) {
+            echo html_writer::span('&#10140;', 'text-muted');
+        }
+    }
+    echo html_writer::end_div();
+    echo html_writer::end_div();
+
+    // Render the answered question (readonly, with correctness shown).
+    echo $quba->render_question($slot, $displayoptions, ($answeredindex + 1) . '');
+
+    // Feedback banner.
+    if ($correct) {
+        $feedbackmsg = $islearned
+            ? get_string('cardlearned', 'mod_leitnerflow')
+            : get_string('movedtobox', 'mod_leitnerflow', $tobox);
+        $feedbackclass = 'alert alert-success';
+    } else {
+        $feedbackmsg = ($frombox !== $tobox)
+            ? get_string('cardbackone', 'mod_leitnerflow')
+            : get_string('incorrect', 'mod_leitnerflow');
+        $feedbackclass = 'alert alert-warning';
+    }
+    echo html_writer::div(
+        $feedbackmsg,
+        $feedbackclass . ' text-center lf-feedback-banner mt-2 py-2',
+        ['style' => 'font-size: 0.9rem;']
+    );
+
+    // Question counter.
+    echo html_writer::start_div('d-flex justify-content-between align-items-center mt-3 mb-3');
+    echo html_writer::tag('span', '', ''); // empty left side.
+    echo html_writer::span(
+        get_string('question') . ' ' . ($answeredindex + 1) . ' / ' . $totalquestions
+        . ' &middot; '
+        . html_writer::tag('b', $session->questionscorrect) . ' / ' . $session->questionsasked
+        . ' ' . get_string('correct', 'mod_leitnerflow'),
+        'text-muted'
+    );
+    echo html_writer::end_div();
+
+    echo html_writer::end_div(); // leitnerflow-attempt-container
+
+    // Load JS: animate pill glow + redirect after 1 second.
+    $PAGE->requires->js_call_amd('mod_leitnerflow/card_transition', 'init', [
+        $frombox, $tobox, (int)$correct, (int)$islearned, $nexturl->out(false),
+    ]);
+
+    echo $OUTPUT->footer();
+}
 
 // ---- Helper: finish session ------------------------------------------------
 function _leitnerflow_finish_session(stdClass $session, stdClass $leitnerflow, stdClass $cm, stdClass $course): void {

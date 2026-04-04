@@ -16,8 +16,9 @@
 /**
  * AMD module: card transition animation between Leitner boxes.
  *
- * Shows a brief animation on the box-flow pills when arriving at
- * the next question, then fades out the feedback banner.
+ * Shows a brief animation on the current question page after answering,
+ * highlighting which box the card moved to. After 1 second, redirects
+ * to the next question.
  *
  * @module     mod_leitnerflow/card_transition
  * @package    mod_leitnerflow
@@ -30,20 +31,17 @@ define([], function() {
 
     return {
         /**
-         * Animate the box-flow pills and fade out feedback banner.
+         * Animate the box-flow pills, show feedback, then redirect.
          *
          * @param {number} fromBox - The box the card was in before.
          * @param {number} toBox - The box the card moved to.
-         * @param {boolean} correct - Whether the answer was correct.
-         * @param {boolean} learned - Whether the card is now learned.
+         * @param {number} correct - 1 if the answer was correct, 0 if not.
+         * @param {number} learned - 1 if the card is now learned, 0 if not.
+         * @param {string} nextUrl - URL to redirect to after animation.
          */
-        init: function(fromBox, toBox, correct, learned) {
+        init: function(fromBox, toBox, correct, learned, nextUrl) {
             // Find the pill for the target box and briefly highlight it.
-            var pills = document.querySelectorAll('.lf-transition-box, [data-box]');
-            if (!pills.length) {
-                // Fallback: find pills by class in the box-flow.
-                pills = document.querySelectorAll('.badge.rounded-pill');
-            }
+            var pills = document.querySelectorAll('[data-box]');
 
             pills.forEach(function(pill) {
                 var boxNum = parseInt(pill.getAttribute('data-box'), 10);
@@ -51,33 +49,21 @@ define([], function() {
                     return;
                 }
                 if (boxNum === toBox && toBox !== fromBox) {
-                    // Highlight target box.
-                    setTimeout(function() {
-                        pill.classList.add('lf-anim-pulse-in');
-                        if (correct) {
-                            pill.style.boxShadow = '0 0 12px rgba(102, 153, 51, 0.6)';
-                        } else {
-                            pill.style.boxShadow = '0 0 12px rgba(249, 128, 18, 0.6)';
-                        }
-                        // Remove highlight after animation.
-                        setTimeout(function() {
-                            pill.classList.remove('lf-anim-pulse-in');
-                            pill.style.boxShadow = '';
-                        }, 1000);
-                    }, 200);
+                    // Highlight target box with glow.
+                    pill.classList.add('lf-anim-pulse-in');
+                    if (correct) {
+                        pill.style.boxShadow = '0 0 12px rgba(102, 153, 51, 0.6)';
+                    } else {
+                        pill.style.boxShadow = '0 0 12px rgba(249, 128, 18, 0.6)';
+                    }
                 }
             });
 
-            // Fade out feedback banner after 2.5 seconds.
-            var banner = document.querySelector('.lf-feedback-banner');
-            if (banner) {
+            // Redirect to next question after 1 second.
+            if (nextUrl) {
                 setTimeout(function() {
-                    banner.style.transition = 'opacity 0.5s ease-out';
-                    banner.style.opacity = '0';
-                    setTimeout(function() {
-                        banner.style.display = 'none';
-                    }, 500);
-                }, 2500);
+                    window.location.href = nextUrl;
+                }, 1000);
             }
         }
     };

@@ -138,14 +138,26 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
         $mform->addHelpButton('prioritystrategy', 'prioritystrategy', 'mod_leitnerflow');
         $mform->setDefault('prioritystrategy', 0);
 
+        // ---- Grading -------------------------------------------------------
+        $mform->addElement('header', 'gradingsettingsheader',
+            get_string('gradingsettings', 'mod_leitnerflow'));
+
+        $gradeoptions = [
+            0 => get_string('grademethod_none',    'mod_leitnerflow'),
+            1 => get_string('grademethod_percent', 'mod_leitnerflow'),
+        ];
+        $mform->addElement('select', 'grademethod',
+            get_string('grademethod', 'mod_leitnerflow'), $gradeoptions);
+        $mform->setDefault('grademethod', 0);
+
+        // ---- Display settings -------------------------------------------------
+        $mform->addElement('header', 'displaysettingsheader',
+            get_string('displaysettings', 'mod_leitnerflow'));
+
         $mform->addElement('selectyesno', 'showanimation',
             get_string('showanimation', 'mod_leitnerflow'));
         $mform->addHelpButton('showanimation', 'showanimation', 'mod_leitnerflow');
         $mform->setDefault('showanimation', 1);
-
-        // ---- Grading -------------------------------------------------------
-        $mform->addElement('header', 'gradingsettingsheader',
-            get_string('gradingsettings', 'mod_leitnerflow'));
 
         $this->standard_coursemodule_elements();
         $this->add_action_buttons();
