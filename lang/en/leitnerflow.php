@@ -119,6 +119,8 @@ $string['cardreset']          = 'Card reset to box 1.';
 $string['cardbackone']        = 'Card moved back one box.';
 $string['nextaftercheck']     = 'Next question after Check';
 $string['backtooverview']     = 'Back to overview';
+$string['practiceboxn']       = 'Practice Box {$a}';
+$string['nocardsinthisbox']   = 'No cards in Box {$a} right now.';
 
 // Report page.
 $string['report']        = 'Student overview';

@@ -95,6 +95,8 @@ $string['resetandrestart']    = 'Zurücksetzen und neu beginnen';
 $string['current']            = 'aktuell';
 $string['nextaftercheck']     = 'Nächste Frage nach Prüfen';
 $string['backtooverview']     = 'Zurück zur Übersicht';
+$string['practiceboxn']       = 'Box {$a} üben';
+$string['nocardsinthisbox']   = 'Keine Karten in Box {$a} vorhanden.';
 
 $string['question']                = 'Frage';
 $string['of']                      = 'von';

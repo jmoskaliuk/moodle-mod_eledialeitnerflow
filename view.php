@@ -125,16 +125,36 @@ if ($canattempt) {
     for ($b = 1; $b <= $boxcount; $b++) {
         $count = $boxdist[$b] ?? 0;
         $boxlabel = get_string('box_n', 'mod_leitnerflow', $b);
+        $boxtitle = get_string('practiceboxn', 'mod_leitnerflow', $b);
 
-        echo html_writer::start_div("leitnerflow-box leitnerflow-box-{$b}", [
-            'role' => 'status',
-            'aria-label' => $boxlabel . ': ' . $count,
+        // Clickable box: start a session with only questions from this box.
+        $boxurl = new moodle_url('/mod/leitnerflow/attempt.php', [
+            'id' => $cm->id, 'start' => 1, 'box' => $b,
         ]);
+        $boxattrs = [
+            'aria-label' => $boxlabel . ': ' . $count,
+            'title' => $boxtitle,
+        ];
+        if ($count > 0) {
+            $boxattrs['style'] = 'cursor: pointer;';
+            echo html_writer::start_tag('a', array_merge($boxattrs, [
+                'href' => $boxurl->out(false),
+                'class' => "leitnerflow-box leitnerflow-box-{$b} text-decoration-none",
+            ]));
+        } else {
+            echo html_writer::start_div("leitnerflow-box leitnerflow-box-{$b}", array_merge($boxattrs, [
+                'role' => 'status',
+            ]));
+        }
         echo html_writer::start_div('leitnerflow-box-visual');
         echo html_writer::tag('div', $count, ['class' => 'leitnerflow-box-count']);
         echo html_writer::tag('div', $boxlabel, ['class' => 'leitnerflow-box-label']);
         echo html_writer::end_div();
-        echo html_writer::end_div();
+        if ($count > 0) {
+            echo html_writer::end_tag('a');
+        } else {
+            echo html_writer::end_div();
+        }
 
         if ($b < $boxcount) {
             echo html_writer::tag('div', '&#10140;', [

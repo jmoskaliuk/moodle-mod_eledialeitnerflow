@@ -283,6 +283,40 @@ class leitner_engine {
     }
 
     /**
+     * Select questions from a specific Leitner box for a targeted session.
+     *
+     * @param \stdClass $leitnerflow
+     * @param int       $userid
+     * @param int       $box  The box number to filter (1-based)
+     * @return array  Selected question IDs (max: $leitnerflow->sessionsize)
+     */
+    public static function select_questions_from_box(\stdClass $leitnerflow, int $userid, int $box): array {
+        $categoryids = self::get_category_ids($leitnerflow);
+        $allids      = self::get_questions_from_categories($categoryids);
+        $states      = self::get_all_card_states($leitnerflow->id, $userid);
+        $sessionsize = (int) $leitnerflow->sessionsize;
+
+        $selected = [];
+        foreach ($allids as $qid) {
+            if (isset($states[$qid])) {
+                $s = $states[$qid];
+                if ((int) $s->status === self::STATUS_LEARNED) {
+                    continue;
+                }
+                if ((int) $s->currentbox === $box) {
+                    $selected[] = $qid;
+                }
+            } else if ($box === 1) {
+                // Never attempted → treated as box 1.
+                $selected[] = $qid;
+            }
+        }
+
+        shuffle($selected);
+        return array_slice($selected, 0, $sessionsize);
+    }
+
+    /**
      * Select questions for a session using the Leitner priority algorithm.
      *
      * Priority order (when prioritystrategy = 0):

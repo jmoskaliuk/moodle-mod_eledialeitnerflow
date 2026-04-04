@@ -34,6 +34,7 @@ use mod_leitnerflow\engine\leitner_engine;
 $cmid   = required_param('id',    PARAM_INT);
 $sessid = optional_param('sessid', 0,  PARAM_INT);
 $start  = optional_param('start',  0,  PARAM_INT);
+$box    = optional_param('box',    0,  PARAM_INT); // Optional: start session from a specific box.
 
 $cm          = get_coursemodule_from_id('leitnerflow', $cmid, 0, false, MUST_EXIST);
 $course      = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
@@ -65,12 +66,18 @@ if ($start) {
         }
     }
 
-    // Select questions for this session.
-    $questionids = leitner_engine::select_session_questions($leitnerflow, $USER->id);
+    // Select questions for this session (optionally filtered by box).
+    if ($box > 0) {
+        $questionids = leitner_engine::select_questions_from_box($leitnerflow, $USER->id, $box);
+    } else {
+        $questionids = leitner_engine::select_session_questions($leitnerflow, $USER->id);
+    }
 
     if (empty($questionids)) {
-        redirect($viewurl, get_string('nounlearnedcards', 'mod_leitnerflow'),
-            null, \core\output\notification::NOTIFY_INFO);
+        $msg = ($box > 0)
+            ? get_string('nocardsinthisbox', 'mod_leitnerflow', $box)
+            : get_string('nounlearnedcards', 'mod_leitnerflow');
+        redirect($viewurl, $msg, null, \core\output\notification::NOTIFY_INFO);
     }
 
     // Build question_usage_by_activity (quba).
