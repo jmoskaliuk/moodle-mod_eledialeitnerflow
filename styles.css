@@ -69,13 +69,13 @@
 
 /* Box color themes — eLeDia warm→cool, text always very-dark-blue */
 .leitnerflow-box-1 .leitnerflow-box-visual {
-    background: var(--lf-pale-orange);
+    background: #ffd4ad;
     color: var(--lf-very-dark-blue);
     border-top: 3px solid var(--lf-orange);
 }
 
 .leitnerflow-box-2 .leitnerflow-box-visual {
-    background: #fde8d0;
+    background: #fce4bf;
     color: var(--lf-very-dark-blue);
     border-top: 3px solid var(--lf-middle-orange);
 }
@@ -127,6 +127,13 @@
 .lf-seg-box4 { background-color: var(--lf-light-blue) !important; }
 .lf-seg-box5 { background-color: var(--lf-dark-blue) !important; }
 .lf-seg-learned { background-color: var(--lf-green) !important; }
+
+/* ---- View page: align notifications with card content ---- */
+.mod-leitnerflow #user-notifications .alert {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+}
 
 /* ---- Attempt page: centered question container ---- */
 .leitnerflow-attempt-container {
