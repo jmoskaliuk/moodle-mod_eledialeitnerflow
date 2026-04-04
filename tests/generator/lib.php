@@ -17,6 +17,14 @@
 /**
  * Test data generator for mod_eledialeitnerflow.
  *
+ * @package    mod_eledialeitnerflow
+ * @copyright  2024 eLeDia GmbH
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Generator class for mod_eledialeitnerflow PHPUnit tests.
+ *
  * Lets test classes create fully configured eledialeitnerflow instances
  * and card states with a single method call.
  *
@@ -24,7 +32,6 @@
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class mod_eledialeitnerflow_generator extends testing_module_generator {
     /**
      * Create an eledialeitnerflow activity with sensible Leitner defaults.

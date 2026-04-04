@@ -38,7 +38,7 @@ use mod_eledialeitnerflow\engine\leitner_engine;
  */
 final class leitner_engine_test extends \advanced_testcase {
     // -----------------------------------------------------------------------
-    // Shared helpers
+    // Shared helpers.
     // -----------------------------------------------------------------------
 
     protected function setUp(): void {
@@ -68,7 +68,7 @@ final class leitner_engine_test extends \advanced_testcase {
     private function create_lq(array $overrides = []): \stdClass {
         $course = $this->getDataGenerator()->create_course();
         $gen    = $this->getDataGenerator()->get_plugin_generator('mod_eledialeitnerflow');
-        // create_instance() returns the activity record directly; its PK is `id`.
+        // The create_instance() method returns the activity record directly; its PK is `id`.
         $lq     = $gen->create_instance(array_merge(['course' => $course->id], $overrides));
 
         global $DB;
@@ -76,7 +76,7 @@ final class leitner_engine_test extends \advanced_testcase {
     }
 
     // -----------------------------------------------------------------------
-    // Group 1: calculate_box()  — pure function, no DB
+    // Group 1: calculate_box() — pure function, no DB.
     // -----------------------------------------------------------------------
 
     /**
@@ -113,13 +113,13 @@ final class leitner_engine_test extends \advanced_testcase {
             '3 correct, 5 boxes → box 3'        => [3, 5, 5, 3, '3/5 → box 3'],
             '4 correct, 5 boxes → box 4-5'      => [4, 5, 5, 4, '4/5 → box 4 or 5'],
 
-            // Edge: negative input clamped to 1
+            // Edge: negative input clamped to 1.
             'negative correct → box 1'          => [-1, 3, 3, 1, 'Negative clamped to box 1'],
         ];
     }
 
     // -----------------------------------------------------------------------
-    // Group 2: process_answer() — correct answers
+    // Group 2: process_answer() — correct answers.
     // -----------------------------------------------------------------------
 
     public function test_correct_answer_on_new_card_increments_correctcount(): void {
@@ -169,7 +169,7 @@ final class leitner_engine_test extends \advanced_testcase {
     }
 
     // -----------------------------------------------------------------------
-    // Group 3: process_answer() — wrong answers, all 3 behaviors
+    // Group 3: process_answer() — wrong answers, all 3 behaviors.
     // -----------------------------------------------------------------------
 
     public function test_wrong_answer_with_reset_behavior(): void {
@@ -259,7 +259,7 @@ final class leitner_engine_test extends \advanced_testcase {
     }
 
     // -----------------------------------------------------------------------
-    // Group 4: DB persistence — save_card_state() + get_card_state()
+    // Group 4: DB persistence — save_card_state() + get_card_state().
     // -----------------------------------------------------------------------
 
     public function test_save_and_reload_card_state(): void {
@@ -304,7 +304,7 @@ final class leitner_engine_test extends \advanced_testcase {
     }
 
     // -----------------------------------------------------------------------
-    // Group 5: get_user_stats() — counts and percentages
+    // Group 5: get_user_stats() — counts and percentages.
     // -----------------------------------------------------------------------
 
     public function test_get_user_stats_counts_correctly(): void {
@@ -348,11 +348,11 @@ final class leitner_engine_test extends \advanced_testcase {
     }
 
     // -----------------------------------------------------------------------
-    // Group 6: get_box_distribution()
+    // Group 6: get_box_distribution().
     // -----------------------------------------------------------------------
 
     public function test_get_box_distribution_groups_cards_correctly(): void {
-        // get_box_distribution() iterates over the question category, so we need
+        // The get_box_distribution() method iterates over the question category, so we need
         // real questions in a real category — fake category IDs won't work here.
         $qgen = $this->getDataGenerator()->get_plugin_generator('core_question');
         $qcat = $qgen->create_question_category();
@@ -383,7 +383,7 @@ final class leitner_engine_test extends \advanced_testcase {
     }
 
     // -----------------------------------------------------------------------
-    // Group 7: select_session_questions() — priority algorithm
+    // Group 7: select_session_questions() — priority algorithm.
     // -----------------------------------------------------------------------
 
     public function test_select_session_respects_session_size_limit(): void {
@@ -429,7 +429,7 @@ final class leitner_engine_test extends \advanced_testcase {
     }
 
     // -----------------------------------------------------------------------
-    // Group 8: delete_user_data()
+    // Group 8: delete_user_data().
     // -----------------------------------------------------------------------
 
     public function test_delete_user_data_removes_all_records(): void {
@@ -469,7 +469,7 @@ final class leitner_engine_test extends \advanced_testcase {
     }
 
     // -----------------------------------------------------------------------
-    // Group 9: Attempt counter always increments
+    // Group 9: Attempt counter always increments.
     // -----------------------------------------------------------------------
 
     public function test_attempt_count_increments_on_every_answer(): void {
@@ -486,7 +486,7 @@ final class leitner_engine_test extends \advanced_testcase {
     }
 
     // -----------------------------------------------------------------------
-    // Group 10: Multi-user isolation
+    // Group 10: Multi-user isolation.
     // -----------------------------------------------------------------------
 
     public function test_card_states_are_isolated_per_user(): void {
@@ -522,7 +522,7 @@ final class leitner_engine_test extends \advanced_testcase {
     }
 
     // -----------------------------------------------------------------------
-    // Group 11: Edge cases
+    // Group 11: Edge cases.
     // -----------------------------------------------------------------------
 
     public function test_process_answer_on_already_learned_card_stays_learned(): void {

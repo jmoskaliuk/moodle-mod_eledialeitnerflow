@@ -55,7 +55,7 @@ require_login($course, true, $cm);
 $context = \core\context\module::instance($cm->id);
 require_capability('mod/eledialeitnerflow:viewreport', $context);
 
-// ---
+// Handle reset-progress request for a single student.
 if ($resetuid > 0) {
     require_sesskey();
     require_capability('mod/eledialeitnerflow:resetprogress', $context);
@@ -76,7 +76,7 @@ if ($resetuid > 0) {
     );
 }
 
-// ---
+// Build the base URL and set up the page.
 $baseurl = new moodle_url('/mod/eledialeitnerflow/report.php', [
     'id' => $cmid, 'tsort' => $tsort, 'tdir' => $tdir, 'perpage' => $perpage, 'search' => $search,
 ]);
@@ -92,7 +92,7 @@ $viewurl = new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cmid]);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('report', 'mod_eledialeitnerflow'), 4);
 
-// ---
+// Fetch aggregated stats for all enrolled students.
 $students = leitner_engine::get_all_students_stats($leitnerflow, $course->id, $context);
 
 if (empty($students)) {
@@ -102,7 +102,7 @@ if (empty($students)) {
     exit;
 }
 
-// ---
+// Apply the text search filter on student names.
 if ($search !== '') {
     $searchlower = core_text::strtolower($search);
     $students = array_filter($students, function ($s) use ($searchlower) {
@@ -110,7 +110,7 @@ if ($search !== '') {
     });
 }
 
-// ---
+// Sort by the selected column and direction.
 usort($students, function ($a, $b) use ($tsort, $tdir) {
     switch ($tsort) {
         case 'learned':
@@ -138,7 +138,7 @@ $totalcount    = count($students);
 $allstudents   = $students; // Keep full set for summary cards.
 $students      = array_slice($students, $page * $perpage, $perpage);
 
-// ---
+// Summary cards: aggregate stats across all students.
 $totallearned = 0;
 $totalcards   = 0;
 foreach ($allstudents as $s) {
@@ -169,7 +169,7 @@ foreach ($summaries as $sum) {
 }
 echo html_writer::end_div();
 
-// ---
+// Search + per-page form.
 $searchurl = new moodle_url('/mod/eledialeitnerflow/report.php', [
     'id' => $cmid, 'tsort' => $tsort, 'tdir' => $tdir, 'perpage' => $perpage,
 ]);
@@ -217,7 +217,6 @@ echo html_writer::end_div();
 
 echo html_writer::end_tag('form');
 
-// ---
 /**
  * Build a sort link for a table header.
  *
@@ -250,7 +249,7 @@ function _eledialeitnerflow_sort_link(
     return html_writer::link($url, $label . $arrow, ['class' => 'text-nowrap']);
 }
 
-// ---
+// Render the student table.
 echo html_writer::start_tag('table', ['class' => 'table table-striped table-hover generaltable']);
 echo html_writer::start_tag('thead');
 echo html_writer::start_tag('tr');
@@ -332,10 +331,10 @@ foreach ($students as $student) {
 echo html_writer::end_tag('tbody');
 echo html_writer::end_tag('table');
 
-// ---
+// Paging bar.
 echo $OUTPUT->paging_bar($totalcount, $page, $perpage, $baseurl);
 
-// ---
+// Back-to-view button.
 echo html_writer::div(
     $OUTPUT->single_button($viewurl, get_string('back'), 'get'),
     'mt-3'

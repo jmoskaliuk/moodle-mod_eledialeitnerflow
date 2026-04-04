@@ -24,9 +24,7 @@
 
 use mod_eledialeitnerflow\engine\leitner_engine;
 
-// -----------------------------------------------------------------------
-// Required activity module callbacks
-// -----------------------------------------------------------------------
+// Required activity module callbacks.
 
 /**
  * Create a new instance of the eledialeitnerflow activity.
@@ -129,9 +127,7 @@ function eledialeitnerflow_supports(string $feature): bool|string|null {
     };
 }
 
-// -----------------------------------------------------------------------
 // Gradebook integration.
-// -----------------------------------------------------------------------
 
 /**
  * Update the grade item for the activity in the gradebook.
@@ -270,9 +266,7 @@ function eledialeitnerflow_get_all_grades(stdClass $leitnerflow): array {
     return $grades;
 }
 
-// -----------------------------------------------------------------------
 // Course module info (for mobile app compatibility).
-// -----------------------------------------------------------------------
 
 /**
  * Get the cached course module info.
@@ -298,9 +292,7 @@ function eledialeitnerflow_get_coursemodule_info(stdClass $coursemodule): cached
     return $info;
 }
 
-// -----------------------------------------------------------------------
 // Reset course (teacher).
-// -----------------------------------------------------------------------
 
 /**
  * Add form elements for course reset.

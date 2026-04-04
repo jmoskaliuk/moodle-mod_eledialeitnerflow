@@ -46,7 +46,7 @@ require_capability('mod/eledialeitnerflow:attempt', \core\context\module::instan
 $context = \core\context\module::instance($cm->id);
 $viewurl = new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cm->id]);
 
-// ---
+// Start a new session.
 if ($start) {
     // Complete any stale active session (save partial results rather than deleting).
     $stale = $DB->get_records('eledialeitnerflow_sessions', [
@@ -115,7 +115,7 @@ if ($start) {
     redirect(new moodle_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $session->id]));
 }
 
-// ---
+// Load existing session.
 if (!$sessid) {
     redirect($viewurl);
 }
@@ -138,7 +138,7 @@ if ($currentindex >= $totalquestions) {
 $quba = question_engine::load_questions_usage_by_activity($session->qubaid);
 $slot = $currentindex + 1; // Quba slots are 1-based.
 
-// ---
+// Handle answer submission.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_sesskey();
 
@@ -225,7 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// ---
+// Render the question page.
 $PAGE->set_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
 $PAGE->set_title(format_string($leitnerflow->name));
 $PAGE->set_heading(format_string($course->fullname));

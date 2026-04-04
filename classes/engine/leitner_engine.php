@@ -337,7 +337,7 @@ class leitner_engine {
         $sessionsize = (int) $leitnerflow->sessionsize;
 
         // Separate into buckets.
-        $buckets = []; // box => [questionids].
+        $buckets = []; // Box => [questionids].
         $boxcount = (int) $leitnerflow->boxcount;
         for ($b = 1; $b <= $boxcount; $b++) {
             $buckets[$b] = [];

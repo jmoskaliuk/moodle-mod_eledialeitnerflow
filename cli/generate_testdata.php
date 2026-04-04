@@ -62,7 +62,7 @@ Options:
 // Marker to identify generated test data.
 $marker = 'LFLOW_TESTDATA';
 
-// ─── Clean mode ────────────────────────────────────────────────────────────────
+// Clean mode: remove previously generated test data.
 if ($options['clean']) {
     cli_heading('Cleaning previous test data');
 
@@ -87,7 +87,7 @@ if ($options['clean']) {
     }
 }
 
-// ─── Configuration ─────────────────────────────────────────────────────────────
+// Configuration: courses with their questions.
 $coursedata = [
     [
         'fullname'  => 'Mathematik Grundkurs',
@@ -169,7 +169,7 @@ $studentnames = [
     ['Elias', 'Hartmann'], ['Clara', 'Krüger'],
 ];
 
-// ─── Create Users ──────────────────────────────────────────────────────────────
+// Create 20 test students.
 cli_heading('Creating 20 test students');
 
 $students = [];
@@ -200,7 +200,7 @@ foreach ($studentnames as $i => $namepair) {
     $students[] = $DB->get_record('user', ['id' => $user->id]);
 }
 
-// ─── Create Courses, Questions, LeitnerFlow instances ──────────────────────────
+// Create courses, questions and LeitnerFlow instances.
 cli_heading('Creating courses with questions and LeitnerFlow activities');
 
 $manualenrol = enrol_get_plugin('manual');
@@ -349,7 +349,7 @@ foreach ($coursedata as $ci => $cdata) {
     cli_writeln("    Created LeitnerFlow activity (cmid={$moduleinfo->coursemodule})");
 }
 
-// ─── Summary ───────────────────────────────────────────────────────────────────
+// Summary output.
 cli_heading('Done!');
 cli_writeln("Created:");
 cli_writeln("  • " . count($coursedata) . " courses");

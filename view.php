@@ -55,7 +55,7 @@ if (empty($leitnerflow->showtour)) {
     $PAGE->add_body_class('eledialeitnerflow-notour');
 }
 
-// ---
+// Handle progress-reset request from teacher.
 if (optional_param('resetuserid', 0, PARAM_INT) > 0) {
     require_capability('mod/eledialeitnerflow:resetprogress', $context);
     require_sesskey();
@@ -69,7 +69,7 @@ if (optional_param('resetuserid', 0, PARAM_INT) > 0) {
     );
 }
 
-// ---
+// Handle session-cancel request from student.
 if (optional_param('cancelsession', 0, PARAM_INT)) {
     require_sesskey();
     $stale = $DB->get_records('eledialeitnerflow_sessions', [
@@ -95,7 +95,7 @@ if (optional_param('cancelsession', 0, PARAM_INT)) {
     );
 }
 
-// ---
+// Capability checks and page output.
 $isteacher  = has_capability('mod/eledialeitnerflow:viewreport', $context);
 $canattempt = has_capability('mod/eledialeitnerflow:attempt', $context);
 
@@ -103,7 +103,7 @@ echo $OUTPUT->header();
 // Note: Moodle 4.x+ renders the activity name and intro in the page header
 // automatically. Do NOT call format_module_intro() here to avoid duplication.
 
-// ---
+// Student view: show progress, session entry and recent stats.
 if ($canattempt) {
     $categoryids = leitner_engine::get_category_ids($leitnerflow);
     $stats = leitner_engine::get_user_stats($leitnerflow->id, $USER->id, $categoryids);
@@ -367,15 +367,15 @@ if ($canattempt) {
             $diff = $recentpct - $sessionstats->avgpercent;
             if ($diff > 5) {
                 $badgeclass = 'badge bg-success';
-                $arrow      = '&#8599;'; // ↗
+                $arrow      = '&#8599;'; // Up-right arrow.
                 $diffstr    = '+' . $diff . '%';
             } else if ($diff < -5) {
                 $badgeclass = 'badge bg-danger';
-                $arrow      = '&#8600;'; // ↘
+                $arrow      = '&#8600;'; // Down-right arrow.
                 $diffstr    = $diff . '%';
             } else {
                 $badgeclass = 'badge bg-secondary';
-                $arrow      = '&#8594;'; // →
+                $arrow      = '&#8594;'; // Right arrow.
                 $diffstr    = '±' . abs($diff) . '%';
             }
             echo html_writer::div(
@@ -483,7 +483,7 @@ if ($canattempt) {
     }
 }
 
-// ---
+// Teacher view: link to detailed report.
 if ($isteacher) {
     $reporturl = new moodle_url('/mod/eledialeitnerflow/report.php', ['id' => $cm->id]);
     echo html_writer::div(

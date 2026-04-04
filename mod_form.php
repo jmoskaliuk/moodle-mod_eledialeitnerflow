@@ -44,7 +44,7 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
 
         $mform = $this->_form;
 
-        // ---
+        // General section.
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         $mform->addElement('text', 'name', get_string('name'), ['size' => 64]);
@@ -53,7 +53,7 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
 
         $this->standard_intro_elements();
 
-        // ---
+        // Question bank settings.
         $mform->addElement('header', 'questionbanksettings', get_string('questioncategory', 'mod_eledialeitnerflow'));
 
         // Load ALL question categories (simplest possible query).
@@ -112,7 +112,7 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
         $mform->addHelpButton('questionrotation', 'questionrotation', 'mod_eledialeitnerflow');
         $mform->setDefault('questionrotation', 1);
 
-        // ---
+        // Session settings.
         $mform->addElement(
             'header',
             'sessionsettingsheader',
@@ -131,7 +131,7 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
         $mform->addRule('sessionsize', null, 'required');
         $mform->addRule('sessionsize', null, 'numeric');
 
-        // ---
+        // Leitner box settings.
         $mform->addElement(
             'header',
             'leitnersettingsheader',
@@ -238,7 +238,7 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
         $mform->addHelpButton('showtour', 'showtour', 'mod_eledialeitnerflow');
         $mform->setDefault('showtour', 1);
 
-        // ---
+        // Grading settings.
         $mform->addElement(
             'header',
             'gradingsettingsheader',
