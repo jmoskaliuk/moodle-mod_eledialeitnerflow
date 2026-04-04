@@ -259,23 +259,24 @@ if ($canattempt) {
             $recentpct = ($recenttotal > 0) ? round(($recentcorrect / $recenttotal) * 100) : 0;
 
             if ($recentpct > $sessionstats->avgpercent + 5) {
-                $trendclass = 'text-success';
-                $trendicon  = '&#9650;';
+                $trendclass = 'text-success fw-bold';
+                $trendicon  = '&#9650;'; // ▲ green
             } else if ($recentpct < $sessionstats->avgpercent - 5) {
-                $trendclass = 'text-warning';
-                $trendicon  = '&#9660;';
+                $trendclass = 'text-danger fw-bold';
+                $trendicon  = '&#9660;'; // ▼ red
             } else {
-                $trendclass = 'text-muted';
-                $trendicon  = '&#8776;'; // ≈
+                $trendclass = 'text-primary fw-bold';
+                $trendicon  = '&#9654;'; // ▶ blue
             }
-            // Show concrete numbers: "▲ Last 3 sessions: 75% (avg 60%)"
             echo html_writer::div(
-                html_writer::span(
-                    $trendicon . ' ' . get_string('trend_recent', 'mod_leitnerflow', (object) [
+                html_writer::span($trendicon, $trendclass)
+                . ' '
+                . html_writer::span(
+                    get_string('trend_recent', 'mod_leitnerflow', (object) [
                         'recent' => $recentpct,
                         'avg'    => $sessionstats->avgpercent,
                     ]),
-                    $trendclass . ' small'
+                    'small text-muted'
                 ),
                 'mb-2'
             );
