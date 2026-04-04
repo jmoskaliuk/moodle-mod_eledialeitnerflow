@@ -124,10 +124,10 @@ $string['open']                    = 'Offen';
 $string['witherrors']              = 'Mit Fehlern';
 $string['viewreport']              = 'Übersicht aller Teilnehmer/innen';
 $string['sessioncomplete']         = 'Session abgeschlossen!';
-$string['sessionresult']           = 'Du hast {$a->correct} von {$a->total} Fragen richtig beantwortet.';
+$string['sessionresult']           = 'Sie haben {$a->correct} von {$a->total} Fragen richtig beantwortet.';
 $string['alllearned']              = 'Alle Karten gelernt! Hervorragend.';
-$string['nocardsinpool']           = 'Keine Fragen in der gewählten Kategorie gefunden. Bitte füge zuerst Fragen zur Fragensammlung hinzu.';
-$string['nounlearnedcards']        = 'Alle Karten sind bereits gelernt! Du kannst deinen Fortschritt zurücksetzen, um neu zu beginnen.';
+$string['nocardsinpool']           = 'Keine Fragen in der gewählten Kategorie gefunden. Bitte fügen Sie zuerst Fragen zur Fragensammlung hinzu.';
+$string['nounlearnedcards']        = 'Alle Karten sind bereits gelernt! Sie können Ihren Fortschritt zurücksetzen, um neu zu beginnen.';
 
 // Progress Dashboard — Session-Historie.
 $string['sessionhistory']     = 'Meine Sessions';
@@ -207,4 +207,4 @@ $string['event_progress_reset']    = 'Schülerfortschritt zurückgesetzt';
 
 $string['invalidsession']   = 'Ungültige oder abgelaufene Session.';
 $string['nocategory']       = 'Keine Fragenkategorie konfiguriert. Bitte Aktivitätseinstellungen bearbeiten.';
-$string['error_noattempt']  = 'Du hast keine Berechtigung, dieses Quiz durchzuführen.';
+$string['error_noattempt']  = 'Sie haben keine Berechtigung, dieses Quiz durchzuführen.';
