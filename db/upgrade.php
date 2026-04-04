@@ -63,9 +63,23 @@ function xmldb_leitnerflow_upgrade($oldversion) {
 
     // Import user tour for existing installations.
     if ($oldversion < 2024120111) {
+        // Handled in next step.
+        upgrade_mod_savepoint(true, 2024120111, 'leitnerflow');
+    }
+
+    // Re-import user tour with fixed configdata (replaces broken tour from 2024120111).
+    if ($oldversion < 2024120112) {
+        // Delete any previously imported broken tour.
+        $oldtours = $DB->get_records_select('tool_usertours_tours',
+            $DB->sql_like('name', '?'), ['%LeitnerFlow%']);
+        foreach ($oldtours as $tour) {
+            $DB->delete_records('tool_usertours_steps', ['tourid' => $tour->id]);
+            $DB->delete_records('tool_usertours_tours', ['id' => $tour->id]);
+        }
+        // Re-import with fixed JSON.
         require_once(__DIR__ . '/install.php');
         _leitnerflow_import_user_tour();
-        upgrade_mod_savepoint(true, 2024120111, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120112, 'leitnerflow');
     }
 
     return true;
