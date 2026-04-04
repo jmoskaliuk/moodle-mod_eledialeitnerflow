@@ -1,10 +1,29 @@
 <?php
 // This file is part of Moodle - http://moodle.org/
 //
-// PHPUnit tests for mod_leitnerflow\engine\leitner_engine.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 //
-// Run all:  vendor/bin/phpunit mod/leitnerflow/tests/engine/leitner_engine_test.php
-// Verbose:  vendor/bin/phpunit --testdox mod/leitnerflow/tests/engine/leitner_engine_test.php
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * PHPUnit tests for the Leitner engine.
+ *
+ * Run all:  vendor/bin/phpunit mod/leitnerflow/tests/engine/leitner_engine_test.php
+ * Verbose:  vendor/bin/phpunit --testdox mod/leitnerflow/tests/engine/leitner_engine_test.php
+ *
+ * @package    mod_leitnerflow
+ * @copyright  2024 eLeDia GmbH
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_leitnerflow\tests\engine;
 

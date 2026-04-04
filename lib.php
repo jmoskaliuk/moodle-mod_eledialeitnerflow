@@ -1,5 +1,27 @@
 <?php
 // This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Library of callbacks and functions for mod_leitnerflow.
+ *
+ * @package    mod_leitnerflow
+ * @copyright  2024 eLeDia GmbH
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
 use mod_leitnerflow\engine\leitner_engine;
@@ -29,7 +51,13 @@ function leitnerflow_update_instance(stdClass $data, $mform = null): bool {
 function leitnerflow_delete_instance(int $id): bool {
     global $DB;
 
-    // Clean up all sessions (includes question_usages cleanup)
+    // Fetch the full record before deleting (needed for grade_item_delete).
+    $leitnerflow = $DB->get_record('leitnerflow', ['id' => $id]);
+    if (!$leitnerflow) {
+        return false;
+    }
+
+    // Clean up all sessions (includes question_usages cleanup).
     $sessions = $DB->get_records('leitnerflow_sessions', ['leitnerflowid' => $id]);
     foreach ($sessions as $session) {
         if (!empty($session->qubaid)) {
@@ -40,7 +68,8 @@ function leitnerflow_delete_instance(int $id): bool {
     $DB->delete_records('leitnerflow_card_state', ['leitnerflowid' => $id]);
     $DB->delete_records('leitnerflow',            ['id' => $id]);
 
-    leitnerflow_grade_item_delete((object)['id' => $id]);
+    // Pass the full object with 'course' property to avoid fatal error in grade_update().
+    leitnerflow_grade_item_delete($leitnerflow);
     return true;
 }
 
