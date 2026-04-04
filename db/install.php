@@ -27,8 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_leitnerflow_install() {
     // Ensure the core multi-language content filter is active (needed for tour translations).
     _leitnerflow_ensure_multilang_filter();
-    // Import the introductory user tour.
+    // Import the introductory user tour (student).
     _leitnerflow_import_user_tour();
+    // Import the teacher tour.
+    _leitnerflow_import_user_tour('leitnerflow_teacher');
 }
 
 /**
@@ -49,10 +51,12 @@ function _leitnerflow_ensure_multilang_filter(): void {
 }
 
 /**
- * Import the LeitnerFlow user tour from the bundled JSON file.
+ * Import a LeitnerFlow user tour from a bundled JSON file.
+ *
+ * @param string $tourname Base name of the JSON file (without .json extension).
  */
-function _leitnerflow_import_user_tour(): void {
-    $tourfile = __DIR__ . '/usertours/leitnerflow_intro.json';
+function _leitnerflow_import_user_tour(string $tourname = 'leitnerflow_intro'): void {
+    $tourfile = __DIR__ . '/usertours/' . $tourname . '.json';
     if (!file_exists($tourfile)) {
         return;
     }

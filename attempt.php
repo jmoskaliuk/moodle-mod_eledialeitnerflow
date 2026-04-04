@@ -411,7 +411,7 @@ function _leitnerflow_render_with_feedback(
     // Detailed mode: no auto-redirect (button handles it).
     // All other modes: auto-redirect after delay.
     $autoredirect = ($feedbackstyle !== 3);
-    $delay = ($feedbackstyle === 1) ? 2000 : 1000; // Minimal fades slower.
+    $delay = (int) ($leitnerflow->animationdelay ?? 1000);
 
     $PAGE->requires->js_call_amd('mod_leitnerflow/card_transition', 'init', [
         $frombox, $tobox, (int)$correct, (int)$islearned,
@@ -574,8 +574,9 @@ function _leitnerflow_finish_session(stdClass $session, stdClass $leitnerflow, s
     $PAGE->set_url('/mod/leitnerflow/attempt.php', ['id' => $cm->id]);
     $PAGE->set_title(format_string($leitnerflow->name));
     $PAGE->set_context(\core\context\module::instance($cm->id));
+    // Hide activity description on session-complete page.
+    $PAGE->activityheader->set_description('');
     echo $OUTPUT->header();
-    echo $OUTPUT->heading(get_string('sessioncomplete', 'mod_leitnerflow'), 3);
 
     $result = get_string('sessionresult', 'mod_leitnerflow', [
         'correct' => $session->questionscorrect,

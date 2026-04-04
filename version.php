@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_leitnerflow';
-$plugin->version   = 2024120120;
+$plugin->version   = 2024120121;
 $plugin->requires  = 2024042200; // Moodle 4.4+
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '2.0.0';
+$plugin->release   = '2.1.0';

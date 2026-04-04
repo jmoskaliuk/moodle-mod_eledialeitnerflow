@@ -67,11 +67,12 @@ $PAGE->set_url('/mod/leitnerflow/report.php', ['id' => $cmid]);
 $PAGE->set_title(format_string($leitnerflow->name) . ': ' . get_string('report', 'mod_leitnerflow'));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
+// Hide the automatic activity description box — the report needs no intro text.
+$PAGE->activityheader->set_description('');
 
 $viewurl = new moodle_url('/mod/leitnerflow/view.php', ['id' => $cmid]);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(format_string($leitnerflow->name));
 echo $OUTPUT->heading(get_string('report', 'mod_leitnerflow'), 4);
 
 // ---- Load student data -----------------------------------------------------
@@ -101,7 +102,7 @@ $questioncount = !empty($students) ? reset($students)->stats->total : 0;
 echo html_writer::start_div('row mb-4');
 $summaries = [
     [get_string('participants'), count($students), 'bg-primary'],
-    [get_string('questionsinpool', 'mod_leitnerflow'), $questioncount, 'bg-secondary'],
+    [get_string('questionsinpool', 'mod_leitnerflow'), $questioncount, 'lf-bg-darkblue'],
     [get_string('avglearnedpercent', 'mod_leitnerflow'), $avgpct . ' %', 'bg-success'],
 ];
 foreach ($summaries as $sum) {

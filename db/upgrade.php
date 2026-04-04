@@ -216,5 +216,21 @@ function xmldb_leitnerflow_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024120120, 'leitnerflow');
     }
 
+    // Add animationdelay field (default: 1000ms) and import teacher tour.
+    if ($oldversion < 2024120121) {
+        $table = new xmldb_table('leitnerflow');
+        $field = new xmldb_field('animationdelay', XMLDB_TYPE_INTEGER, '5', null, XMLDB_NOTNULL, null, '1000', 'feedbackstyle');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Import teacher tour.
+        require_once(__DIR__ . '/install.php');
+        _leitnerflow_import_user_tour('leitnerflow_teacher');
+
+        upgrade_mod_savepoint(true, 2024120121, 'leitnerflow');
+    }
+
     return true;
 }

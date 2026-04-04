@@ -217,6 +217,12 @@
     display: none !important;
 }
 
+/* ---- Report page: accessible summary card ---- */
+.lf-bg-darkblue {
+    background-color: var(--lf-dark-blue) !important;
+    color: #fff !important;
+}
+
 /* Hide plugin's duplicate check button — Moodle's behaviour button is used */
 .leitnerflow-question-form > .d-grid {
     display: none !important;

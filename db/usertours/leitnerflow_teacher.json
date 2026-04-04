@@ -1,0 +1,43 @@
+{
+  "name": "<span class=\"multilang\" lang=\"en\">LeitnerFlow — Teacher Guide</span><span class=\"multilang\" lang=\"de\">LeitnerFlow — Lehrkräfte-Führung</span>",
+  "description": "Introduces teachers to the LeitnerFlow report page and management features.",
+  "pathmatch": "/mod/leitnerflow/report.php%",
+  "enabled": 1,
+  "sortorder": 1,
+  "endtourlabel": "OK",
+  "configdata": "{}",
+  "steps": [
+    {
+      "title": "<span class=\"multilang\" lang=\"en\">Participant Overview</span><span class=\"multilang\" lang=\"de\">Teilnehmerübersicht</span>",
+      "content": "<span class=\"multilang\" lang=\"en\">Welcome to the LeitnerFlow report page! Here you can see the learning progress of all participants at a glance. The summary cards at the top show the key metrics for this activity.</span><span class=\"multilang\" lang=\"de\">Willkommen auf der LeitnerFlow-Berichtsseite! Hier sehen Sie den Lernfortschritt aller Teilnehmenden auf einen Blick. Die Übersichtskarten oben zeigen die wichtigsten Kennzahlen dieser Aktivität.</span>",
+      "targettype": 2,
+      "targetvalue": "",
+      "sortorder": 0,
+      "configdata": "{\"placement\":\"bottom\",\"orphan\":true,\"backdrop\":false,\"reflex\":false,\"delay\":0}"
+    },
+    {
+      "title": "<span class=\"multilang\" lang=\"en\">Summary Cards</span><span class=\"multilang\" lang=\"de\">Übersichtskarten</span>",
+      "content": "<span class=\"multilang\" lang=\"en\">These cards show: the number of participants, total questions in the pool, and the average percentage of cards learned across all students. Use these to quickly gauge overall class performance.</span><span class=\"multilang\" lang=\"de\">Diese Karten zeigen: die Anzahl der Teilnehmenden, die Gesamtzahl der Fragen im Pool und den durchschnittlichen Prozentsatz gelernter Karten aller Studierenden. So können Sie die Gesamtleistung der Klasse schnell einschätzen.</span>",
+      "targettype": 0,
+      "targetvalue": ".row.mb-4",
+      "sortorder": 1,
+      "configdata": "{\"placement\":\"bottom\",\"orphan\":false,\"backdrop\":true,\"reflex\":false,\"delay\":0}"
+    },
+    {
+      "title": "<span class=\"multilang\" lang=\"en\">Student Progress Table</span><span class=\"multilang\" lang=\"de\">Fortschrittstabelle</span>",
+      "content": "<span class=\"multilang\" lang=\"en\">This table lists each participant with their learned cards, open cards, cards with errors, overall progress, number of completed sessions, and last session date. The progress bar gives a quick visual indicator.</span><span class=\"multilang\" lang=\"de\">Diese Tabelle zeigt pro Teilnehmer/in: gelernte Karten, offene Karten, Karten mit Fehlern, Gesamtfortschritt, Anzahl abgeschlossener Sessions und das Datum der letzten Session. Der Fortschrittsbalken gibt einen schnellen visuellen Überblick.</span>",
+      "targettype": 0,
+      "targetvalue": ".table.table-striped",
+      "sortorder": 2,
+      "configdata": "{\"placement\":\"top\",\"orphan\":false,\"backdrop\":true,\"reflex\":false,\"delay\":0}"
+    },
+    {
+      "title": "<span class=\"multilang\" lang=\"en\">Reset Progress</span><span class=\"multilang\" lang=\"de\">Fortschritt zurücksetzen</span>",
+      "content": "<span class=\"multilang\" lang=\"en\">The \"Reset progress\" button in each row lets you reset a specific student's data. This removes all card states and session history for that student, allowing them to start fresh. Use with care — this action cannot be undone!</span><span class=\"multilang\" lang=\"de\">Die Schaltfläche „Fortschritt zurücksetzen" in jeder Zeile ermöglicht es, die Daten einzelner Studierender zurückzusetzen. Dabei werden alle Kartenzustände und die Session-Historie gelöscht, sodass der/die Studierende von vorn beginnen kann. Bitte vorsichtig verwenden — diese Aktion kann nicht rückgängig gemacht werden!</span>",
+      "targettype": 0,
+      "targetvalue": ".btn-outline-danger",
+      "sortorder": 3,
+      "configdata": "{\"placement\":\"left\",\"orphan\":false,\"backdrop\":true,\"reflex\":false,\"delay\":0}"
+    }
+  ]
+}

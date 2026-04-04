@@ -21,6 +21,7 @@
         <FIELD NAME="grademethod"        TYPE="int"  LENGTH="2"  NOTNULL="true" DEFAULT="0"  COMMENT="0=no grade, 1=percentage learned"/>
         <FIELD NAME="showanimation"     TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="1"  COMMENT="1=show card-move animation, 0=off"/>
         <FIELD NAME="feedbackstyle"    TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="2"  COMMENT="0=off, 1=minimal, 2=animated, 3=detailed, 4=gamified"/>
+        <FIELD NAME="animationdelay"  TYPE="int"  LENGTH="5"  NOTNULL="true" DEFAULT="1000" COMMENT="Auto-redirect delay in milliseconds"/>
         <FIELD NAME="showtour"         TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="1"  COMMENT="1=show intro tour on first visit, 0=off"/>
         <FIELD NAME="timecreated"        TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="timemodified"       TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>

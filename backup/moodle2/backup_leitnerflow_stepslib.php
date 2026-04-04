@@ -34,7 +34,7 @@ class backup_leitnerflow_activity_structure_step extends backup_activity_structu
             'name', 'intro', 'introformat',
             'questioncategoryid', 'questioncategoryids', 'sessionsize', 'boxcount',
             'correcttolearn', 'wrongbehavior', 'questionrotation',
-            'prioritystrategy', 'grade', 'grademethod', 'showanimation', 'feedbackstyle', 'showtour',
+            'prioritystrategy', 'grade', 'grademethod', 'showanimation', 'feedbackstyle', 'animationdelay', 'showtour',
             'timecreated', 'timemodified',
         ]);
 

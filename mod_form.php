@@ -104,6 +104,7 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
         // ---- Leitner System settings ---------------------------------------
         $mform->addElement('header', 'leitnersettingsheader',
             get_string('leitnersettings', 'mod_leitnerflow'));
+        $mform->setExpanded('leitnersettingsheader', true);
 
         $boxoptions = [1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5'];
         $mform->addElement('select', 'boxcount',
@@ -138,32 +139,11 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
         $mform->addHelpButton('prioritystrategy', 'prioritystrategy', 'mod_leitnerflow');
         $mform->setDefault('prioritystrategy', 0);
 
-        // ---- Grading -------------------------------------------------------
-        $mform->addElement('header', 'gradingsettingsheader',
-            get_string('gradingsettings', 'mod_leitnerflow'));
-
-        $gradeoptions = [
-            0 => get_string('grademethod_none',    'mod_leitnerflow'),
-            1 => get_string('grademethod_percent', 'mod_leitnerflow'),
-        ];
-        $mform->addElement('select', 'grademethod',
-            get_string('grademethod', 'mod_leitnerflow'), $gradeoptions);
-        $mform->setDefault('grademethod', 0);
-
-        // ---- Display settings -------------------------------------------------
-        $mform->addElement('header', 'displaysettingsheader',
-            get_string('displaysettings', 'mod_leitnerflow'));
-        $mform->setExpanded('displaysettingsheader', true);
-
+        // Display & feedback settings (within Leitner System section).
         $mform->addElement('selectyesno', 'showanimation',
             get_string('showanimation', 'mod_leitnerflow'));
         $mform->addHelpButton('showanimation', 'showanimation', 'mod_leitnerflow');
         $mform->setDefault('showanimation', 1);
-
-        $mform->addElement('selectyesno', 'showtour',
-            get_string('showtour', 'mod_leitnerflow'));
-        $mform->addHelpButton('showtour', 'showtour', 'mod_leitnerflow');
-        $mform->setDefault('showtour', 1);
 
         $feedbackoptions = [
             0 => get_string('feedbackstyle_off',      'mod_leitnerflow'),
@@ -176,6 +156,36 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
             get_string('feedbackstyle', 'mod_leitnerflow'), $feedbackoptions);
         $mform->addHelpButton('feedbackstyle', 'feedbackstyle', 'mod_leitnerflow');
         $mform->setDefault('feedbackstyle', 2);
+
+        $delayoptions = [
+            500  => '0,5 s',
+            1000 => '1 s',
+            1500 => '1,5 s',
+            2000 => '2 s',
+            3000 => '3 s',
+            5000 => '5 s',
+        ];
+        $mform->addElement('select', 'animationdelay',
+            get_string('animationdelay', 'mod_leitnerflow'), $delayoptions);
+        $mform->addHelpButton('animationdelay', 'animationdelay', 'mod_leitnerflow');
+        $mform->setDefault('animationdelay', 1000);
+
+        $mform->addElement('selectyesno', 'showtour',
+            get_string('showtour', 'mod_leitnerflow'));
+        $mform->addHelpButton('showtour', 'showtour', 'mod_leitnerflow');
+        $mform->setDefault('showtour', 1);
+
+        // ---- Grading -------------------------------------------------------
+        $mform->addElement('header', 'gradingsettingsheader',
+            get_string('gradingsettings', 'mod_leitnerflow'));
+
+        $gradeoptions = [
+            0 => get_string('grademethod_none',    'mod_leitnerflow'),
+            1 => get_string('grademethod_percent', 'mod_leitnerflow'),
+        ];
+        $mform->addElement('select', 'grademethod',
+            get_string('grademethod', 'mod_leitnerflow'), $gradeoptions);
+        $mform->setDefault('grademethod', 0);
 
         $this->standard_coursemodule_elements();
         $this->add_action_buttons();
