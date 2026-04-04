@@ -67,19 +67,23 @@ function xmldb_leitnerflow_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024120111, 'leitnerflow');
     }
 
-    // Re-import user tour with fixed configdata (replaces broken tour from 2024120111).
-    if ($oldversion < 2024120112) {
-        // Delete any previously imported broken tour.
-        $oldtours = $DB->get_records_select('tool_usertours_tours',
-            $DB->sql_like('name', '?'), ['%LeitnerFlow%']);
-        foreach ($oldtours as $tour) {
-            $DB->delete_records('tool_usertours_steps', ['tourid' => $tour->id]);
-            $DB->delete_records('tool_usertours_tours', ['id' => $tour->id]);
+    // Re-import user tour with fixed configdata (replaces broken tour from earlier attempts).
+    if ($oldversion < 2024120113) {
+        // Delete any previously imported broken tour(s).
+        try {
+            $oldtours = $DB->get_records_select('tool_usertours_tours',
+                $DB->sql_like('name', '?'), ['%LeitnerFlow%']);
+            foreach ($oldtours as $tour) {
+                $DB->delete_records('tool_usertours_steps', ['tourid' => $tour->id]);
+                $DB->delete_records('tool_usertours_tours', ['id' => $tour->id]);
+            }
+        } catch (\Throwable $e) {
+            debugging('LeitnerFlow: Could not clean old tours: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
         // Re-import with fixed JSON.
         require_once(__DIR__ . '/install.php');
         _leitnerflow_import_user_tour();
-        upgrade_mod_savepoint(true, 2024120112, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120113, 'leitnerflow');
     }
 
     return true;
