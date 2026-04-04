@@ -69,6 +69,33 @@ $string['grademethod_none']          = 'No grade';
 $string['grademethod_percent']       = '% of cards learned';
 $string['gradingsettings']           = 'Grading';
 $string['displaysettings']           = 'Display';
+$string['feedbackstyle']             = 'Feedback style';
+$string['feedbackstyle_help']        = '<b>Minimal</b>: brief factual message ("Card → Box 3").<br><b>Encouraging</b>: random motivational messages that vary each time.<br><b>Off</b>: no text feedback, only the box animation.';
+$string['feedbackstyle_off']         = 'Off';
+$string['feedbackstyle_minimal']     = 'Minimal';
+$string['feedbackstyle_encouraging'] = 'Encouraging';
+
+// Encouraging feedback — correct + move forward (random pick, {$a} = target box).
+$string['encourage_correct_1']       = 'Great job! Moving to Box {$a}.';
+$string['encourage_correct_2']       = 'Nice one — keep it up!';
+$string['encourage_correct_3']       = 'Correct! The card advances to Box {$a}.';
+$string['encourage_correct_4']       = 'Looking good! Box {$a} is filling up.';
+$string['encourage_correct_5']       = 'Perfect — next level!';
+
+// Encouraging feedback — correct + learned.
+$string['encourage_learned_1']       = 'Nailed it! This card is now learned!';
+$string['encourage_learned_2']       = 'Mastered! Into the Learned pile!';
+$string['encourage_learned_3']       = 'Brilliant — one less card to study!';
+
+// Encouraging feedback — wrong + moved back ({$a} = target box).
+$string['encourage_wrong_back_1']    = 'Not quite — back to Box {$a}.';
+$string['encourage_wrong_back_2']    = 'Oops, the card slips back.';
+$string['encourage_wrong_back_3']    = 'No worries — you\'ll get it next time!';
+$string['encourage_wrong_back_4']    = 'Almost! Back one step to Box {$a}.';
+
+// Encouraging feedback — wrong + stays in same box ({$a} = current box).
+$string['encourage_wrong_stay_1']    = 'Close! The card stays in Box {$a}.';
+$string['encourage_wrong_stay_2']    = 'Keep practising — it stays where it is.';
 $string['showanimation']             = 'Card animation';
 $string['showanimation_help']        = 'When enabled, a brief visual animation shows which Leitner box the card moved to after answering a question. When disabled, the next question appears immediately.';
 $string['leitnersettings']           = 'Leitner system';

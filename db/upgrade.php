@@ -152,5 +152,17 @@ function xmldb_leitnerflow_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024120116, 'leitnerflow');
     }
 
+    // Add feedbackstyle field (0=off, 1=minimal, 2=encouraging).
+    if ($oldversion < 2024120117) {
+        $table = new xmldb_table('leitnerflow');
+        $field = new xmldb_field('feedbackstyle', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'showanimation');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2024120117, 'leitnerflow');
+    }
+
     return true;
 }

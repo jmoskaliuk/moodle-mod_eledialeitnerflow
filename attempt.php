@@ -334,23 +334,17 @@ function _leitnerflow_render_with_animation(
     // Render the answered question (readonly, with correctness shown).
     echo $quba->render_question($slot, $displayoptions, ($answeredindex + 1) . '');
 
-    // Feedback banner.
-    if ($correct) {
-        $feedbackmsg = $islearned
-            ? get_string('cardlearned', 'mod_leitnerflow')
-            : get_string('movedtobox', 'mod_leitnerflow', $tobox);
-        $feedbackclass = 'alert alert-success';
-    } else {
-        $feedbackmsg = ($frombox !== $tobox)
-            ? get_string('cardbackone', 'mod_leitnerflow')
-            : get_string('incorrect', 'mod_leitnerflow');
-        $feedbackclass = 'alert alert-warning';
+    // Feedback banner (respects feedbackstyle setting).
+    $feedbackstyle = (int)($leitnerflow->feedbackstyle ?? 1);
+    if ($feedbackstyle > 0) {
+        $feedbackmsg = _leitnerflow_get_feedback_text($feedbackstyle, $correct, $islearned, $frombox, $tobox);
+        $feedbackclass = $correct ? 'alert alert-success' : 'alert alert-warning';
+        echo html_writer::div(
+            $feedbackmsg,
+            $feedbackclass . ' text-center lf-feedback-banner mt-2 py-2',
+            ['style' => 'font-size: 0.9rem;']
+        );
     }
-    echo html_writer::div(
-        $feedbackmsg,
-        $feedbackclass . ' text-center lf-feedback-banner mt-2 py-2',
-        ['style' => 'font-size: 0.9rem;']
-    );
 
     // Question counter.
     echo html_writer::start_div('d-flex justify-content-between align-items-center mt-3 mb-3');
@@ -372,6 +366,43 @@ function _leitnerflow_render_with_animation(
     ]);
 
     echo $OUTPUT->footer();
+}
+
+// ---- Helper: get feedback text based on style setting ----------------------
+function _leitnerflow_get_feedback_text(int $style, bool $correct, bool $islearned, int $frombox, int $tobox): string {
+    // Style 1 = minimal (factual).
+    if ($style === 1) {
+        if ($correct) {
+            return $islearned
+                ? get_string('cardlearned', 'mod_leitnerflow')
+                : get_string('movedtobox', 'mod_leitnerflow', $tobox);
+        }
+        return ($frombox !== $tobox)
+            ? get_string('cardbackone', 'mod_leitnerflow')
+            : get_string('incorrect', 'mod_leitnerflow');
+    }
+
+    // Style 2 = encouraging (random motivational messages).
+    if ($correct && $islearned) {
+        $pool = ['encourage_learned_1', 'encourage_learned_2', 'encourage_learned_3'];
+        $key = $pool[array_rand($pool)];
+        return get_string($key, 'mod_leitnerflow');
+    }
+    if ($correct) {
+        $pool = ['encourage_correct_1', 'encourage_correct_2', 'encourage_correct_3',
+                 'encourage_correct_4', 'encourage_correct_5'];
+        $key = $pool[array_rand($pool)];
+        return get_string($key, 'mod_leitnerflow', $tobox);
+    }
+    if ($frombox !== $tobox) {
+        $pool = ['encourage_wrong_back_1', 'encourage_wrong_back_2',
+                 'encourage_wrong_back_3', 'encourage_wrong_back_4'];
+        $key = $pool[array_rand($pool)];
+        return get_string($key, 'mod_leitnerflow', $tobox);
+    }
+    $pool = ['encourage_wrong_stay_1', 'encourage_wrong_stay_2'];
+    $key = $pool[array_rand($pool)];
+    return get_string($key, 'mod_leitnerflow', $tobox);
 }
 
 // ---- Helper: finish session ------------------------------------------------

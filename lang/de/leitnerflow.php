@@ -57,6 +57,33 @@ $string['grademethod_none']        = 'Keine Bewertung';
 $string['grademethod_percent']     = 'Prozentsatz der gelernten Karten';
 $string['gradingsettings']         = 'Bewertungseinstellungen';
 $string['displaysettings']         = 'Anzeige';
+$string['feedbackstyle']           = 'Feedback-Stil';
+$string['feedbackstyle_help']      = '<b>Minimal</b>: Kurze sachliche Meldung („Karte → Box 3").<br><b>Ermutigend</b>: Zufällige motivierende Texte, die jedes Mal variieren.<br><b>Aus</b>: Kein Text-Feedback, nur die Box-Animation.';
+$string['feedbackstyle_off']       = 'Aus';
+$string['feedbackstyle_minimal']   = 'Minimal';
+$string['feedbackstyle_encouraging'] = 'Ermutigend';
+
+// Ermutigendes Feedback — richtig + weiter ({$a} = Ziel-Box).
+$string['encourage_correct_1']     = 'Sehr gut! Schieben wir weiter nach Box {$a}.';
+$string['encourage_correct_2']     = 'Super, weiter so!';
+$string['encourage_correct_3']     = 'Richtig! Die Karte wandert in Box {$a}.';
+$string['encourage_correct_4']     = 'Läuft! Box {$a} füllt sich.';
+$string['encourage_correct_5']     = 'Perfekt — nächste Stufe!';
+
+// Ermutigendes Feedback — richtig + gelernt.
+$string['encourage_learned_1']     = 'Geschafft! Diese Karte ist jetzt gelernt!';
+$string['encourage_learned_2']     = 'Meisterhaft! Ab ins Gelernt-Fach!';
+$string['encourage_learned_3']     = 'Bravo — eine Karte weniger zum Lernen!';
+
+// Ermutigendes Feedback — falsch + zurück ({$a} = Ziel-Box).
+$string['encourage_wrong_back_1']  = 'Das war leider nichts. Eine Box zurück auf Box {$a}.';
+$string['encourage_wrong_back_2']  = 'Ups, die Karte rutscht zurück.';
+$string['encourage_wrong_back_3']  = 'Nicht schlimm — beim nächsten Mal klappt\'s!';
+$string['encourage_wrong_back_4']  = 'Noch nicht ganz — zurück auf Box {$a}.';
+
+// Ermutigendes Feedback — falsch + bleibt ({$a} = aktuelle Box).
+$string['encourage_wrong_stay_1']  = 'Knapp daneben — die Karte bleibt in Box {$a}.';
+$string['encourage_wrong_stay_2']  = 'Noch üben — die Karte bleibt wo sie ist.';
 $string['showanimation']           = 'Kartenanimation';
 $string['showanimation_help']      = 'Wenn aktiviert, wird nach jeder Frage eine kurze Animation gezeigt, die anzeigt, in welche Leitner-Box die Karte gewandert ist. Wenn deaktiviert, erscheint sofort die nächste Frage.';
 $string['leitnersettings']         = 'Leitner-System';
