@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  PHPUnit configuration for mod_leitnerflow.
+  PHPUnit configuration for mod_eledialeitnerflow.
 
   Place this file in the Moodle root alongside the existing phpunit.xml,
   OR add the <testsuite> block below into the existing phpunit.xml.
 
   Usage (from Moodle root):
     php admin/tool/phpunit/cli/init.php
-    vendor/bin/phpunit --testsuite mod_leitnerflow_testsuite
-    vendor/bin/phpunit --testdox --testsuite mod_leitnerflow_testsuite
+    vendor/bin/phpunit --testsuite mod_eledialeitnerflow_testsuite
+    vendor/bin/phpunit --testdox --testsuite mod_eledialeitnerflow_testsuite
 -->
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -19,18 +19,18 @@
     beStrictAboutOutputDuringTests="true"
 >
     <testsuites>
-        <testsuite name="mod_leitnerflow_testsuite">
-            <directory suffix="_test.php">mod/leitnerflow/tests</directory>
+        <testsuite name="mod_eledialeitnerflow_testsuite">
+            <directory suffix="_test.php">mod/eledialeitnerflow/tests</directory>
         </testsuite>
     </testsuites>
 
     <coverage>
         <include>
-            <directory suffix=".php">mod/leitnerflow/classes</directory>
-            <file>mod/leitnerflow/lib.php</file>
+            <directory suffix=".php">mod/eledialeitnerflow/classes</directory>
+            <file>mod/eledialeitnerflow/lib.php</file>
         </include>
         <report>
-            <html outputDirectory="mod/leitnerflow/tests/coverage"/>
+            <html outputDirectory="mod/eledialeitnerflow/tests/coverage"/>
             <text outputFile="php://stdout" showUncoveredFiles="false"/>
         </report>
     </coverage>

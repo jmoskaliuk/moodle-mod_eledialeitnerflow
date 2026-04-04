@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question attempt page for mod_leitnerflow.
+ * Question attempt page for mod_eledialeitnerflow.
  *
  * Uses Moodle's immediatefeedback Check button (no plugin duplicate).
  * UI uses Moodle Component Library (Bootstrap) where possible.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,40 +29,40 @@ require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib.php');
 require_once($CFG->dirroot . '/question/engine/lib.php');
 
-use mod_leitnerflow\engine\leitner_engine;
+use mod_eledialeitnerflow\engine\leitner_engine;
 
 $cmid   = required_param('id',    PARAM_INT);
 $sessid = optional_param('sessid', 0,  PARAM_INT);
 $start  = optional_param('start',  0,  PARAM_INT);
 $box    = optional_param('box',    0,  PARAM_INT); // Optional: start session from a specific box.
 
-$cm          = get_coursemodule_from_id('leitnerflow', $cmid, 0, false, MUST_EXIST);
+$cm          = get_coursemodule_from_id('eledialeitnerflow', $cmid, 0, false, MUST_EXIST);
 $course      = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
-$leitnerflow = $DB->get_record('leitnerflow', ['id' => $cm->instance], '*', MUST_EXIST);
+$leitnerflow = $DB->get_record('eledialeitnerflow', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_login($course, true, $cm);
-require_capability('mod/leitnerflow:attempt', \core\context\module::instance($cm->id));
+require_capability('mod/elediaeledialeitnerflow:attempt', \core\context\module::instance($cm->id));
 
 $context = \core\context\module::instance($cm->id);
-$viewurl = new moodle_url('/mod/leitnerflow/view.php', ['id' => $cm->id]);
+$viewurl = new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cm->id]);
 
 // ---- Start a new session ---------------------------------------------------
 if ($start) {
     // Complete any stale active session (save partial results rather than deleting).
-    $stale = $DB->get_records('leitnerflow_sessions', [
-        'leitnerflowid' => $leitnerflow->id,
+    $stale = $DB->get_records('eledialeitnerflow_sessions', [
+        'eledialeitnerflowid' => $leitnerflow->id,
         'userid'        => $USER->id,
         'status'        => 0,
     ]);
     foreach ($stale as $s) {
         $s->status        = 1; // Mark as completed.
         $s->timecompleted = time();
-        $DB->update_record('leitnerflow_sessions', $s);
+        $DB->update_record('eledialeitnerflow_sessions', $s);
         // Clean up quba to free resources.
         if (!empty($s->qubaid)) {
             question_engine::delete_questions_usage_by_activity($s->qubaid);
             $s->qubaid = null;
-            $DB->set_field('leitnerflow_sessions', 'qubaid', null, ['id' => $s->id]);
+            $DB->set_field('eledialeitnerflow_sessions', 'qubaid', null, ['id' => $s->id]);
         }
     }
 
@@ -75,13 +75,13 @@ if ($start) {
 
     if (empty($questionids)) {
         $msg = ($box > 0)
-            ? get_string('nocardsinthisbox', 'mod_leitnerflow', $box)
-            : get_string('nounlearnedcards', 'mod_leitnerflow');
+            ? get_string('nocardsinthisbox', 'mod_eledialeitnerflow', $box)
+            : get_string('nounlearnedcards', 'mod_eledialeitnerflow');
         redirect($viewurl, $msg, null, \core\output\notification::NOTIFY_INFO);
     }
 
     // Build question_usage_by_activity (quba).
-    $quba = question_engine::make_questions_usage_by_activity('mod_leitnerflow', $context);
+    $quba = question_engine::make_questions_usage_by_activity('mod_eledialeitnerflow', $context);
     $quba->set_preferred_behaviour('immediatefeedback');
 
     foreach ($questionids as $qid) {
@@ -93,7 +93,7 @@ if ($start) {
 
     // Save session record.
     $session = new stdClass();
-    $session->leitnerflowid  = $leitnerflow->id;
+    $session->eledialeitnerflowid  = $leitnerflow->id;
     $session->userid         = $USER->id;
     $session->qubaid         = $quba->get_id();
     $session->questionids    = json_encode($questionids);
@@ -102,24 +102,24 @@ if ($start) {
     $session->questionscorrect = 0;
     $session->status         = 0;
     $session->timecreated    = time();
-    $session->id = $DB->insert_record('leitnerflow_sessions', $session);
+    $session->id = $DB->insert_record('eledialeitnerflow_sessions', $session);
 
     // Fire session_started event.
-    $event = \mod_leitnerflow\event\session_started::create([
+    $event = \mod_eledialeitnerflow\event\session_started::create([
         'objectid' => $session->id,
         'context'  => $context,
         'other'    => ['questioncount' => count($questionids)],
     ]);
     $event->trigger();
 
-    redirect(new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $session->id]));
+    redirect(new moodle_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $session->id]));
 }
 
 // ---- Load existing session -------------------------------------------------
 if (!$sessid) {
     redirect($viewurl);
 }
-$session = $DB->get_record('leitnerflow_sessions', ['id' => $sessid, 'userid' => $USER->id], '*', MUST_EXIST);
+$session = $DB->get_record('eledialeitnerflow_sessions', ['id' => $sessid, 'userid' => $USER->id], '*', MUST_EXIST);
 
 if ((int)$session->status === 1) {
     redirect($viewurl);
@@ -131,7 +131,7 @@ $currentindex  = (int)$session->currentindex;
 
 // Session complete?
 if ($currentindex >= $totalquestions) {
-    _leitnerflow_finish_session($session, $leitnerflow, $cm, $course);
+    _eledialeitnerflow_finish_session($session, $leitnerflow, $cm, $course);
     exit;
 }
 
@@ -177,34 +177,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $session->currentindex  = $currentindex + 1;
 
     if ($session->currentindex >= $totalquestions) {
-        _leitnerflow_finish_session($session, $leitnerflow, $cm, $course);
+        _eledialeitnerflow_finish_session($session, $leitnerflow, $cm, $course);
         exit;
     }
 
-    $DB->update_record('leitnerflow_sessions', $session);
+    $DB->update_record('eledialeitnerflow_sessions', $session);
 
     // Determine feedback mode.
     $feedbackstyle = (int)($leitnerflow->feedbackstyle ?? 2);
 
     // Mode 0 (off): redirect immediately.
     if ($feedbackstyle === 0) {
-        redirect(new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]));
+        redirect(new moodle_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]));
     }
 
     // Modes 1-4: render current question with feedback overlay.
-    $nexturl = new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
+    $nexturl = new moodle_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
 
     // Count total learned cards (for gamified milestones).
     $totallearned = 0;
     if ($feedbackstyle === 4) {
-        $totallearned = $DB->count_records('leitnerflow_card_state', [
-            'leitnerflowid' => $leitnerflow->id,
+        $totallearned = $DB->count_records('eledialeitnerflow_card_state', [
+            'eledialeitnerflowid' => $leitnerflow->id,
             'userid' => $USER->id,
             'status' => 2,
         ]);
     }
 
-    _leitnerflow_render_with_feedback(
+    _eledialeitnerflow_render_with_feedback(
         $leitnerflow, $cm, $course, $session, $quba, $slot, $currentindex, $totalquestions,
         $oldbox, $newbox, $correct, $islearned, $nexturl, $feedbackstyle,
         $currentstreak, $totallearned
@@ -213,11 +213,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // ---- Render the current question -------------------------------------------
-$PAGE->set_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
+$PAGE->set_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
 $PAGE->set_title(format_string($leitnerflow->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-$PAGE->add_body_class('mod-leitnerflow-attempt');
+$PAGE->add_body_class('mod-eledialeitnerflow-attempt');
 // Hide activity description on attempt page — not needed during a session.
 $PAGE->activityheader->set_description('');
 
@@ -237,7 +237,7 @@ $currentbox = $cardstate ? (int)$cardstate->currentbox : 1;
 echo $OUTPUT->header();
 
 // ---- Centered question container (like Moodle Quiz) ----
-echo html_writer::start_div('leitnerflow-attempt-container');
+echo html_writer::start_div('eledialeitnerflow-attempt-container');
 
 // ---- Box-flow pills (centered, no "Learned" box) ----
 $boxcount = (int) $leitnerflow->boxcount;
@@ -251,7 +251,7 @@ for ($b = 1; $b <= $boxcount; $b++) {
         $pillclass .= 'bg-light text-dark border';
     }
     echo html_writer::span(
-        get_string('box_n', 'mod_leitnerflow', $b),
+        get_string('box_n', 'mod_eledialeitnerflow', $b),
         $pillclass,
         ['data-box' => $b]
     );
@@ -263,13 +263,13 @@ echo html_writer::end_div();
 echo html_writer::end_div();
 
 // ---- Question form ----
-$actionurl = new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
+$actionurl = new moodle_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
 echo html_writer::start_tag('form', [
     'method'  => 'post',
     'action'  => $actionurl->out(false),
     'enctype' => 'multipart/form-data',
-    'class'   => 'leitnerflow-question-form',
-    'id'      => 'leitnerflow-question-form',
+    'class'   => 'eledialeitnerflow-question-form',
+    'id'      => 'eledialeitnerflow-question-form',
 ]);
 echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
 echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'attempt', 'value' => 1]);
@@ -280,31 +280,31 @@ echo $quba->render_question($slot, $displayoptions, ($currentindex + 1) . '');
 echo html_writer::end_tag('form');
 
 // ---- Bottom navigation (like Moodle Quiz: secondary left, info right) ----
-$cancelurl = new moodle_url('/mod/leitnerflow/view.php', [
+$cancelurl = new moodle_url('/mod/eledialeitnerflow/view.php', [
     'id' => $cm->id,
     'cancelsession' => 1,
     'sesskey' => sesskey(),
 ]);
 echo html_writer::start_div('d-flex justify-content-between align-items-center mt-3 mb-3');
 echo html_writer::start_div('d-flex gap-2 align-items-center');
-echo $OUTPUT->single_button($viewurl, get_string('backtooverview', 'mod_leitnerflow'), 'get');
-echo $OUTPUT->single_button($cancelurl, get_string('endsession', 'mod_leitnerflow'), 'get');
+echo $OUTPUT->single_button($viewurl, get_string('backtooverview', 'mod_eledialeitnerflow'), 'get');
+echo $OUTPUT->single_button($cancelurl, get_string('endsession', 'mod_eledialeitnerflow'), 'get');
 echo html_writer::end_div();
 echo html_writer::span(
     get_string('question') . ' ' . ($currentindex + 1) . ' / ' . $totalquestions
     . ' &middot; '
     . html_writer::tag('b', $session->questionscorrect) . ' / ' . $session->questionsasked
-    . ' ' . get_string('correct', 'mod_leitnerflow'),
+    . ' ' . get_string('correct', 'mod_eledialeitnerflow'),
     'text-muted'
 );
 echo html_writer::end_div();
 
-echo html_writer::end_div(); // leitnerflow-attempt-container
+echo html_writer::end_div(); // eledialeitnerflow-attempt-container
 
 echo $OUTPUT->footer();
 
 // ---- Helper: render current question with feedback overlay ------------------
-function _leitnerflow_render_with_feedback(
+function _eledialeitnerflow_render_with_feedback(
     stdClass $leitnerflow, stdClass $cm, stdClass $course, stdClass $session,
     question_usage_by_activity $quba, int $slot, int $answeredindex, int $totalquestions,
     int $frombox, int $tobox, bool $correct, bool $islearned, moodle_url $nexturl,
@@ -313,11 +313,11 @@ function _leitnerflow_render_with_feedback(
     global $OUTPUT, $PAGE;
 
     $cmid = $cm->id;
-    $PAGE->set_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $session->id]);
+    $PAGE->set_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $session->id]);
     $PAGE->set_title(format_string($leitnerflow->name));
     $PAGE->set_heading(format_string($course->fullname));
     $PAGE->set_context(\core\context\module::instance($cmid));
-    $PAGE->add_body_class('mod-leitnerflow-attempt');
+    $PAGE->add_body_class('mod-eledialeitnerflow-attempt');
     $PAGE->activityheader->set_description('');
 
     // Show correct answer for detailed + gamified modes.
@@ -332,32 +332,32 @@ function _leitnerflow_render_with_feedback(
     $displayoptions->readonly        = true;
 
     echo $OUTPUT->header();
-    echo html_writer::start_div('leitnerflow-attempt-container');
+    echo html_writer::start_div('eledialeitnerflow-attempt-container');
 
     // ---- Feedback banner ABOVE the box pills ----
     $alertclass = $correct ? 'alert alert-success' : 'alert alert-warning';
 
     if ($feedbackstyle === 1) {
         // MINIMAL: short factual text.
-        $msg = _leitnerflow_get_feedback_text(1, $correct, $islearned, $frombox, $tobox);
+        $msg = _eledialeitnerflow_get_feedback_text(1, $correct, $islearned, $frombox, $tobox);
         echo html_writer::div($msg, $alertclass . ' text-center lf-feedback-banner mb-2 py-2',
             ['style' => 'font-size: 0.9rem;']);
 
     } else if ($feedbackstyle === 2) {
         // ANIMATED: encouraging random text.
-        $msg = _leitnerflow_get_feedback_text(2, $correct, $islearned, $frombox, $tobox);
+        $msg = _eledialeitnerflow_get_feedback_text(2, $correct, $islearned, $frombox, $tobox);
         echo html_writer::div($msg, $alertclass . ' text-center lf-feedback-banner mb-2 py-2',
             ['style' => 'font-size: 0.9rem;']);
 
     } else if ($feedbackstyle === 3) {
         // DETAILED: full feedback block with box change info.
-        $msg = _leitnerflow_get_detailed_text($correct, $islearned, $frombox, $tobox);
+        $msg = _eledialeitnerflow_get_detailed_text($correct, $islearned, $frombox, $tobox);
         echo html_writer::div($msg, $alertclass . ' text-center mb-2 py-2',
             ['style' => 'font-size: 1rem;']);
 
     } else if ($feedbackstyle === 4) {
         // GAMIFIED: points + streak + milestones.
-        _leitnerflow_render_gamified_feedback($correct, $islearned, $frombox, $tobox,
+        _eledialeitnerflow_render_gamified_feedback($correct, $islearned, $frombox, $tobox,
             $currentstreak, $totallearned);
     }
 
@@ -369,7 +369,7 @@ function _leitnerflow_render_with_feedback(
         $pillclass = 'badge rounded-pill px-3 py-2 ';
         $pillclass .= ($b === $tobox) ? 'bg-primary fs-6' : 'bg-light text-dark border';
         echo html_writer::span(
-            get_string('box_n', 'mod_leitnerflow', $b),
+            get_string('box_n', 'mod_eledialeitnerflow', $b),
             $pillclass,
             ['data-box' => $b]
         );
@@ -388,7 +388,7 @@ function _leitnerflow_render_with_feedback(
         // DETAILED: "Next question" button instead of auto-redirect.
         echo html_writer::start_div('text-center mt-3 mb-3');
         echo html_writer::link($nexturl->out(false),
-            get_string('nextquestionbtn', 'mod_leitnerflow'),
+            get_string('nextquestionbtn', 'mod_eledialeitnerflow'),
             ['class' => 'btn btn-primary']);
         echo html_writer::end_div();
     }
@@ -400,12 +400,12 @@ function _leitnerflow_render_with_feedback(
         get_string('question') . ' ' . ($answeredindex + 1) . ' / ' . $totalquestions
         . ' &middot; '
         . html_writer::tag('b', $session->questionscorrect) . ' / ' . $session->questionsasked
-        . ' ' . get_string('correct', 'mod_leitnerflow'),
+        . ' ' . get_string('correct', 'mod_eledialeitnerflow'),
         'text-muted'
     );
     echo html_writer::end_div();
 
-    echo html_writer::end_div(); // leitnerflow-attempt-container
+    echo html_writer::end_div(); // eledialeitnerflow-attempt-container
 
     // ---- JavaScript: mode-specific behaviour ----
     // Detailed mode: no auto-redirect (button handles it).
@@ -413,7 +413,7 @@ function _leitnerflow_render_with_feedback(
     $autoredirect = ($feedbackstyle !== 3);
     $delay = (int) ($leitnerflow->animationdelay ?? 1000);
 
-    $PAGE->requires->js_call_amd('mod_leitnerflow/card_transition', 'init', [
+    $PAGE->requires->js_call_amd('mod_eledialeitnerflow/card_transition', 'init', [
         $frombox, $tobox, (int)$correct, (int)$islearned,
         $autoredirect ? $nexturl->out(false) : '',
         $feedbackstyle, $delay,
@@ -423,61 +423,61 @@ function _leitnerflow_render_with_feedback(
 }
 
 // ---- Helper: get feedback text based on style setting ----------------------
-function _leitnerflow_get_feedback_text(int $style, bool $correct, bool $islearned, int $frombox, int $tobox): string {
+function _eledialeitnerflow_get_feedback_text(int $style, bool $correct, bool $islearned, int $frombox, int $tobox): string {
     // Style 1 = minimal (factual).
     if ($style === 1) {
         if ($correct) {
             return $islearned
-                ? get_string('cardlearned', 'mod_leitnerflow')
-                : get_string('movedtobox', 'mod_leitnerflow', $tobox);
+                ? get_string('cardlearned', 'mod_eledialeitnerflow')
+                : get_string('movedtobox', 'mod_eledialeitnerflow', $tobox);
         }
         return ($frombox !== $tobox)
-            ? get_string('cardbackone', 'mod_leitnerflow')
-            : get_string('incorrect', 'mod_leitnerflow');
+            ? get_string('cardbackone', 'mod_eledialeitnerflow')
+            : get_string('incorrect', 'mod_eledialeitnerflow');
     }
 
     // Style 2 = encouraging (random motivational messages).
     if ($correct && $islearned) {
         $pool = ['encourage_learned_1', 'encourage_learned_2', 'encourage_learned_3'];
         $key = $pool[array_rand($pool)];
-        return get_string($key, 'mod_leitnerflow');
+        return get_string($key, 'mod_eledialeitnerflow');
     }
     if ($correct) {
         $pool = ['encourage_correct_1', 'encourage_correct_2', 'encourage_correct_3',
                  'encourage_correct_4', 'encourage_correct_5'];
         $key = $pool[array_rand($pool)];
-        return get_string($key, 'mod_leitnerflow', $tobox);
+        return get_string($key, 'mod_eledialeitnerflow', $tobox);
     }
     if ($frombox !== $tobox) {
         $pool = ['encourage_wrong_back_1', 'encourage_wrong_back_2',
                  'encourage_wrong_back_3', 'encourage_wrong_back_4'];
         $key = $pool[array_rand($pool)];
-        return get_string($key, 'mod_leitnerflow', $tobox);
+        return get_string($key, 'mod_eledialeitnerflow', $tobox);
     }
     $pool = ['encourage_wrong_stay_1', 'encourage_wrong_stay_2'];
     $key = $pool[array_rand($pool)];
-    return get_string($key, 'mod_leitnerflow', $tobox);
+    return get_string($key, 'mod_eledialeitnerflow', $tobox);
 }
 
 // ---- Helper: detailed feedback text (mode 3) --------------------------------
-function _leitnerflow_get_detailed_text(bool $correct, bool $islearned, int $frombox, int $tobox): string {
+function _eledialeitnerflow_get_detailed_text(bool $correct, bool $islearned, int $frombox, int $tobox): string {
     if ($correct && $islearned) {
-        return get_string('detailed_learned', 'mod_leitnerflow');
+        return get_string('detailed_learned', 'mod_eledialeitnerflow');
     }
     if ($correct && $frombox !== $tobox) {
-        return get_string('detailed_correct', 'mod_leitnerflow', (object)['from' => $frombox, 'to' => $tobox]);
+        return get_string('detailed_correct', 'mod_eledialeitnerflow', (object)['from' => $frombox, 'to' => $tobox]);
     }
     if ($correct) {
-        return get_string('detailed_correct_stay', 'mod_leitnerflow', $tobox);
+        return get_string('detailed_correct_stay', 'mod_eledialeitnerflow', $tobox);
     }
     if ($frombox !== $tobox) {
-        return get_string('detailed_wrong_back', 'mod_leitnerflow', (object)['from' => $frombox, 'to' => $tobox]);
+        return get_string('detailed_wrong_back', 'mod_eledialeitnerflow', (object)['from' => $frombox, 'to' => $tobox]);
     }
-    return get_string('detailed_wrong_stay', 'mod_leitnerflow', $tobox);
+    return get_string('detailed_wrong_stay', 'mod_eledialeitnerflow', $tobox);
 }
 
 // ---- Helper: gamified feedback (mode 4) ------------------------------------
-function _leitnerflow_render_gamified_feedback(
+function _eledialeitnerflow_render_gamified_feedback(
     bool $correct, bool $islearned, int $frombox, int $tobox,
     int $currentstreak, int $totallearned
 ): void {
@@ -498,7 +498,7 @@ function _leitnerflow_render_gamified_feedback(
     // Points display (animated via CSS).
     if ($points > 0) {
         echo html_writer::div(
-            '+' . get_string('points', 'mod_leitnerflow', $points),
+            '+' . get_string('points', 'mod_eledialeitnerflow', $points),
             'lf-points-float ' . ($correct ? 'text-success' : 'text-warning')
         );
     }
@@ -506,13 +506,13 @@ function _leitnerflow_render_gamified_feedback(
     // Streak counter.
     if ($correct && $currentstreak >= 2) {
         echo html_writer::div(
-            get_string('streakcounter', 'mod_leitnerflow', $currentstreak),
+            get_string('streakcounter', 'mod_eledialeitnerflow', $currentstreak),
             'lf-streak-badge badge bg-warning text-dark px-3 py-2 fs-6'
         );
     } else if (!$correct && $currentstreak === 0) {
         // Streak was just broken (it was reset to 0 in POST handler).
         echo html_writer::div(
-            get_string('streakbroken', 'mod_leitnerflow'),
+            get_string('streakbroken', 'mod_eledialeitnerflow'),
             'lf-streak-broken text-muted small'
         );
     }
@@ -520,16 +520,16 @@ function _leitnerflow_render_gamified_feedback(
     // Milestone celebrations.
     $milestone = '';
     if ($currentstreak === 3) {
-        $milestone = get_string('milestone_streak3', 'mod_leitnerflow');
+        $milestone = get_string('milestone_streak3', 'mod_eledialeitnerflow');
     } else if ($currentstreak === 5) {
-        $milestone = get_string('milestone_streak5', 'mod_leitnerflow');
+        $milestone = get_string('milestone_streak5', 'mod_eledialeitnerflow');
     } else if ($currentstreak === 10) {
-        $milestone = get_string('milestone_streak10', 'mod_leitnerflow');
+        $milestone = get_string('milestone_streak10', 'mod_eledialeitnerflow');
     }
     if ($islearned && $totallearned === 5) {
-        $milestone = get_string('milestone_5learned', 'mod_leitnerflow');
+        $milestone = get_string('milestone_5learned', 'mod_eledialeitnerflow');
     } else if ($islearned && $totallearned === 10) {
-        $milestone = get_string('milestone_10learned', 'mod_leitnerflow');
+        $milestone = get_string('milestone_10learned', 'mod_eledialeitnerflow');
     }
 
     if ($milestone) {
@@ -537,7 +537,7 @@ function _leitnerflow_render_gamified_feedback(
     }
 
     // Regular feedback text (encouraging style).
-    $msg = _leitnerflow_get_feedback_text(2, $correct, $islearned, $frombox, $tobox);
+    $msg = _eledialeitnerflow_get_feedback_text(2, $correct, $islearned, $frombox, $tobox);
     $alertclass = $correct ? 'alert alert-success' : 'alert alert-warning';
     echo html_writer::div($msg, $alertclass . ' text-center py-2 mt-1',
         ['style' => 'font-size: 0.9rem;']);
@@ -546,15 +546,15 @@ function _leitnerflow_render_gamified_feedback(
 }
 
 // ---- Helper: finish session ------------------------------------------------
-function _leitnerflow_finish_session(stdClass $session, stdClass $leitnerflow, stdClass $cm, stdClass $course): void {
+function _eledialeitnerflow_finish_session(stdClass $session, stdClass $leitnerflow, stdClass $cm, stdClass $course): void {
     global $DB, $OUTPUT, $PAGE, $USER;
 
     $session->status        = 1;
     $session->timecompleted = time();
-    $DB->update_record('leitnerflow_sessions', $session);
+    $DB->update_record('eledialeitnerflow_sessions', $session);
 
     // Fire session_completed event.
-    $event = \mod_leitnerflow\event\session_completed::create([
+    $event = \mod_eledialeitnerflow\event\session_completed::create([
         'objectid' => $session->id,
         'context'  => \core\context\module::instance($cm->id),
         'other'    => [
@@ -566,19 +566,19 @@ function _leitnerflow_finish_session(stdClass $session, stdClass $leitnerflow, s
 
     // Update gradebook.
     if ((int)$leitnerflow->grademethod > 0) {
-        leitnerflow_update_grades($leitnerflow, $USER->id);
+        eledialeitnerflow_update_grades($leitnerflow, $USER->id);
     }
 
-    $viewurl = new moodle_url('/mod/leitnerflow/view.php', ['id' => $cm->id]);
+    $viewurl = new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cm->id]);
 
-    $PAGE->set_url('/mod/leitnerflow/attempt.php', ['id' => $cm->id]);
+    $PAGE->set_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cm->id]);
     $PAGE->set_title(format_string($leitnerflow->name));
     $PAGE->set_context(\core\context\module::instance($cm->id));
     // Hide activity description on session-complete page.
     $PAGE->activityheader->set_description('');
     echo $OUTPUT->header();
 
-    $result = get_string('sessionresult', 'mod_leitnerflow', [
+    $result = get_string('sessionresult', 'mod_eledialeitnerflow', [
         'correct' => $session->questionscorrect,
         'total'   => $session->questionsasked,
     ]);

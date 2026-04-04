@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Teacher report page for mod_leitnerflow.
+ * Teacher report page for mod_eledialeitnerflow.
  *
  * Overview of all enrolled students' Leitner progress.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,27 +27,27 @@
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib.php');
 
-use mod_leitnerflow\engine\leitner_engine;
+use mod_eledialeitnerflow\engine\leitner_engine;
 
 $cmid      = required_param('id', PARAM_INT);
 $resetuid  = optional_param('resetuserid', 0, PARAM_INT);
 
-$cm          = get_coursemodule_from_id('leitnerflow', $cmid, 0, false, MUST_EXIST);
+$cm          = get_coursemodule_from_id('eledialeitnerflow', $cmid, 0, false, MUST_EXIST);
 $course      = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
-$leitnerflow = $DB->get_record('leitnerflow', ['id' => $cm->instance], '*', MUST_EXIST);
+$leitnerflow = $DB->get_record('eledialeitnerflow', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_login($course, true, $cm);
 $context = \core\context\module::instance($cm->id);
-require_capability('mod/leitnerflow:viewreport', $context);
+require_capability('mod/elediaelediaeledialeitnerflow:viewreport', $context);
 
 // ---- Handle reset ----------------------------------------------------------
 if ($resetuid > 0) {
     require_sesskey();
-    require_capability('mod/leitnerflow:resetprogress', $context);
+    require_capability('mod/elediaeledialeitnerflow:resetprogress', $context);
     leitner_engine::delete_user_data($leitnerflow->id, $resetuid);
 
     // Fire progress_reset event.
-    $event = \mod_leitnerflow\event\progress_reset::create([
+    $event = \mod_eledialeitnerflow\event\progress_reset::create([
         'objectid'      => $leitnerflow->id,
         'context'       => $context,
         'relateduserid' => $resetuid,
@@ -55,31 +55,31 @@ if ($resetuid > 0) {
     $event->trigger();
 
     redirect(
-        new moodle_url('/mod/leitnerflow/report.php', ['id' => $cmid]),
-        get_string('progressreset', 'mod_leitnerflow'),
+        new moodle_url('/mod/eledialeitnerflow/report.php', ['id' => $cmid]),
+        get_string('progressreset', 'mod_eledialeitnerflow'),
         null,
         \core\output\notification::NOTIFY_SUCCESS
     );
 }
 
 // ---- Page setup ------------------------------------------------------------
-$PAGE->set_url('/mod/leitnerflow/report.php', ['id' => $cmid]);
-$PAGE->set_title(format_string($leitnerflow->name) . ': ' . get_string('report', 'mod_leitnerflow'));
+$PAGE->set_url('/mod/eledialeitnerflow/report.php', ['id' => $cmid]);
+$PAGE->set_title(format_string($leitnerflow->name) . ': ' . get_string('report', 'mod_eledialeitnerflow'));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 // Hide the automatic activity description box — the report needs no intro text.
 $PAGE->activityheader->set_description('');
 
-$viewurl = new moodle_url('/mod/leitnerflow/view.php', ['id' => $cmid]);
+$viewurl = new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cmid]);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('report', 'mod_leitnerflow'), 4);
+echo $OUTPUT->heading(get_string('report', 'mod_eledialeitnerflow'), 4);
 
 // ---- Load student data -----------------------------------------------------
 $students = leitner_engine::get_all_students_stats($leitnerflow, $course->id, $context);
 
 if (empty($students)) {
-    echo $OUTPUT->notification(get_string('nostudents', 'mod_leitnerflow'), 'info');
+    echo $OUTPUT->notification(get_string('nostudents', 'mod_eledialeitnerflow'), 'info');
     echo $OUTPUT->single_button($viewurl, get_string('back'), 'get');
     echo $OUTPUT->footer();
     exit;
@@ -102,8 +102,8 @@ $questioncount = !empty($students) ? reset($students)->stats->total : 0;
 echo html_writer::start_div('row mb-4');
 $summaries = [
     [get_string('participants'), count($students), 'bg-primary'],
-    [get_string('questionsinpool', 'mod_leitnerflow'), $questioncount, 'lf-bg-darkblue'],
-    [get_string('avglearnedpercent', 'mod_leitnerflow'), $avgpct . ' %', 'bg-success'],
+    [get_string('questionsinpool', 'mod_eledialeitnerflow'), $questioncount, 'lf-bg-darkblue'],
+    [get_string('avglearnedpercent', 'mod_eledialeitnerflow'), $avgpct . ' %', 'bg-success'],
 ];
 foreach ($summaries as $sum) {
     echo html_writer::start_div('col-md-4 mb-2');
@@ -123,12 +123,12 @@ echo html_writer::start_tag('thead');
 echo html_writer::start_tag('tr');
 $headers = [
     get_string('participants'),
-    get_string('learned',     'mod_leitnerflow'),
-    get_string('open',        'mod_leitnerflow'),
-    get_string('witherrors',  'mod_leitnerflow'),
+    get_string('learned',     'mod_eledialeitnerflow'),
+    get_string('open',        'mod_eledialeitnerflow'),
+    get_string('witherrors',  'mod_eledialeitnerflow'),
     get_string('progress'),
-    get_string('sessionhistory', 'mod_leitnerflow'),
-    get_string('lastsession', 'mod_leitnerflow'),
+    get_string('sessionhistory', 'mod_eledialeitnerflow'),
+    get_string('lastsession', 'mod_eledialeitnerflow'),
     '',
 ];
 foreach ($headers as $h) {
@@ -151,20 +151,20 @@ foreach ($students as $student) {
         ? userdate($student->lastsession, get_string('strftimedate', 'langconfig'))
         : '—';
 
-    $reseturl = new moodle_url('/mod/leitnerflow/report.php', [
+    $reseturl = new moodle_url('/mod/eledialeitnerflow/report.php', [
         'id'          => $cmid,
         'resetuserid' => $student->userid,
         'sesskey'     => sesskey(),
     ]);
 
     $resetbtn = '';
-    if (has_capability('mod/leitnerflow:resetprogress', $context)) {
+    if (has_capability('mod/elediaeledialeitnerflow:resetprogress', $context)) {
         $resetbtn = html_writer::link(
             $reseturl,
-            get_string('resetprogress', 'mod_leitnerflow'),
+            get_string('resetprogress', 'mod_eledialeitnerflow'),
             [
                 'class'        => 'btn btn-sm btn-outline-danger',
-                'data-confirm' => get_string('resetconfirm', 'mod_leitnerflow', $student->fullname),
+                'data-confirm' => get_string('resetconfirm', 'mod_eledialeitnerflow', $student->fullname),
             ]
         );
     }
@@ -195,6 +195,6 @@ echo html_writer::div(
 );
 
 // Confirm-dialog JS for reset buttons (proper AMD module, no inline JS).
-$PAGE->requires->js_call_amd('mod_leitnerflow/confirm_reset', 'init');
+$PAGE->requires->js_call_amd('mod_eledialeitnerflow/confirm_reset', 'init');
 
 echo $OUTPUT->footer();

@@ -17,7 +17,7 @@
 /**
  * List all LeitnerFlow instances in a course.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,16 +29,16 @@ $courseid = required_param('id', PARAM_INT);
 $course   = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
 require_login($course);
-$PAGE->set_url('/mod/leitnerflow/index.php', ['id' => $courseid]);
-$PAGE->set_title(format_string($course->shortname) . ': ' . get_string('modulenameplural', 'mod_leitnerflow'));
+$PAGE->set_url('/mod/eledialeitnerflow/index.php', ['id' => $courseid]);
+$PAGE->set_title(format_string($course->shortname) . ': ' . get_string('modulenameplural', 'mod_eledialeitnerflow'));
 $PAGE->set_heading(format_string($course->fullname));
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('modulenameplural', 'mod_leitnerflow'));
+echo $OUTPUT->heading(get_string('modulenameplural', 'mod_eledialeitnerflow'));
 
-$instances = get_all_instances_in_course('leitnerflow', $course);
+$instances = get_all_instances_in_course('eledialeitnerflow', $course);
 if (empty($instances)) {
-    notice(get_string('thereareno', 'moodle', get_string('modulenameplural', 'mod_leitnerflow')),
+    notice(get_string('thereareno', 'moodle', get_string('modulenameplural', 'mod_eledialeitnerflow')),
         new moodle_url('/course/view.php', ['id' => $courseid]));
 }
 
@@ -48,7 +48,7 @@ $table->colclasses = ['leftalign'];
 
 foreach ($instances as $lq) {
     $link = html_writer::link(
-        new moodle_url('/mod/leitnerflow/view.php', ['id' => $lq->coursemodule]),
+        new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $lq->coursemodule]),
         format_string($lq->name)
     );
     $table->data[] = [$link];

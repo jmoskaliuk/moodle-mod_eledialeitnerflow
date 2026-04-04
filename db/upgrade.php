@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Upgrade steps for mod_leitnerflow.
+ * Upgrade steps for mod_eledialeitnerflow.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-function xmldb_leitnerflow_upgrade($oldversion) {
+function xmldb_eledialeitnerflow_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
     // Add questioncategoryids TEXT field and migrate existing single-category data.
     if ($oldversion < 2024120106) {
-        $table = new xmldb_table('leitnerflow');
+        $table = new xmldb_table('eledialeitnerflow');
         $field = new xmldb_field('questioncategoryids', XMLDB_TYPE_TEXT, null, null, null, null, null, 'questioncategoryid');
 
         if (!$dbman->field_exists($table, $field)) {
@@ -38,33 +38,33 @@ function xmldb_leitnerflow_upgrade($oldversion) {
         }
 
         // Migrate: copy existing questioncategoryid into questioncategoryids.
-        $instances = $DB->get_records('leitnerflow', null, '', 'id, questioncategoryid');
+        $instances = $DB->get_records('eledialeitnerflow', null, '', 'id, questioncategoryid');
         foreach ($instances as $inst) {
             if ((int) $inst->questioncategoryid > 0) {
-                $DB->set_field('leitnerflow', 'questioncategoryids',
+                $DB->set_field('eledialeitnerflow', 'questioncategoryids',
                     (string) $inst->questioncategoryid, ['id' => $inst->id]);
             }
         }
 
-        upgrade_mod_savepoint(true, 2024120106, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120106, 'eledialeitnerflow');
     }
 
     // Add showanimation field (default: on).
     if ($oldversion < 2024120109) {
-        $table = new xmldb_table('leitnerflow');
+        $table = new xmldb_table('eledialeitnerflow');
         $field = new xmldb_field('showanimation', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'grademethod');
 
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
-        upgrade_mod_savepoint(true, 2024120109, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120109, 'eledialeitnerflow');
     }
 
     // Import user tour for existing installations.
     if ($oldversion < 2024120111) {
         // Handled in next step.
-        upgrade_mod_savepoint(true, 2024120111, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120111, 'eledialeitnerflow');
     }
 
     // Re-import user tour with fixed configdata (replaces broken tour from earlier attempts).
@@ -82,15 +82,15 @@ function xmldb_leitnerflow_upgrade($oldversion) {
         }
         // Re-import with fixed JSON.
         require_once(__DIR__ . '/install.php');
-        _leitnerflow_import_user_tour();
-        upgrade_mod_savepoint(true, 2024120113, 'leitnerflow');
+        _eledialeitnerflow_import_user_tour();
+        upgrade_mod_savepoint(true, 2024120113, 'eledialeitnerflow');
     }
 
     // Enable core multilang filter and re-import tour with HTML multilang syntax.
     if ($oldversion < 2024120114) {
         // Ensure the core multilang filter is active.
         require_once(__DIR__ . '/install.php');
-        _leitnerflow_ensure_multilang_filter();
+        _eledialeitnerflow_ensure_multilang_filter();
 
         // Delete old tours (they used {mlang} syntax which needs filter_multilang2).
         try {
@@ -105,9 +105,9 @@ function xmldb_leitnerflow_upgrade($oldversion) {
         }
 
         // Re-import with core multilang HTML syntax.
-        _leitnerflow_import_user_tour();
+        _eledialeitnerflow_import_user_tour();
 
-        upgrade_mod_savepoint(true, 2024120114, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120114, 'eledialeitnerflow');
     }
 
     // Fix tour targettype: 1=block (wrong), 0=CSS selector (correct).
@@ -127,9 +127,9 @@ function xmldb_leitnerflow_upgrade($oldversion) {
         }
 
         // Re-import with corrected targettype=0 for CSS selectors.
-        _leitnerflow_import_user_tour();
+        _eledialeitnerflow_import_user_tour();
 
-        upgrade_mod_savepoint(true, 2024120115, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120115, 'eledialeitnerflow');
     }
 
     // Re-import tour with "Mein" perspective texts and additional feature steps.
@@ -147,21 +147,21 @@ function xmldb_leitnerflow_upgrade($oldversion) {
             debugging('LeitnerFlow: Could not clean old tours: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
 
-        _leitnerflow_import_user_tour();
+        _eledialeitnerflow_import_user_tour();
 
-        upgrade_mod_savepoint(true, 2024120116, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120116, 'eledialeitnerflow');
     }
 
     // Add feedbackstyle field (0=off, 1=minimal, 2=encouraging).
     if ($oldversion < 2024120117) {
-        $table = new xmldb_table('leitnerflow');
+        $table = new xmldb_table('eledialeitnerflow');
         $field = new xmldb_field('feedbackstyle', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'showanimation');
 
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
-        upgrade_mod_savepoint(true, 2024120117, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120117, 'eledialeitnerflow');
     }
 
     // Tour update: add "each question = card" hint, target session history by ID.
@@ -179,14 +179,14 @@ function xmldb_leitnerflow_upgrade($oldversion) {
             debugging('LeitnerFlow: Could not clean old tours: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
 
-        _leitnerflow_import_user_tour();
+        _eledialeitnerflow_import_user_tour();
 
-        upgrade_mod_savepoint(true, 2024120118, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120118, 'eledialeitnerflow');
     }
 
     // Extend feedbackstyle to 5 modes (0-4) and add streak fields for gamified mode.
     if ($oldversion < 2024120119) {
-        $table = new xmldb_table('leitnerflow_sessions');
+        $table = new xmldb_table('eledialeitnerflow_sessions');
 
         $field1 = new xmldb_field('currentstreak', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '0', 'questionscorrect');
         if (!$dbman->field_exists($table, $field1)) {
@@ -201,24 +201,24 @@ function xmldb_leitnerflow_upgrade($oldversion) {
         // Migrate old feedbackstyle values: 2 (encouraging) → 2 (animated).
         // No actual change needed since the mapping stays the same.
 
-        upgrade_mod_savepoint(true, 2024120119, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120119, 'eledialeitnerflow');
     }
 
     // Add showtour field (default: on).
     if ($oldversion < 2024120120) {
-        $table = new xmldb_table('leitnerflow');
+        $table = new xmldb_table('eledialeitnerflow');
         $field = new xmldb_field('showtour', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'feedbackstyle');
 
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
-        upgrade_mod_savepoint(true, 2024120120, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120120, 'eledialeitnerflow');
     }
 
     // Add animationdelay field (default: 1000ms) and import teacher tour.
     if ($oldversion < 2024120121) {
-        $table = new xmldb_table('leitnerflow');
+        $table = new xmldb_table('eledialeitnerflow');
         $field = new xmldb_field('animationdelay', XMLDB_TYPE_INTEGER, '5', null, XMLDB_NOTNULL, null, '1000', 'feedbackstyle');
 
         if (!$dbman->field_exists($table, $field)) {
@@ -227,9 +227,9 @@ function xmldb_leitnerflow_upgrade($oldversion) {
 
         // Import teacher tour.
         require_once(__DIR__ . '/install.php');
-        _leitnerflow_import_user_tour('leitnerflow_teacher');
+        _eledialeitnerflow_import_user_tour('eledialeitnerflow_teacher');
 
-        upgrade_mod_savepoint(true, 2024120121, 'leitnerflow');
+        upgrade_mod_savepoint(true, 2024120121, 'eledialeitnerflow');
     }
 
     return true;

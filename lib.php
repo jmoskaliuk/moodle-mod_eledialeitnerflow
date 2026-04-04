@@ -15,38 +15,38 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of callbacks and functions for mod_leitnerflow.
+ * Library of callbacks and functions for mod_eledialeitnerflow.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-use mod_leitnerflow\engine\leitner_engine;
+use mod_eledialeitnerflow\engine\leitner_engine;
 
 // -----------------------------------------------------------------------
 // Required activity module callbacks
 // -----------------------------------------------------------------------
 
-function leitnerflow_add_instance(stdClass $data, $mform = null): int {
+function eledialeitnerflow_add_instance(stdClass $data, $mform = null): int {
     global $DB;
     $data->timecreated  = time();
     $data->timemodified = time();
-    _leitnerflow_process_categories($data);
-    $data->id = $DB->insert_record('leitnerflow', $data);
-    leitnerflow_grade_item_update($data);
+    _eledialeitnerflow_process_categories($data);
+    $data->id = $DB->insert_record('eledialeitnerflow', $data);
+    eledialeitnerflow_grade_item_update($data);
     return $data->id;
 }
 
-function leitnerflow_update_instance(stdClass $data, $mform = null): bool {
+function eledialeitnerflow_update_instance(stdClass $data, $mform = null): bool {
     global $DB;
     $data->id           = $data->instance;
     $data->timemodified = time();
-    _leitnerflow_process_categories($data);
-    $DB->update_record('leitnerflow', $data);
-    leitnerflow_grade_item_update($data);
+    _eledialeitnerflow_process_categories($data);
+    $DB->update_record('eledialeitnerflow', $data);
+    eledialeitnerflow_grade_item_update($data);
     return true;
 }
 
@@ -57,7 +57,7 @@ function leitnerflow_update_instance(stdClass $data, $mform = null): bool {
  *
  * @param stdClass $data Form data object (modified in place)
  */
-function _leitnerflow_process_categories(stdClass &$data): void {
+function _eledialeitnerflow_process_categories(stdClass &$data): void {
     if (!empty($data->questioncategoryids_array) && is_array($data->questioncategoryids_array)) {
         $ids = array_filter(array_map('intval', $data->questioncategoryids_array), fn($id) => $id > 0);
         $data->questioncategoryids = implode(',', $ids);
@@ -68,32 +68,32 @@ function _leitnerflow_process_categories(stdClass &$data): void {
     }
 }
 
-function leitnerflow_delete_instance(int $id): bool {
+function eledialeitnerflow_delete_instance(int $id): bool {
     global $DB;
 
     // Fetch the full record before deleting (needed for grade_item_delete).
-    $leitnerflow = $DB->get_record('leitnerflow', ['id' => $id]);
+    $leitnerflow = $DB->get_record('eledialeitnerflow', ['id' => $id]);
     if (!$leitnerflow) {
         return false;
     }
 
     // Clean up all sessions (includes question_usages cleanup).
-    $sessions = $DB->get_records('leitnerflow_sessions', ['leitnerflowid' => $id]);
+    $sessions = $DB->get_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $id]);
     foreach ($sessions as $session) {
         if (!empty($session->qubaid)) {
             question_engine::delete_questions_usage_by_activity($session->qubaid);
         }
     }
-    $DB->delete_records('leitnerflow_sessions',   ['leitnerflowid' => $id]);
-    $DB->delete_records('leitnerflow_card_state', ['leitnerflowid' => $id]);
-    $DB->delete_records('leitnerflow',            ['id' => $id]);
+    $DB->delete_records('eledialeitnerflow_sessions',   ['eledialeitnerflowid' => $id]);
+    $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $id]);
+    $DB->delete_records('eledialeitnerflow',            ['id' => $id]);
 
     // Pass the full object with 'course' property to avoid fatal error in grade_update().
-    leitnerflow_grade_item_delete($leitnerflow);
+    eledialeitnerflow_grade_item_delete($leitnerflow);
     return true;
 }
 
-function leitnerflow_supports(string $feature): ?bool {
+function eledialeitnerflow_supports(string $feature): ?bool {
     return match ($feature) {
         FEATURE_MOD_INTRO              => true,
         FEATURE_SHOW_DESCRIPTION       => true,
@@ -109,7 +109,7 @@ function leitnerflow_supports(string $feature): ?bool {
 // Gradebook integration
 // -----------------------------------------------------------------------
 
-function leitnerflow_grade_item_update(stdClass $leitnerflow, $grades = null): int {
+function elediaeledialeitnerflow_grade_item_update(stdClass $leitnerflow, $grades = null): int {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
 
@@ -132,10 +132,10 @@ function leitnerflow_grade_item_update(stdClass $leitnerflow, $grades = null): i
     }
 
     return grade_update(
-        'mod/leitnerflow',
+        'mod/eledialeitnerflow',
         $leitnerflow->course,
         'mod',
-        'leitnerflow',
+        'eledialeitnerflow',
         $leitnerflow->id,
         0,
         $grades,
@@ -143,14 +143,14 @@ function leitnerflow_grade_item_update(stdClass $leitnerflow, $grades = null): i
     );
 }
 
-function leitnerflow_grade_item_delete(stdClass $leitnerflow): int {
+function elediaeledialeitnerflow_grade_item_delete(stdClass $leitnerflow): int {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
     return grade_update(
-        'mod/leitnerflow',
+        'mod/eledialeitnerflow',
         $leitnerflow->course,
         'mod',
-        'leitnerflow',
+        'eledialeitnerflow',
         $leitnerflow->id,
         0,
         null,
@@ -158,7 +158,7 @@ function leitnerflow_grade_item_delete(stdClass $leitnerflow): int {
     );
 }
 
-function leitnerflow_update_grades(stdClass $leitnerflow, int $userid = 0, bool $nullifnone = true): void {
+function elediaeledialeitnerflow_update_grades(stdClass $leitnerflow, int $userid = 0, bool $nullifnone = true): void {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
 
@@ -167,15 +167,15 @@ function leitnerflow_update_grades(stdClass $leitnerflow, int $userid = 0, bool 
     }
 
     if ($userid > 0) {
-        $grades = leitnerflow_get_user_grade($leitnerflow, $userid);
+        $grades = eledialeitnerflow_get_user_grade($leitnerflow, $userid);
     } else {
-        $grades = leitnerflow_get_all_grades($leitnerflow);
+        $grades = eledialeitnerflow_get_all_grades($leitnerflow);
     }
 
-    leitnerflow_grade_item_update($leitnerflow, $grades);
+    eledialeitnerflow_grade_item_update($leitnerflow, $grades);
 }
 
-function leitnerflow_get_user_grade(stdClass $leitnerflow, int $userid): array {
+function elediaeledialeitnerflow_get_user_grade(stdClass $leitnerflow, int $userid): array {
     $categoryids = leitner_engine::get_category_ids($leitnerflow);
     $stats = leitner_engine::get_user_stats(
         $leitnerflow->id,
@@ -190,11 +190,11 @@ function leitnerflow_get_user_grade(stdClass $leitnerflow, int $userid): array {
     return [$userid => $grade];
 }
 
-function leitnerflow_get_all_grades(stdClass $leitnerflow): array {
+function elediaeledialeitnerflow_get_all_grades(stdClass $leitnerflow): array {
     global $DB;
-    $cm      = get_coursemodule_from_instance('leitnerflow', $leitnerflow->id);
+    $cm      = get_coursemodule_from_instance('eledialeitnerflow', $leitnerflow->id);
     $context = \core\context\module::instance($cm->id);
-    $students = get_enrolled_users($context, 'mod/leitnerflow:attempt');
+    $students = get_enrolled_users($context, 'mod/elediaeledialeitnerflow:attempt');
 
     $categoryids = leitner_engine::get_category_ids($leitnerflow);
     $grades = [];
@@ -216,9 +216,9 @@ function leitnerflow_get_all_grades(stdClass $leitnerflow): array {
 // Course module info (for mobile app compatibility)
 // -----------------------------------------------------------------------
 
-function leitnerflow_get_coursemodule_info(stdClass $coursemodule): cached_cm_info {
+function eledialeitnerflow_get_coursemodule_info(stdClass $coursemodule): cached_cm_info {
     global $DB;
-    $lq = $DB->get_record('leitnerflow', ['id' => $coursemodule->instance],
+    $lq = $DB->get_record('eledialeitnerflow', ['id' => $coursemodule->instance],
         'id, name, intro, introformat');
     if (!$lq) {
         return new cached_cm_info();
@@ -226,7 +226,7 @@ function leitnerflow_get_coursemodule_info(stdClass $coursemodule): cached_cm_in
     $info = new cached_cm_info();
     $info->name = $lq->name;
     if ($coursemodule->showdescription) {
-        $info->content = format_module_intro('leitnerflow', $lq, $coursemodule->id, false);
+        $info->content = format_module_intro('eledialeitnerflow', $lq, $coursemodule->id, false);
     }
     return $info;
 }
@@ -235,30 +235,30 @@ function leitnerflow_get_coursemodule_info(stdClass $coursemodule): cached_cm_in
 // Reset course (teacher)
 // -----------------------------------------------------------------------
 
-function leitnerflow_reset_course_form_definition(&$mform): void {
-    $mform->addElement('header', 'leitnerflowheader', get_string('modulename', 'mod_leitnerflow'));
-    $mform->addElement('checkbox', 'reset_leitnerflow', get_string('resetprogress', 'mod_leitnerflow'));
+function eledialeitnerflow_reset_course_form_definition(&$mform): void {
+    $mform->addElement('header', 'eledialeitnerflowheader', get_string('modulename', 'mod_eledialeitnerflow'));
+    $mform->addElement('checkbox', 'reset_eledialeitnerflow', get_string('resetprogress', 'mod_eledialeitnerflow'));
 }
 
-function leitnerflow_reset_userdata(stdClass $data): array {
+function eledialeitnerflow_reset_userdata(stdClass $data): array {
     global $DB;
 
     $status = [];
-    if (!empty($data->reset_leitnerflow)) {
-        $quizzes = $DB->get_records('leitnerflow', ['course' => $data->courseid]);
+    if (!empty($data->reset_eledialeitnerflow)) {
+        $quizzes = $DB->get_records('eledialeitnerflow', ['course' => $data->courseid]);
         foreach ($quizzes as $quiz) {
-            $sessions = $DB->get_records('leitnerflow_sessions', ['leitnerflowid' => $quiz->id]);
+            $sessions = $DB->get_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $quiz->id]);
             foreach ($sessions as $session) {
                 if (!empty($session->qubaid)) {
                     question_engine::delete_questions_usage_by_activity($session->qubaid);
                 }
             }
-            $DB->delete_records('leitnerflow_sessions',   ['leitnerflowid' => $quiz->id]);
-            $DB->delete_records('leitnerflow_card_state', ['leitnerflowid' => $quiz->id]);
+            $DB->delete_records('eledialeitnerflow_sessions',   ['eledialeitnerflowid' => $quiz->id]);
+            $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $quiz->id]);
         }
         $status[] = [
-            'component' => get_string('modulename', 'mod_leitnerflow'),
-            'item'      => get_string('resetprogress', 'mod_leitnerflow'),
+            'component' => get_string('modulename', 'mod_eledialeitnerflow'),
+            'item'      => get_string('resetprogress', 'mod_eledialeitnerflow'),
             'error'     => false,
         ];
     }

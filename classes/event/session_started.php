@@ -17,12 +17,12 @@
 /**
  * Event: session started.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_leitnerflow\event;
+namespace mod_eledialeitnerflow\event;
 
 /**
  * Event triggered when a student starts a new learning session.
@@ -35,7 +35,7 @@ class session_started extends \core\event\base {
     protected function init(): void {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'leitnerflow_sessions';
+        $this->data['objecttable'] = 'eledialeitnerflow_sessions';
     }
 
     /**
@@ -44,7 +44,7 @@ class session_started extends \core\event\base {
      * @return string
      */
     public static function get_name(): string {
-        return get_string('event_session_started', 'mod_leitnerflow');
+        return get_string('event_session_started', 'mod_eledialeitnerflow');
     }
 
     /**
@@ -63,6 +63,6 @@ class session_started extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url(): \moodle_url {
-        return new \moodle_url('/mod/leitnerflow/view.php', ['id' => $this->contextinstanceid]);
+        return new \moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $this->contextinstanceid]);
     }
 }

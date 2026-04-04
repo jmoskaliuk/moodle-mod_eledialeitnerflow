@@ -15,24 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Backup task for mod_leitnerflow.
+ * Backup task for mod_eledialeitnerflow.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/leitnerflow/backup/moodle2/backup_leitnerflow_stepslib.php');
+require_once($CFG->dirroot . '/mod/eledialeitnerflow/backup/moodle2/backup_leitnerflow_stepslib.php');
 
-class backup_leitnerflow_activity_task extends backup_activity_task {
+class backup_eledialeitnerflow_activity_task extends backup_activity_task {
 
     protected function define_my_settings(): void {}
 
     protected function define_my_steps(): void {
-        $this->add_step(new backup_leitnerflow_activity_structure_step(
-            'leitnerflow_structure', 'leitnerflow.xml'
+        $this->add_step(new backup_eledialeitnerflow_activity_structure_step(
+            'eledialeitnerflow_structure', 'eledialeitnerflow.xml'
         ));
     }
 
@@ -41,7 +41,7 @@ class backup_leitnerflow_activity_task extends backup_activity_task {
         $base = preg_quote($CFG->wwwroot, '/');
 
         // view.php links
-        $search  = "/({$base}\/mod\/leitnerflow\/view\.php\?id=)([0-9]+)/";
+        $search  = "/({$base}\/mod\/eledialeitnerflow\/view\.php\?id=)([0-9]+)/";
         $content = preg_replace($search, '$@LEITNERFLOWVIEWBYID*$2@$', $content);
 
         return $content;

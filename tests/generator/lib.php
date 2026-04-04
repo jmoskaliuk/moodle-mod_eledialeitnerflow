@@ -15,29 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Test data generator for mod_leitnerflow.
+ * Test data generator for mod_eledialeitnerflow.
  *
- * Lets test classes create fully configured leitnerflow instances
+ * Lets test classes create fully configured eledialeitnerflow instances
  * and card states with a single method call.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-class mod_leitnerflow_generator extends testing_module_generator {
+class mod_eledialeitnerflow_generator extends testing_module_generator {
 
     /**
-     * Create a leitnerflow activity with sensible Leitner defaults.
+     * Create an eledialeitnerflow activity with sensible Leitner defaults.
      *
      * All settings can be overridden via $record:
      *   correcttolearn, boxcount, wrongbehavior, sessionsize, etc.
      *
      * @param array|stdClass $record
      * @param array          $options
-     * @return stdClass  The course-module record (has ->instance for leitnerflow id)
+     * @return stdClass  The course-module record (has ->instance for eledialeitnerflow id)
      */
     public function create_instance($record = null, array $options = null): stdClass {
         $record = (object)(array)($record ?? []);
@@ -71,7 +71,7 @@ class mod_leitnerflow_generator extends testing_module_generator {
      * Create a card state record directly in the DB.
      * Useful for tests that need to set up a specific Leitner state.
      *
-     * @param array $data  Keys: leitnerflowid, userid, questionid, currentbox,
+     * @param array $data  Keys: eledialeitnerflowid, userid, questionid, currentbox,
      *                     correctcount, attemptcount, status
      * @return stdClass  The inserted record
      */
@@ -90,20 +90,20 @@ class mod_leitnerflow_generator extends testing_module_generator {
         $record = (object)array_merge($defaults, $data);
 
         // Upsert: delete existing state for same quiz+user+question if present
-        $DB->delete_records('leitnerflow_card_state', [
-            'leitnerflowid' => $record->leitnerflowid,
+        $DB->delete_records('eledialeitnerflow_card_state', [
+            'eledialeitnerflowid' => $record->eledialeitnerflowid,
             'userid'        => $record->userid,
             'questionid'    => $record->questionid,
         ]);
 
-        $record->id = $DB->insert_record('leitnerflow_card_state', $record);
+        $record->id = $DB->insert_record('eledialeitnerflow_card_state', $record);
         return $record;
     }
 
     /**
      * Create a completed session record.
      *
-     * @param array $data  Keys: leitnerflowid, userid, questionsasked, questionscorrect
+     * @param array $data  Keys: eledialeitnerflowid, userid, questionsasked, questionscorrect
      * @return stdClass
      */
     public function create_session(array $data): stdClass {
@@ -121,7 +121,7 @@ class mod_leitnerflow_generator extends testing_module_generator {
         ];
 
         $record    = (object)array_merge($defaults, $data);
-        $record->id = $DB->insert_record('leitnerflow_sessions', $record);
+        $record->id = $DB->insert_record('eledialeitnerflow_sessions', $record);
         return $record;
     }
 }

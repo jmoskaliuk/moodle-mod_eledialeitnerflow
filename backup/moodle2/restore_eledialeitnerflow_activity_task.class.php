@@ -15,37 +15,37 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Restore task for mod_leitnerflow.
+ * Restore task for mod_eledialeitnerflow.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/leitnerflow/backup/moodle2/restore_leitnerflow_stepslib.php');
+require_once($CFG->dirroot . '/mod/eledialeitnerflow/backup/moodle2/restore_leitnerflow_stepslib.php');
 
-class restore_leitnerflow_activity_task extends restore_activity_task {
+class restore_eledialeitnerflow_activity_task extends restore_activity_task {
 
     protected function define_my_settings(): void {}
 
     protected function define_my_steps(): void {
-        $this->add_step(new restore_leitnerflow_activity_structure_step(
-            'leitnerflow_structure', 'leitnerflow.xml'
+        $this->add_step(new restore_eledialeitnerflow_activity_structure_step(
+            'eledialeitnerflow_structure', 'eledialeitnerflow.xml'
         ));
     }
 
     public static function define_decode_contents(): array {
         $contents = [];
-        $contents[] = new restore_decode_content('leitnerflow', ['intro'], 'leitnerflow');
+        $contents[] = new restore_decode_content('eledialeitnerflow', ['intro'], 'leitnerflow');
         return $contents;
     }
 
     public static function define_decode_rules(): array {
         $rules = [];
         $rules[] = new restore_decode_rule(
-            'LEITNERFLOWVIEWBYID', '/mod/leitnerflow/view.php?id=$1', 'course_module'
+            'LEITNERFLOWVIEWBYID', '/mod/eledialeitnerflow/view.php?id=$1', 'course_module'
         );
         return $rules;
     }

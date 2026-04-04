@@ -1,7 +1,7 @@
 {
   "name": "<span class=\"multilang\" lang=\"en\">LeitnerFlow — Teacher Guide</span><span class=\"multilang\" lang=\"de\">LeitnerFlow — Lehrkräfte-Führung</span>",
   "description": "Introduces teachers to the LeitnerFlow report page and management features.",
-  "pathmatch": "/mod/leitnerflow/report.php%",
+  "pathmatch": "/mod/eledialeitnerflow/report.php%",
   "enabled": 1,
   "sortorder": 1,
   "endtourlabel": "OK",

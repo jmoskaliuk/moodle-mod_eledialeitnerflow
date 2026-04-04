@@ -6,7 +6,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// @package    mod_leitnerflow
+// @package    mod_eledialeitnerflow
 // @copyright  2024 eLeDia GmbH
 // @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
@@ -16,7 +16,7 @@
  * Creates courses, users, question categories with questions,
  * and LeitnerFlow activity instances.
  *
- * Usage: php mod/leitnerflow/cli/generate_testdata.php [--clean]
+ * Usage: php mod/eledialeitnerflow/cli/generate_testdata.php [--clean]
  *   --clean  Remove previously generated test data before creating new data
  */
 
@@ -25,7 +25,7 @@ require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/clilib.php');
 require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/mod/leitnerflow/lib.php');
+require_once($CFG->dirroot . '/mod/eledialeitnerflow/lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/user/lib.php');
 
@@ -308,7 +308,7 @@ foreach ($coursedata as $ci => $cdata) {
 
     // Create LeitnerFlow activity in section 1.
     $moduleinfo = new stdClass();
-    $moduleinfo->modulename       = 'leitnerflow';
+    $moduleinfo->modulename       = 'eledialeitnerflow';
     $moduleinfo->course           = $course->id;
     $moduleinfo->section          = 1;
     $moduleinfo->visible          = 1;
@@ -339,4 +339,4 @@ cli_writeln("");
 cli_writeln("Student login: username format is vorname.nachname, password: Test1234!");
 cli_writeln("Example: max.mueller / Test1234!");
 cli_writeln("");
-cli_writeln("To remove test data later: php mod/leitnerflow/cli/generate_testdata.php --clean");
+cli_writeln("To remove test data later: php mod/eledialeitnerflow/cli/generate_testdata.php --clean");

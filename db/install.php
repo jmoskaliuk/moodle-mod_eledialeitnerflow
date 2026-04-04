@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Post-install tasks for mod_leitnerflow.
+ * Post-install tasks for mod_eledialeitnerflow.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-function xmldb_leitnerflow_install() {
+function xmldb_eledialeitnerflow_install() {
     // Ensure the core multi-language content filter is active (needed for tour translations).
-    _leitnerflow_ensure_multilang_filter();
+    _eledialeitnerflow_ensure_multilang_filter();
     // Import the introductory user tour (student).
-    _leitnerflow_import_user_tour();
+    _eledialeitnerflow_import_user_tour();
     // Import the teacher tour.
-    _leitnerflow_import_user_tour('leitnerflow_teacher');
+    _eledialeitnerflow_import_user_tour('eledialeitnerflow_teacher');
 }
 
 /**
@@ -39,7 +39,7 @@ function xmldb_leitnerflow_install() {
  * The LeitnerFlow user tour uses <span class="multilang"> tags which require
  * the core 'multilang' filter to be active site-wide.
  */
-function _leitnerflow_ensure_multilang_filter(): void {
+function _eledialeitnerflow_ensure_multilang_filter(): void {
     global $CFG;
     require_once($CFG->libdir . '/filterlib.php');
 
@@ -55,7 +55,7 @@ function _leitnerflow_ensure_multilang_filter(): void {
  *
  * @param string $tourname Base name of the JSON file (without .json extension).
  */
-function _leitnerflow_import_user_tour(string $tourname = 'leitnerflow_intro'): void {
+function _eledialeitnerflow_import_user_tour(string $tourname = 'eledialeitnerflow_intro'): void {
     $tourfile = __DIR__ . '/usertours/' . $tourname . '.json';
     if (!file_exists($tourfile)) {
         return;

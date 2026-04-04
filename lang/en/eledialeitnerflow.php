@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * English language strings for mod_leitnerflow.
+ * English language strings for mod_eledialeitnerflow.
  *
  * Core Moodle strings are reused where available via get_string('key') without component.
  * Strings that exist in Moodle core and should NOT be redefined here:
@@ -27,7 +27,7 @@
  *   - 'participants' (core)       — used as get_string('participants')
  *   - 'questionbank' (core_question) — used as get_string('questionbank', 'question')
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -190,27 +190,27 @@ $string['progressreset'] = 'Progress has been reset.';
 
 // Privacy.
 $string['privacy:metadata']                                    = 'The Leitner Flow plugin stores per-student card states and session data.';
-$string['privacy:metadata:leitnerflow_card_state']             = 'Tracks each student\'s progress per question (current box, correct count, status).';
-$string['privacy:metadata:leitnerflow_card_state:userid']      = 'The ID of the student.';
-$string['privacy:metadata:leitnerflow_card_state:questionid']  = 'The ID of the question.';
-$string['privacy:metadata:leitnerflow_card_state:currentbox']  = 'The current Leitner box the card is in.';
-$string['privacy:metadata:leitnerflow_card_state:correctcount'] = 'How many times the student answered correctly.';
-$string['privacy:metadata:leitnerflow_card_state:attemptcount'] = 'Total number of attempts.';
-$string['privacy:metadata:leitnerflow_card_state:status']      = 'Card status: open, learned, or has errors.';
-$string['privacy:metadata:leitnerflow_sessions']               = 'Records each study session a student completes.';
-$string['privacy:metadata:leitnerflow_sessions:userid']        = 'The ID of the student.';
-$string['privacy:metadata:leitnerflow_sessions:timecreated']   = 'When the session started.';
-$string['privacy:metadata:leitnerflow_sessions:timecompleted'] = 'When the session was completed.';
-$string['privacy:metadata:leitnerflow_sessions:questionsasked'] = 'Number of questions in the session.';
-$string['privacy:metadata:leitnerflow_sessions:questionscorrect'] = 'Number of correct answers in the session.';
+$string['privacy:metadata:eledialeitnerflow_card_state']             = 'Tracks each student\'s progress per question (current box, correct count, status).';
+$string['privacy:metadata:eledialeitnerflow_card_state:userid']      = 'The ID of the student.';
+$string['privacy:metadata:eledialeitnerflow_card_state:questionid']  = 'The ID of the question.';
+$string['privacy:metadata:eledialeitnerflow_card_state:currentbox']  = 'The current Leitner box the card is in.';
+$string['privacy:metadata:eledialeitnerflow_card_state:correctcount'] = 'How many times the student answered correctly.';
+$string['privacy:metadata:eledialeitnerflow_card_state:attemptcount'] = 'Total number of attempts.';
+$string['privacy:metadata:eledialeitnerflow_card_state:status']      = 'Card status: open, learned, or has errors.';
+$string['privacy:metadata:eledialeitnerflow_sessions']               = 'Records each study session a student completes.';
+$string['privacy:metadata:eledialeitnerflow_sessions:userid']        = 'The ID of the student.';
+$string['privacy:metadata:eledialeitnerflow_sessions:timecreated']   = 'When the session started.';
+$string['privacy:metadata:eledialeitnerflow_sessions:timecompleted'] = 'When the session was completed.';
+$string['privacy:metadata:eledialeitnerflow_sessions:questionsasked'] = 'Number of questions in the session.';
+$string['privacy:metadata:eledialeitnerflow_sessions:questionscorrect'] = 'Number of correct answers in the session.';
 
 // Capabilities.
-$string['leitnerflow:addinstance']   = 'Add a new LeitnerFlow activity';
-$string['leitnerflow:view']          = 'View Leitner Flow';
-$string['leitnerflow:attempt']       = 'Attempt Leitner Flow';
-$string['leitnerflow:viewreport']    = 'View student report';
-$string['leitnerflow:manage']        = 'Manage Leitner Flow settings';
-$string['leitnerflow:resetprogress'] = 'Reset student progress';
+$string['eledialeitnerflow:addinstance']   = 'Add a new LeitnerFlow activity';
+$string['eledialeitnerflow:view']          = 'View Leitner Flow';
+$string['eledialeitnerflow:attempt']       = 'Attempt Leitner Flow';
+$string['elediaeledialeitnerflow:viewreport']    = 'View student report';
+$string['eledialeitnerflow:manage']        = 'Manage Leitner Flow settings';
+$string['eledialeitnerflow:resetprogress'] = 'Reset student progress';
 
 // Box labels.
 $string['box_n']       = 'Box {$a}';

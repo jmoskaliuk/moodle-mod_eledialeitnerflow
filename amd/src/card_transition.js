@@ -19,8 +19,8 @@
  * Shows feedback on the current question page after answering,
  * highlights which box the card moved to, then redirects to next question.
  *
- * @module     mod_leitnerflow/card_transition
- * @package    mod_leitnerflow
+ * @module     mod_eledialeitnerflow/card_transition
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

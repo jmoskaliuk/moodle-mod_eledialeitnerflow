@@ -1,4 +1,4 @@
-# mod_leitnerflow — PHPUnit Tests
+# mod_eledialeitnerflow — PHPUnit Tests
 
 ## Übersicht
 
@@ -17,7 +17,7 @@
 cd /var/www/html/moodle   # dein Moodle-Pfad
 
 # 2. Plugins installieren (falls noch nicht geschehen)
-#    → mod/leitnerflow/ und blocks/leitnerflow/ kopieren
+#    → mod/eledialeitnerflow/ und blocks/eledialeitnerflow/ kopieren
 #    → Im Browser als Admin: Site administration → Notifications
 
 # 3. Test-Datenbank initialisieren (einmalig, danach nur bei DB-Schema-Änderungen)
@@ -30,20 +30,20 @@ php admin/tool/phpunit/cli/init.php
 
 ```bash
 # Alle Tests für das Plugin
-vendor/bin/phpunit --testsuite mod_leitnerflow_testsuite
+vendor/bin/phpunit --testsuite mod_eledialeitnerflow_testsuite
 
 # Alle Tests mit lesbarer Ausgabe (empfohlen)
-vendor/bin/phpunit --testdox --testsuite mod_leitnerflow_testsuite
+vendor/bin/phpunit --testdox --testsuite mod_eledialeitnerflow_testsuite
 
 # Nur die Engine-Tests
-vendor/bin/phpunit mod/leitnerflow/tests/engine/leitner_engine_test.php
+vendor/bin/phpunit mod/eledialeitnerflow/tests/engine/leitner_engine_test.php
 
 # Einzelnen Test ausführen (--filter = Name der Testmethode)
 vendor/bin/phpunit --filter test_correct_answer_advances_box
 
 # Mit Xdebug-Coverage-Report
-vendor/bin/phpunit --coverage-html mod/leitnerflow/tests/coverage/ \
-    --testsuite mod_leitnerflow_testsuite
+vendor/bin/phpunit --coverage-html mod/eledialeitnerflow/tests/coverage/ \
+    --testsuite mod_eledialeitnerflow_testsuite
 ```
 
 ---
@@ -51,7 +51,7 @@ vendor/bin/phpunit --coverage-html mod/leitnerflow/tests/coverage/ \
 ## Erwartete Ausgabe (--testdox)
 
 ```
-mod_leitnerflow\tests\engine\leitner_engine_test
+mod_eledialeitnerflow\tests\engine\leitner_engine_test
  ✓ calculate box [0 correct, 3 boxes → box 1]
  ✓ calculate box [1 correct, 3 boxes → box 1]
  ✓ calculate box [2 correct, 3 boxes → box 2]

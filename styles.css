@@ -1,4 +1,4 @@
-/* mod_leitnerflow styles — eLeDia brand colors, WCAG AA accessible.
+/* mod_eledialeitnerflow styles — eLeDia brand colors, WCAG AA accessible.
  *
  * Only custom CSS for Leitner-specific visuals.
  * Standard elements use Moodle Component Library (Bootstrap).
@@ -23,7 +23,7 @@
 }
 
 /* ---- Leitner box visualization (custom — no Moodle equivalent) ---- */
-.leitnerflow-boxes {
+.eledialeitnerflow-boxes {
     display: flex;
     gap: 0;
     align-items: stretch;
@@ -31,7 +31,7 @@
     padding: 0 0.25rem;
 }
 
-.leitnerflow-box {
+.eledialeitnerflow-box {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -39,7 +39,7 @@
     min-width: 0;
 }
 
-.leitnerflow-box-visual {
+.eledialeitnerflow-box-visual {
     width: 100%;
     text-align: center;
     padding: 1rem 0.5rem 0.75rem;
@@ -48,18 +48,18 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.leitnerflow-box-visual:hover {
+.eledialeitnerflow-box-visual:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(25, 72, 102, 0.12);
 }
 
-.leitnerflow-box-count {
+.eledialeitnerflow-box-count {
     font-size: 1.7rem;
     font-weight: 800;
     line-height: 1;
 }
 
-.leitnerflow-box-label {
+.eledialeitnerflow-box-label {
     font-size: 0.7rem;
     font-weight: 600;
     margin-top: 0.4rem;
@@ -68,49 +68,49 @@
 }
 
 /* Box color themes — eLeDia warm→cool, text always very-dark-blue */
-.leitnerflow-box-1 .leitnerflow-box-visual {
+.eledialeitnerflow-box-1 .eledialeitnerflow-box-visual {
     background: #ffd4ad;
     color: var(--lf-very-dark-blue);
     border-top: 3px solid var(--lf-orange);
 }
 
-.leitnerflow-box-2 .leitnerflow-box-visual {
+.eledialeitnerflow-box-2 .eledialeitnerflow-box-visual {
     background: #fce4bf;
     color: var(--lf-very-dark-blue);
     border-top: 3px solid var(--lf-middle-orange);
 }
 
-.leitnerflow-box-3 .leitnerflow-box-visual {
+.eledialeitnerflow-box-3 .eledialeitnerflow-box-visual {
     background: var(--lf-pale-aqua);
     color: var(--lf-very-dark-blue);
     border-top: 3px solid var(--lf-aqua);
 }
 
-.leitnerflow-box-4 .leitnerflow-box-visual {
+.eledialeitnerflow-box-4 .eledialeitnerflow-box-visual {
     background: rgba(169, 203, 213, 0.35);
     color: var(--lf-very-dark-blue);
     border-top: 3px solid var(--lf-light-blue);
 }
 
-.leitnerflow-box-5 .leitnerflow-box-visual {
+.eledialeitnerflow-box-5 .eledialeitnerflow-box-visual {
     background: rgba(101, 161, 179, 0.25);
     color: var(--lf-very-dark-blue);
     border-top: 3px solid var(--lf-dark-blue);
 }
 
-.leitnerflow-box-learned .leitnerflow-box-visual {
+.eledialeitnerflow-box-learned .eledialeitnerflow-box-visual {
     background: var(--lf-pale-green);
     color: var(--lf-dark-green);
     border-top: 3px solid var(--lf-green);
 }
 
-.leitnerflow-box-highlight .leitnerflow-box-visual {
+.eledialeitnerflow-box-highlight .eledialeitnerflow-box-visual {
     transform: scale(1.08);
     box-shadow: 0 4px 16px rgba(102, 153, 51, 0.3);
 }
 
 /* Arrow connectors */
-.leitnerflow-box-arrow {
+.eledialeitnerflow-box-arrow {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -129,14 +129,14 @@
 .lf-seg-learned { background-color: var(--lf-green) !important; }
 
 /* ---- View page: align notifications with card content ---- */
-.mod-leitnerflow #user-notifications .alert {
+.mod-eledialeitnerflow #user-notifications .alert {
     max-width: none;
     margin-left: 0;
     margin-right: 0;
 }
 
 /* ---- Attempt page: centered question container ---- */
-.leitnerflow-attempt-container {
+.eledialeitnerflow-attempt-container {
     max-width: 720px;
     margin: 0 auto;
 }
@@ -211,9 +211,9 @@
 }
 
 /* ---- Suppress user tour when disabled in activity settings ---- */
-.leitnerflow-notour .flexitour-backdrop,
-.leitnerflow-notour .flexitour-step,
-.leitnerflow-notour [data-flexitour="container"] {
+.eledialeitnerflow-notour .flexitour-backdrop,
+.eledialeitnerflow-notour .flexitour-step,
+.eledialeitnerflow-notour [data-flexitour="container"] {
     display: none !important;
 }
 
@@ -224,6 +224,6 @@
 }
 
 /* Hide plugin's duplicate check button — Moodle's behaviour button is used */
-.leitnerflow-question-form > .d-grid {
+.eledialeitnerflow-question-form > .d-grid {
     display: none !important;
 }

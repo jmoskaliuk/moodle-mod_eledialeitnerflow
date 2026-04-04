@@ -50,10 +50,10 @@ Cards in lower boxes appear more frequently, so students naturally focus on what
 
 ## Installation
 
-1. Download or clone this repository into `mod/leitnerflow` within your Moodle installation:
+1. Download or clone this repository into `mod/eledialeitnerflow` within your Moodle installation:
    ```bash
    cd /path/to/moodle/mod
-   git clone https://github.com/jmoskaliuk/moodle-mod_leitnerflow.git leitnerflow
+   git clone https://github.com/jmoskaliuk/moodle-mod_eledialeitnerflow.git leitnerflow
    ```
 2. Visit **Site Administration → Notifications** to trigger the database upgrade.
 3. Create a LeitnerFlow activity in any course and select your Question Bank categories.
@@ -76,7 +76,7 @@ Cards in lower boxes appear more frequently, so students naturally focus on what
 ## File structure
 
 ```
-leitnerflow/
+eledialeitnerflow/
 ├── amd/src/              AMD JavaScript modules
 │   ├── card_transition.js    Card-move animation + auto-redirect
 │   ├── confirm_reset.js      Reset confirmation dialog
@@ -108,19 +108,19 @@ leitnerflow/
 
 | Capability | Description | Default roles |
 |------------|-------------|---------------|
-| `mod/leitnerflow:addinstance` | Add a new activity | Editing teacher, Manager |
-| `mod/leitnerflow:view` | View the activity | Student, Teacher, Manager |
-| `mod/leitnerflow:attempt` | Answer questions | Student, Manager |
-| `mod/leitnerflow:viewreport` | View student report | Teacher, Manager |
-| `mod/leitnerflow:manage` | Manage settings | Editing teacher, Manager |
-| `mod/leitnerflow:resetprogress` | Reset student progress | Editing teacher, Manager |
+| `mod/elediaeledialeitnerflow:addinstance` | Add a new activity | Editing teacher, Manager |
+| `mod/elediaeledialeitnerflow:view` | View the activity | Student, Teacher, Manager |
+| `mod/elediaeledialeitnerflow:attempt` | Answer questions | Student, Manager |
+| `mod/elediaelediaeledialeitnerflow:viewreport` | View student report | Teacher, Manager |
+| `mod/elediaeledialeitnerflow:manage` | Manage settings | Editing teacher, Manager |
+| `mod/elediaeledialeitnerflow:resetprogress` | Reset student progress | Editing teacher, Manager |
 
 ## Running tests
 
 ```bash
 cd /path/to/moodle
 php admin/tool/phpunit/cli/init.php
-vendor/bin/phpunit --testsuite mod_leitnerflow_testsuite
+vendor/bin/phpunit --testsuite mod_eledialeitnerflow_testsuite
 ```
 
 ## Contributing

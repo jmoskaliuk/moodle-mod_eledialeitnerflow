@@ -17,12 +17,12 @@
 /**
  * Event: student progress reset by teacher.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_leitnerflow\event;
+namespace mod_eledialeitnerflow\event;
 
 /**
  * Event triggered when a teacher resets a student's progress.
@@ -35,7 +35,7 @@ class progress_reset extends \core\event\base {
     protected function init(): void {
         $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
-        $this->data['objecttable'] = 'leitnerflow';
+        $this->data['objecttable'] = 'eledialeitnerflow';
     }
 
     /**
@@ -44,7 +44,7 @@ class progress_reset extends \core\event\base {
      * @return string
      */
     public static function get_name(): string {
-        return get_string('event_progress_reset', 'mod_leitnerflow');
+        return get_string('event_progress_reset', 'mod_eledialeitnerflow');
     }
 
     /**
@@ -65,6 +65,6 @@ class progress_reset extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url(): \moodle_url {
-        return new \moodle_url('/mod/leitnerflow/report.php', ['id' => $this->contextinstanceid]);
+        return new \moodle_url('/mod/eledialeitnerflow/report.php', ['id' => $this->contextinstanceid]);
     }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/leitnerflow/db" VERSION="20241201" COMMENT="XMLDB file for mod_leitnerflow">
+<XMLDB PATH="mod/eledialeitnerflow/db" VERSION="20241201" COMMENT="XMLDB file for mod_eledialeitnerflow">
   <TABLES>
 
-    <TABLE NAME="leitnerflow" COMMENT="Leitner Flow activity instances">
+    <TABLE NAME="eledialeitnerflow" COMMENT="Leitner Flow activity instances">
       <FIELDS>
         <FIELD NAME="id"                 TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="course"             TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -34,10 +34,10 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="leitnerflow_card_state" COMMENT="Per-user card state for Leitner box tracking">
+    <TABLE NAME="eledialeitnerflow_card_state" COMMENT="Per-user card state for Leitner box tracking">
       <FIELDS>
         <FIELD NAME="id"            TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="leitnerflowid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="eledialeitnerflowid" TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="userid"        TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="questionid"    TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="currentbox"    TYPE="int" LENGTH="2"  NOTNULL="true" DEFAULT="1" COMMENT="Current Leitner box (1-N)"/>
@@ -49,20 +49,20 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary"       TYPE="primary"  FIELDS="id"/>
-        <KEY NAME="leitnerflowid" TYPE="foreign"  FIELDS="leitnerflowid" REFTABLE="leitnerflow" REFFIELDS="id"/>
+        <KEY NAME="eledialeitnerflowid" TYPE="foreign"  FIELDS="eledialeitnerflowid" REFTABLE="leitnerflow" REFFIELDS="id"/>
         <KEY NAME="userid"        TYPE="foreign"  FIELDS="userid"        REFTABLE="user"         REFFIELDS="id"/>
         <KEY NAME="questionid"    TYPE="foreign"  FIELDS="questionid"    REFTABLE="question"     REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="quiz_user"    UNIQUE="false" FIELDS="leitnerflowid,userid"/>
-        <INDEX NAME="unique_state" UNIQUE="true"  FIELDS="leitnerflowid,userid,questionid"/>
+        <INDEX NAME="quiz_user"    UNIQUE="false" FIELDS="eledialeitnerflowid,userid"/>
+        <INDEX NAME="unique_state" UNIQUE="true"  FIELDS="eledialeitnerflowid,userid,questionid"/>
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="leitnerflow_sessions" COMMENT="Individual quiz sessions per user">
+    <TABLE NAME="eledialeitnerflow_sessions" COMMENT="Individual quiz sessions per user">
       <FIELDS>
         <FIELD NAME="id"              TYPE="int"  LENGTH="10" NOTNULL="true"  SEQUENCE="true"/>
-        <FIELD NAME="leitnerflowid"   TYPE="int"  LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="eledialeitnerflowid"   TYPE="int"  LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="userid"          TYPE="int"  LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="qubaid"          TYPE="int"  LENGTH="10" NOTNULL="false" COMMENT="question_usages.id"/>
         <FIELD NAME="questionids"     TYPE="text" NOTNULL="false"             COMMENT="JSON array of question IDs for this session in order"/>
@@ -77,12 +77,12 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary"       TYPE="primary" FIELDS="id"/>
-        <KEY NAME="leitnerflowid" TYPE="foreign" FIELDS="leitnerflowid" REFTABLE="leitnerflow" REFFIELDS="id"/>
+        <KEY NAME="eledialeitnerflowid" TYPE="foreign" FIELDS="eledialeitnerflowid" REFTABLE="leitnerflow" REFFIELDS="id"/>
         <KEY NAME="userid"        TYPE="foreign" FIELDS="userid"        REFTABLE="user"        REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="quiz_user"  UNIQUE="false" FIELDS="leitnerflowid,userid"/>
-        <INDEX NAME="quiz_status" UNIQUE="false" FIELDS="leitnerflowid,userid,status"/>
+        <INDEX NAME="quiz_user"  UNIQUE="false" FIELDS="eledialeitnerflowid,userid"/>
+        <INDEX NAME="quiz_status" UNIQUE="false" FIELDS="eledialeitnerflowid,userid,status"/>
       </INDEXES>
     </TABLE>
 

@@ -50,10 +50,10 @@ Karten in niedrigeren Boxen erscheinen häufiger — so konzentrieren sich Lerne
 
 ## Installation
 
-1. Repository in das Verzeichnis `mod/leitnerflow` der Moodle-Installation klonen:
+1. Repository in das Verzeichnis `mod/eledialeitnerflow` der Moodle-Installation klonen:
    ```bash
    cd /pfad/zu/moodle/mod
-   git clone https://github.com/jmoskaliuk/moodle-mod_leitnerflow.git leitnerflow
+   git clone https://github.com/jmoskaliuk/moodle-mod_eledialeitnerflow.git leitnerflow
    ```
 2. **Website-Administration → Mitteilungen** aufrufen, um das Datenbank-Upgrade auszulösen.
 3. Eine LeitnerFlow-Aktivität in einem Kurs anlegen und Fragenkategorien auswählen.
@@ -76,7 +76,7 @@ Karten in niedrigeren Boxen erscheinen häufiger — so konzentrieren sich Lerne
 ## Dateistruktur
 
 ```
-leitnerflow/
+eledialeitnerflow/
 ├── amd/src/              AMD-JavaScript-Module
 │   ├── card_transition.js    Kartenanimation + Auto-Weiterleitung
 │   ├── confirm_reset.js      Reset-Bestätigungs-Dialog
@@ -108,19 +108,19 @@ leitnerflow/
 
 | Berechtigung | Beschreibung | Standard-Rollen |
 |-------------|-------------|-----------------|
-| `mod/leitnerflow:addinstance` | Neue Aktivität anlegen | Trainer/in mit Bearbeitungsrecht, Manager/in |
-| `mod/leitnerflow:view` | Aktivität ansehen | Teilnehmer/in, Trainer/in, Manager/in |
-| `mod/leitnerflow:attempt` | Fragen beantworten | Teilnehmer/in, Manager/in |
-| `mod/leitnerflow:viewreport` | Teilnehmerbericht einsehen | Trainer/in, Manager/in |
-| `mod/leitnerflow:manage` | Einstellungen verwalten | Trainer/in mit Bearbeitungsrecht, Manager/in |
-| `mod/leitnerflow:resetprogress` | Fortschritt zurücksetzen | Trainer/in mit Bearbeitungsrecht, Manager/in |
+| `mod/elediaeledialeitnerflow:addinstance` | Neue Aktivität anlegen | Trainer/in mit Bearbeitungsrecht, Manager/in |
+| `mod/elediaeledialeitnerflow:view` | Aktivität ansehen | Teilnehmer/in, Trainer/in, Manager/in |
+| `mod/elediaeledialeitnerflow:attempt` | Fragen beantworten | Teilnehmer/in, Manager/in |
+| `mod/elediaelediaeledialeitnerflow:viewreport` | Teilnehmerbericht einsehen | Trainer/in, Manager/in |
+| `mod/elediaeledialeitnerflow:manage` | Einstellungen verwalten | Trainer/in mit Bearbeitungsrecht, Manager/in |
+| `mod/elediaeledialeitnerflow:resetprogress` | Fortschritt zurücksetzen | Trainer/in mit Bearbeitungsrecht, Manager/in |
 
 ## Tests ausführen
 
 ```bash
 cd /pfad/zu/moodle
 php admin/tool/phpunit/cli/init.php
-vendor/bin/phpunit --testsuite mod_leitnerflow_testsuite
+vendor/bin/phpunit --testsuite mod_eledialeitnerflow_testsuite
 ```
 
 ## Mitwirken

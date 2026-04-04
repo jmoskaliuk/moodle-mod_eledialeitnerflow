@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * German language strings for mod_leitnerflow.
+ * German language strings for mod_eledialeitnerflow.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -175,26 +175,26 @@ $string['resetconfirm']            = 'Soll der gesamte Fortschritt von {$a} wirk
 $string['progressreset']           = 'Fortschritt wurde zurückgesetzt.';
 
 $string['privacy:metadata']                              = 'Das Leitner-Quiz speichert individuelle Kartenzustände und Sessiondaten pro Schüler.';
-$string['privacy:metadata:leitnerflow_card_state']       = 'Verfolgt den Fortschritt jedes Schülers pro Frage.';
-$string['privacy:metadata:leitnerflow_card_state:userid']       = 'ID des Schülers.';
-$string['privacy:metadata:leitnerflow_card_state:questionid']   = 'ID der Frage.';
-$string['privacy:metadata:leitnerflow_card_state:currentbox']   = 'Aktuelle Leitner-Box der Karte.';
-$string['privacy:metadata:leitnerflow_card_state:correctcount'] = 'Anzahl richtig beantworteter Versuche.';
-$string['privacy:metadata:leitnerflow_card_state:attemptcount'] = 'Gesamtanzahl der Versuche.';
-$string['privacy:metadata:leitnerflow_card_state:status']       = 'Kartenstatus: offen, gelernt oder mit Fehlern.';
-$string['privacy:metadata:leitnerflow_sessions']                = 'Speichert jede abgeschlossene Lernsession.';
-$string['privacy:metadata:leitnerflow_sessions:userid']         = 'ID des Schülers.';
-$string['privacy:metadata:leitnerflow_sessions:timecreated']    = 'Startzeitpunkt der Session.';
-$string['privacy:metadata:leitnerflow_sessions:timecompleted']  = 'Endzeitpunkt der Session.';
-$string['privacy:metadata:leitnerflow_sessions:questionsasked'] = 'Anzahl gestellter Fragen.';
-$string['privacy:metadata:leitnerflow_sessions:questionscorrect'] = 'Anzahl richtig beantworteter Fragen.';
+$string['privacy:metadata:eledialeitnerflow_card_state']       = 'Verfolgt den Fortschritt jedes Schülers pro Frage.';
+$string['privacy:metadata:eledialeitnerflow_card_state:userid']       = 'ID des Schülers.';
+$string['privacy:metadata:eledialeitnerflow_card_state:questionid']   = 'ID der Frage.';
+$string['privacy:metadata:eledialeitnerflow_card_state:currentbox']   = 'Aktuelle Leitner-Box der Karte.';
+$string['privacy:metadata:eledialeitnerflow_card_state:correctcount'] = 'Anzahl richtig beantworteter Versuche.';
+$string['privacy:metadata:eledialeitnerflow_card_state:attemptcount'] = 'Gesamtanzahl der Versuche.';
+$string['privacy:metadata:eledialeitnerflow_card_state:status']       = 'Kartenstatus: offen, gelernt oder mit Fehlern.';
+$string['privacy:metadata:eledialeitnerflow_sessions']                = 'Speichert jede abgeschlossene Lernsession.';
+$string['privacy:metadata:eledialeitnerflow_sessions:userid']         = 'ID des Schülers.';
+$string['privacy:metadata:eledialeitnerflow_sessions:timecreated']    = 'Startzeitpunkt der Session.';
+$string['privacy:metadata:eledialeitnerflow_sessions:timecompleted']  = 'Endzeitpunkt der Session.';
+$string['privacy:metadata:eledialeitnerflow_sessions:questionsasked'] = 'Anzahl gestellter Fragen.';
+$string['privacy:metadata:eledialeitnerflow_sessions:questionscorrect'] = 'Anzahl richtig beantworteter Fragen.';
 
-$string['leitnerflow:addinstance']   = 'Neue LeitnerFlow-Aktivität hinzufügen';
-$string['leitnerflow:view']          = 'Leitner-Quiz ansehen';
-$string['leitnerflow:attempt']       = 'Leitner-Quiz durchführen';
-$string['leitnerflow:viewreport']    = 'Schülerbericht anzeigen';
-$string['leitnerflow:manage']        = 'Leitner-Quiz-Einstellungen verwalten';
-$string['leitnerflow:resetprogress'] = 'Schülerfortschritt zurücksetzen';
+$string['eledialeitnerflow:addinstance']   = 'Neue LeitnerFlow-Aktivität hinzufügen';
+$string['eledialeitnerflow:view']          = 'Leitner-Quiz ansehen';
+$string['eledialeitnerflow:attempt']       = 'Leitner-Quiz durchführen';
+$string['elediaeledialeitnerflow:viewreport']    = 'Schülerbericht anzeigen';
+$string['eledialeitnerflow:manage']        = 'Leitner-Quiz-Einstellungen verwalten';
+$string['eledialeitnerflow:resetprogress'] = 'Schülerfortschritt zurücksetzen';
 
 $string['box_n']  = 'Box {$a}';
 $string['box_1']  = 'Box 1 – Neu / Fehler';

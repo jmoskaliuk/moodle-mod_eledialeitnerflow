@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Backup steps for mod_leitnerflow.
+ * Backup steps for mod_eledialeitnerflow.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-class backup_leitnerflow_activity_structure_step extends backup_activity_structure_step {
+class backup_eledialeitnerflow_activity_structure_step extends backup_activity_structure_step {
 
     protected function define_structure(): backup_nested_element {
         $userinfo = $this->get_setting_value('userinfo');
 
         // Root: leitnerflow instance
-        $leitnerflow = new backup_nested_element('leitnerflow', ['id'], [
+        $leitnerflow = new backup_nested_element('eledialeitnerflow', ['id'], [
             'name', 'intro', 'introformat',
             'questioncategoryid', 'questioncategoryids', 'sessionsize', 'boxcount',
             'correcttolearn', 'wrongbehavior', 'questionrotation',
@@ -61,20 +61,20 @@ class backup_leitnerflow_activity_structure_step extends backup_activity_structu
         $sessions->add_child($session);
 
         // Data sources
-        $leitnerflow->set_source_table('leitnerflow', ['id' => backup::VAR_ACTIVITYID]);
+        $leitnerflow->set_source_table('eledialeitnerflow', ['id' => backup::VAR_ACTIVITYID]);
 
         if ($userinfo) {
-            $cardstate->set_source_table('leitnerflow_card_state',
-                ['leitnerflowid' => backup::VAR_PARENTID]);
+            $cardstate->set_source_table('eledialeitnerflow_card_state',
+                ['eledialeitnerflowid' => backup::VAR_PARENTID]);
             $cardstate->annotate_ids('user', 'userid');
             $cardstate->annotate_ids('question', 'questionid');
 
-            $session->set_source_table('leitnerflow_sessions',
-                ['leitnerflowid' => backup::VAR_PARENTID]);
+            $session->set_source_table('eledialeitnerflow_sessions',
+                ['eledialeitnerflowid' => backup::VAR_PARENTID]);
             $session->annotate_ids('user', 'userid');
         }
 
-        $leitnerflow->annotate_files('mod_leitnerflow', 'intro', null);
+        $leitnerflow->annotate_files('mod_eledialeitnerflow', 'intro', null);
 
         return $this->prepare_activity_structure($leitnerflow);
     }

@@ -17,26 +17,26 @@
 /**
  * PHPUnit tests for the Leitner engine.
  *
- * Run all:  vendor/bin/phpunit mod/leitnerflow/tests/engine/leitner_engine_test.php
- * Verbose:  vendor/bin/phpunit --testdox mod/leitnerflow/tests/engine/leitner_engine_test.php
+ * Run all:  vendor/bin/phpunit mod/eledialeitnerflow/tests/engine/leitner_engine_test.php
+ * Verbose:  vendor/bin/phpunit --testdox mod/eledialeitnerflow/tests/engine/leitner_engine_test.php
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_leitnerflow\tests\engine;
+namespace mod_eledialeitnerflow\tests\engine;
 
 defined('MOODLE_INTERNAL') || die();
 
-use mod_leitnerflow\engine\leitner_engine;
+use mod_eledialeitnerflow\engine\leitner_engine;
 
 /**
  * Unit tests for the Leitner engine.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @category   test
- * @covers     \mod_leitnerflow\engine\leitner_engine
+ * @covers     \mod_eledialeitnerflow\engine\leitner_engine
  */
 class leitner_engine_test extends \advanced_testcase {
 
@@ -70,11 +70,11 @@ class leitner_engine_test extends \advanced_testcase {
      */
     private function create_lq(array $overrides = []): \stdClass {
         $course = $this->getDataGenerator()->create_course();
-        $gen    = $this->getDataGenerator()->get_plugin_generator('mod_leitnerflow');
+        $gen    = $this->getDataGenerator()->get_plugin_generator('mod_eledialeitnerflow');
         $cm     = $gen->create_instance(array_merge(['course' => $course->id], $overrides));
 
         global $DB;
-        return $DB->get_record('leitnerflow', ['id' => $cm->instance], '*', MUST_EXIST);
+        return $DB->get_record('eledialeitnerflow', ['id' => $cm->instance], '*', MUST_EXIST);
     }
 
     // -----------------------------------------------------------------------
@@ -135,7 +135,7 @@ class leitner_engine_test extends \advanced_testcase {
         $lq = $this->make_lq(['correcttolearn' => 3, 'boxcount' => 3]);
 
         // Start in box 1 with 0 correct
-        $gen = $this->getDataGenerator()->get_plugin_generator('mod_leitnerflow');
+        $gen = $this->getDataGenerator()->get_plugin_generator('mod_eledialeitnerflow');
         $lq_db = $this->create_lq(['correcttolearn' => 3, 'boxcount' => 3]);
 
         $state = leitner_engine::process_answer(null, true, $lq_db, 1, 1);
@@ -306,15 +306,15 @@ class leitner_engine_test extends \advanced_testcase {
 
         $lq_db  = $this->create_lq();
         $user   = $this->getDataGenerator()->create_user();
-        $gen    = $this->getDataGenerator()->get_plugin_generator('mod_leitnerflow');
+        $gen    = $this->getDataGenerator()->get_plugin_generator('mod_eledialeitnerflow');
 
         // Set up: 5 questions in category (we fake the category contents via card states)
         // 2 learned, 1 error, 2 open (no state = open)
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,
             'questionid' => 1, 'status' => leitner_engine::STATUS_LEARNED]);
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,
             'questionid' => 2, 'status' => leitner_engine::STATUS_LEARNED]);
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,
             'questionid' => 3, 'status' => leitner_engine::STATUS_ERROR]);
 
         // Fake the question category to return IDs 1-5
@@ -348,16 +348,16 @@ class leitner_engine_test extends \advanced_testcase {
     public function test_get_box_distribution_groups_cards_correctly(): void {
         $lq_db = $this->create_lq(['boxcount' => 3, 'questioncategoryid' => 9999]);
         $user  = $this->getDataGenerator()->create_user();
-        $gen   = $this->getDataGenerator()->get_plugin_generator('mod_leitnerflow');
+        $gen   = $this->getDataGenerator()->get_plugin_generator('mod_eledialeitnerflow');
 
         // Insert cards directly at specific boxes
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,
             'questionid' => 10, 'currentbox' => 1, 'status' => leitner_engine::STATUS_OPEN]);
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,
             'questionid' => 11, 'currentbox' => 1, 'status' => leitner_engine::STATUS_ERROR]);
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,
             'questionid' => 12, 'currentbox' => 2, 'status' => leitner_engine::STATUS_OPEN]);
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,
             'questionid' => 13, 'currentbox' => 3, 'status' => leitner_engine::STATUS_LEARNED]); // excluded
 
         $dist = leitner_engine::get_box_distribution($lq_db->id, $user->id, 9999, 3);
@@ -374,11 +374,11 @@ class leitner_engine_test extends \advanced_testcase {
     public function test_select_session_respects_session_size_limit(): void {
         $lq_db = $this->create_lq(['sessionsize' => 5, 'questioncategoryid' => 9999]);
         $user  = $this->getDataGenerator()->create_user();
-        $gen   = $this->getDataGenerator()->get_plugin_generator('mod_leitnerflow');
+        $gen   = $this->getDataGenerator()->get_plugin_generator('mod_eledialeitnerflow');
 
         // Add 3 card states (open)
         foreach ([20, 21, 22] as $qid) {
-            $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,
+            $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,
                 'questionid' => $qid, 'status' => leitner_engine::STATUS_OPEN]);
         }
 
@@ -395,15 +395,15 @@ class leitner_engine_test extends \advanced_testcase {
     public function test_learned_cards_excluded_from_session(): void {
         $lq_db = $this->create_lq(['sessionsize' => 10, 'questioncategoryid' => 9999]);
         $user  = $this->getDataGenerator()->create_user();
-        $gen   = $this->getDataGenerator()->get_plugin_generator('mod_leitnerflow');
+        $gen   = $this->getDataGenerator()->get_plugin_generator('mod_eledialeitnerflow');
 
         // Mix: 2 learned, 3 open
         foreach ([30, 31] as $qid) {
-            $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,
+            $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,
                 'questionid' => $qid, 'status' => leitner_engine::STATUS_LEARNED]);
         }
         foreach ([32, 33, 34] as $qid) {
-            $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,
+            $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,
                 'questionid' => $qid, 'status' => leitner_engine::STATUS_OPEN]);
         }
 
@@ -423,24 +423,24 @@ class leitner_engine_test extends \advanced_testcase {
         $lq_db  = $this->create_lq();
         $user   = $this->getDataGenerator()->create_user();
         $other  = $this->getDataGenerator()->create_user();
-        $gen    = $this->getDataGenerator()->get_plugin_generator('mod_leitnerflow');
+        $gen    = $this->getDataGenerator()->get_plugin_generator('mod_eledialeitnerflow');
 
         // Create data for both users
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,  'questionid' => 1]);
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user->id,  'questionid' => 2]);
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $other->id, 'questionid' => 1]);
-        $gen->create_session(['leitnerflowid' => $lq_db->id, 'userid' => $user->id]);
-        $gen->create_session(['leitnerflowid' => $lq_db->id, 'userid' => $other->id]);
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,  'questionid' => 1]);
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id,  'questionid' => 2]);
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $other->id, 'questionid' => 1]);
+        $gen->create_session(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id]);
+        $gen->create_session(['eledialeitnerflowid' => $lq_db->id, 'userid' => $other->id]);
 
         // Delete only $user's data
         leitner_engine::delete_user_data($lq_db->id, $user->id);
 
-        $remaining_states = $DB->count_records('leitnerflow_card_state',
-            ['leitnerflowid' => $lq_db->id, 'userid' => $user->id]);
-        $remaining_sessions = $DB->count_records('leitnerflow_sessions',
-            ['leitnerflowid' => $lq_db->id, 'userid' => $user->id]);
-        $other_states = $DB->count_records('leitnerflow_card_state',
-            ['leitnerflowid' => $lq_db->id, 'userid' => $other->id]);
+        $remaining_states = $DB->count_records('eledialeitnerflow_card_state',
+            ['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id]);
+        $remaining_sessions = $DB->count_records('eledialeitnerflow_sessions',
+            ['eledialeitnerflowid' => $lq_db->id, 'userid' => $user->id]);
+        $other_states = $DB->count_records('eledialeitnerflow_card_state',
+            ['eledialeitnerflowid' => $lq_db->id, 'userid' => $other->id]);
 
         $this->assertEquals(0, $remaining_states,   'All card states for target user must be deleted');
         $this->assertEquals(0, $remaining_sessions,  'All sessions for target user must be deleted');
@@ -472,12 +472,12 @@ class leitner_engine_test extends \advanced_testcase {
         $lq_db  = $this->create_lq();
         $user1  = $this->getDataGenerator()->create_user();
         $user2  = $this->getDataGenerator()->create_user();
-        $gen    = $this->getDataGenerator()->get_plugin_generator('mod_leitnerflow');
+        $gen    = $this->getDataGenerator()->get_plugin_generator('mod_eledialeitnerflow');
 
         // User1: 3 correct (learned), User2: 0 correct
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user1->id,
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user1->id,
             'questionid' => 1, 'correctcount' => 3, 'status' => leitner_engine::STATUS_LEARNED]);
-        $gen->create_card_state(['leitnerflowid' => $lq_db->id, 'userid' => $user2->id,
+        $gen->create_card_state(['eledialeitnerflowid' => $lq_db->id, 'userid' => $user2->id,
             'questionid' => 1, 'correctcount' => 0, 'status' => leitner_engine::STATUS_OPEN]);
 
         $s1 = leitner_engine::get_card_state($lq_db->id, $user1->id, 1);

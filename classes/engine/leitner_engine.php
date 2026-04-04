@@ -17,12 +17,12 @@
 /**
  * Leitner engine — implements the spaced repetition logic.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_leitnerflow\engine;
+namespace mod_eledialeitnerflow\engine;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -75,7 +75,7 @@ class leitner_engine {
     /**
      * Process a student's answer and return the updated card state.
      *
-     * @param \stdClass $state  The current leitnerflow_card_state record (or null if new)
+     * @param \stdClass $state  The current eledialeitnerflow_card_state record (or null if new)
      * @param bool      $correct Whether the answer was correct
      * @param \stdClass $leitnerflow  The leitnerflow instance settings
      * @param int       $questionid
@@ -96,7 +96,7 @@ class leitner_engine {
         if ($state === null) {
             // First attempt for this card
             $state                = new \stdClass();
-            $state->leitnerflowid = $leitnerflow->id;
+            $state->eledialeitnerflowid = $leitnerflow->id;
             $state->userid        = $userid;
             $state->questionid    = $questionid;
             $state->correctcount  = 0;
@@ -163,9 +163,9 @@ class leitner_engine {
         global $DB;
 
         if (!empty($state->id)) {
-            $DB->update_record('leitnerflow_card_state', $state);
+            $DB->update_record('eledialeitnerflow_card_state', $state);
         } else {
-            $state->id = $DB->insert_record('leitnerflow_card_state', $state);
+            $state->id = $DB->insert_record('eledialeitnerflow_card_state', $state);
         }
         return $state;
     }
@@ -173,15 +173,15 @@ class leitner_engine {
     /**
      * Get card state for a specific user/question, or null if not attempted.
      *
-     * @param int $leitnerflowid
+     * @param int $eledialeitnerflowid
      * @param int $userid
      * @param int $questionid
      * @return \stdClass|null
      */
-    public static function get_card_state(int $leitnerflowid, int $userid, int $questionid): ?\stdClass {
+    public static function get_card_state(int $eledialeitnerflowid, int $userid, int $questionid): ?\stdClass {
         global $DB;
-        return $DB->get_record('leitnerflow_card_state', [
-            'leitnerflowid' => $leitnerflowid,
+        return $DB->get_record('eledialeitnerflow_card_state', [
+            'eledialeitnerflowid' => $eledialeitnerflowid,
             'userid'        => $userid,
             'questionid'    => $questionid,
         ]) ?: null;
@@ -190,14 +190,14 @@ class leitner_engine {
     /**
      * Get all card states for a user in one quiz instance.
      *
-     * @param int $leitnerflowid
+     * @param int $eledialeitnerflowid
      * @param int $userid
      * @return array questionid => state record
      */
-    public static function get_all_card_states(int $leitnerflowid, int $userid): array {
+    public static function get_all_card_states(int $eledialeitnerflowid, int $userid): array {
         global $DB;
-        $records = $DB->get_records('leitnerflow_card_state', [
-            'leitnerflowid' => $leitnerflowid,
+        $records = $DB->get_records('eledialeitnerflow_card_state', [
+            'eledialeitnerflowid' => $eledialeitnerflowid,
             'userid'        => $userid,
         ]);
         $indexed = [];
@@ -382,18 +382,18 @@ class leitner_engine {
     /**
      * Aggregate progress statistics for a user.
      *
-     * @param int $leitnerflowid
+     * @param int $eledialeitnerflowid
      * @param int $userid
      * @param int|array $questioncategoryid Single category ID or array of IDs
      * @return \stdClass  {total, learned, open, errors, percent_learned}
      */
-    public static function get_user_stats(int $leitnerflowid, int $userid, int|array $questioncategoryid): \stdClass {
+    public static function get_user_stats(int $eledialeitnerflowid, int $userid, int|array $questioncategoryid): \stdClass {
         if (is_array($questioncategoryid)) {
             $allids = self::get_questions_from_categories($questioncategoryid);
         } else {
             $allids = self::get_questions_from_category($questioncategoryid);
         }
-        $states = self::get_all_card_states($leitnerflowid, $userid);
+        $states = self::get_all_card_states($eledialeitnerflowid, $userid);
 
         $total   = count($allids);
         $learned = 0;
@@ -425,14 +425,14 @@ class leitner_engine {
     /**
      * Get per-box distribution for display.
      *
-     * @param int $leitnerflowid
+     * @param int $eledialeitnerflowid
      * @param int $userid
      * @param int|array $questioncategoryid Single category ID or array of IDs
      * @param int $boxcount
      * @return array  [box_number => count]
      */
     public static function get_box_distribution(
-        int $leitnerflowid,
+        int $eledialeitnerflowid,
         int $userid,
         int|array $questioncategoryid,
         int $boxcount
@@ -442,7 +442,7 @@ class leitner_engine {
         } else {
             $allids = self::get_questions_from_category($questioncategoryid);
         }
-        $states  = self::get_all_card_states($leitnerflowid, $userid);
+        $states  = self::get_all_card_states($eledialeitnerflowid, $userid);
         $dist    = array_fill(1, $boxcount, 0);
 
         foreach ($allids as $qid) {
@@ -470,7 +470,7 @@ class leitner_engine {
     public static function get_all_students_stats(\stdClass $leitnerflow, int $courseid, \context $context): array {
         global $DB;
 
-        $students = get_enrolled_users($context, 'mod/leitnerflow:attempt');
+        $students = get_enrolled_users($context, 'mod/elediaeledialeitnerflow:attempt');
         $categoryids = self::get_category_ids($leitnerflow);
         $result   = [];
 
@@ -482,14 +482,14 @@ class leitner_engine {
             );
 
             // Session count + last session
-            $sessions = $DB->count_records('leitnerflow_sessions', [
-                'leitnerflowid' => $leitnerflow->id,
+            $sessions = $DB->count_records('eledialeitnerflow_sessions', [
+                'eledialeitnerflowid' => $leitnerflow->id,
                 'userid'        => $student->id,
                 'status'        => 1,
             ]);
             $lastsession = $DB->get_field_sql(
-                "SELECT MAX(timecompleted) FROM {leitnerflow_sessions}
-                  WHERE leitnerflowid = ? AND userid = ? AND status = 1",
+                "SELECT MAX(timecompleted) FROM {eledialeitnerflow_sessions}
+                  WHERE eledialeitnerflowid = ? AND userid = ? AND status = 1",
                 [$leitnerflow->id, $student->id]
             );
 
@@ -510,22 +510,22 @@ class leitner_engine {
     /**
      * Get completed session history for a user, most recent first.
      *
-     * @param int $leitnerflowid
+     * @param int $eledialeitnerflowid
      * @param int $userid
      * @param int $limit Maximum sessions to return (0 = all)
      * @return array of session records
      */
-    public static function get_session_history(int $leitnerflowid, int $userid, int $limit = 10): array {
+    public static function get_session_history(int $eledialeitnerflowid, int $userid, int $limit = 10): array {
         global $DB;
 
         $sql = "SELECT id, questionsasked, questionscorrect, timecreated, timecompleted
-                  FROM {leitnerflow_sessions}
-                 WHERE leitnerflowid = :lfid
+                  FROM {eledialeitnerflow_sessions}
+                 WHERE eledialeitnerflowid = :lfid
                    AND userid = :uid
                    AND status = 1
               ORDER BY timecompleted DESC";
 
-        $params = ['lfid' => $leitnerflowid, 'uid' => $userid];
+        $params = ['lfid' => $eledialeitnerflowid, 'uid' => $userid];
 
         if ($limit > 0) {
             return array_values($DB->get_records_sql($sql, $params, 0, $limit));
@@ -536,22 +536,22 @@ class leitner_engine {
     /**
      * Get aggregate session statistics for a user.
      *
-     * @param int $leitnerflowid
+     * @param int $eledialeitnerflowid
      * @param int $userid
      * @return \stdClass {sessioncount, totalasked, totalcorrect, avgpercent}
      */
-    public static function get_session_stats(int $leitnerflowid, int $userid): \stdClass {
+    public static function get_session_stats(int $eledialeitnerflowid, int $userid): \stdClass {
         global $DB;
 
         $sql = "SELECT COUNT(*) AS sessioncount,
                        COALESCE(SUM(questionsasked), 0) AS totalasked,
                        COALESCE(SUM(questionscorrect), 0) AS totalcorrect
-                  FROM {leitnerflow_sessions}
-                 WHERE leitnerflowid = :lfid
+                  FROM {eledialeitnerflow_sessions}
+                 WHERE eledialeitnerflowid = :lfid
                    AND userid = :uid
                    AND status = 1";
 
-        $row = $DB->get_record_sql($sql, ['lfid' => $leitnerflowid, 'uid' => $userid]);
+        $row = $DB->get_record_sql($sql, ['lfid' => $eledialeitnerflowid, 'uid' => $userid]);
 
         $stats = new \stdClass();
         $stats->sessioncount = (int) $row->sessioncount;
@@ -567,15 +567,15 @@ class leitner_engine {
     /**
      * Delete all data for a specific user in a quiz (used for privacy + reset).
      *
-     * @param int $leitnerflowid
+     * @param int $eledialeitnerflowid
      * @param int $userid
      */
-    public static function delete_user_data(int $leitnerflowid, int $userid): void {
+    public static function delete_user_data(int $eledialeitnerflowid, int $userid): void {
         global $DB;
 
         // Sessions reference question_usages via qubaid — clean those up too.
-        $sessions = $DB->get_records('leitnerflow_sessions', [
-            'leitnerflowid' => $leitnerflowid,
+        $sessions = $DB->get_records('eledialeitnerflow_sessions', [
+            'eledialeitnerflowid' => $eledialeitnerflowid,
             'userid'        => $userid,
         ]);
         foreach ($sessions as $session) {
@@ -584,7 +584,7 @@ class leitner_engine {
             }
         }
 
-        $DB->delete_records('leitnerflow_sessions',   ['leitnerflowid' => $leitnerflowid, 'userid' => $userid]);
-        $DB->delete_records('leitnerflow_card_state', ['leitnerflowid' => $leitnerflowid, 'userid' => $userid]);
+        $DB->delete_records('eledialeitnerflow_sessions',   ['eledialeitnerflowid' => $eledialeitnerflowid, 'userid' => $userid]);
+        $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $eledialeitnerflowid, 'userid' => $userid]);
     }
 }

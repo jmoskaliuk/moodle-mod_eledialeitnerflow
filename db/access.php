@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for mod_leitnerflow.
+ * Capability definitions for mod_eledialeitnerflow.
  *
- * @package    mod_leitnerflow
+ * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 $capabilities = [
 
     // Add a new LeitnerFlow instance to a course.
-    'mod/leitnerflow:addinstance' => [
+    'mod/elediaeledialeitnerflow:addinstance' => [
         'riskbitmask'  => RISK_XSS,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -39,7 +39,7 @@ $capabilities = [
     ],
 
     // View the activity (students, teachers)
-    'mod/leitnerflow:view' => [
+    'mod/elediaeledialeitnerflow:view' => [
         'captype'      => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes'   => [
@@ -52,7 +52,7 @@ $capabilities = [
     ],
 
     // Attempt the quiz (students)
-    'mod/leitnerflow:attempt' => [
+    'mod/elediaeledialeitnerflow:attempt' => [
         'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes'   => [
@@ -64,7 +64,7 @@ $capabilities = [
     ],
 
     // View all students' results (teacher)
-    'mod/leitnerflow:viewreport' => [
+    'mod/elediaelediaeledialeitnerflow:viewreport' => [
         'captype'      => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes'   => [
@@ -75,7 +75,7 @@ $capabilities = [
     ],
 
     // Manage settings (editing teacher)
-    'mod/leitnerflow:manage' => [
+    'mod/elediaeledialeitnerflow:manage' => [
         'riskbitmask'  => RISK_CONFIG,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -86,7 +86,7 @@ $capabilities = [
     ],
 
     // Reset student progress
-    'mod/leitnerflow:resetprogress' => [
+    'mod/elediaeledialeitnerflow:resetprogress' => [
         'riskbitmask'  => RISK_DATALOSS,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
