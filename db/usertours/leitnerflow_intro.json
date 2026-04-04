@@ -1,48 +1,43 @@
 {
-  "name": "LeitnerFlow — First steps",
+  "name": "LeitnerFlow \u2014 First steps",
   "description": "Introduces students to the LeitnerFlow spaced repetition activity on their first visit.",
   "pathmatch": "/mod/leitnerflow/view.php%",
   "enabled": 1,
-  "display_step_numbers": 1,
-  "endtourlabel": "OK",
   "sortorder": 0,
-  "configdata": "{\"filtervalues\":{\"accessdate\":{\"enabled\":0},\"role\":{\"enabled\":1,\"roles\":[\"student\"]},\"course\":{\"enabled\":0},\"category\":{\"enabled\":0},\"theme\":{\"enabled\":0},\"cssselector\":{\"enabled\":0}}}",
+  "endtourlabel": "OK",
+  "configdata": "{\"filtervalues\":{\"accessdate\":{\"enabled\":0},\"role\":{\"enabled\":0},\"course\":{\"enabled\":0},\"category\":{\"enabled\":0},\"theme\":{\"enabled\":0},\"cssselector\":{\"enabled\":0}}}",
   "steps": [
     {
       "title": "{mlang en}Welcome to LeitnerFlow!{mlang}{mlang de}Willkommen bei LeitnerFlow!{mlang}",
-      "content": "{mlang en}This activity uses spaced repetition to help you learn. Cards move through boxes as you answer correctly — the more you practice, the better you remember!{mlang}{mlang de}Diese Aktivität nutzt das Leitner-Karteikartensystem, um dir beim Lernen zu helfen. Karten wandern durch Boxen, wenn du richtig antwortest — je mehr du übst, desto besser merkst du dir den Stoff!{mlang}",
-      "targettype": "unattached",
+      "content": "{mlang en}This activity uses spaced repetition to help you learn. Cards move through boxes as you answer correctly \u2014 the more you practice, the better you remember!{mlang}{mlang de}Diese Aktivit\u00e4t nutzt das Leitner-Karteikartensystem, um dir beim Lernen zu helfen. Karten wandern durch Boxen, wenn du richtig antwortest \u2014 je mehr du \u00fcbst, desto besser merkst du dir den Stoff!{mlang}",
+      "targettype": 2,
       "targetvalue": "",
-      "placement": "bottom",
-      "delay": 0,
-      "backdrop": 0
+      "sortorder": 0,
+      "configdata": "{\"placement\":\"bottom\",\"orphan\":true,\"backdrop\":false,\"reflex\":false,\"delay\":0}"
     },
     {
       "title": "{mlang en}Your Leitner Boxes{mlang}{mlang de}Deine Leitner-Boxen{mlang}",
-      "content": "{mlang en}Each box represents a learning level. New cards start in Box 1. Answer correctly and they move forward. Get it wrong and they go back. Click on a box to practice just those cards!{mlang}{mlang de}Jede Box ist eine Lernstufe. Neue Karten starten in Box 1. Richtig beantwortet → weiter. Falsch → zurück. Klicke auf eine Box, um nur diese Karten zu üben!{mlang}",
-      "targettype": "selector",
+      "content": "{mlang en}Each box represents a learning level. New cards start in Box 1. Answer correctly and they move forward. Get it wrong and they go back. Click on a box to practice just those cards!{mlang}{mlang de}Jede Box ist eine Lernstufe. Neue Karten starten in Box 1. Richtig beantwortet \u2192 weiter. Falsch \u2192 zur\u00fcck. Klicke auf eine Box, um nur diese Karten zu \u00fcben!{mlang}",
+      "targettype": 1,
       "targetvalue": ".leitnerflow-boxes",
-      "placement": "bottom",
-      "delay": 0,
-      "backdrop": 1
+      "sortorder": 1,
+      "configdata": "{\"placement\":\"bottom\",\"orphan\":false,\"backdrop\":true,\"reflex\":false,\"delay\":0}"
     },
     {
       "title": "{mlang en}Progress Bar{mlang}{mlang de}Fortschrittsbalken{mlang}",
-      "content": "{mlang en}This bar shows your overall progress. Each color represents a box. As cards move to the right, the green 'Learned' section grows.{mlang}{mlang de}Dieser Balken zeigt deinen Gesamtfortschritt. Jede Farbe steht für eine Box. Wenn Karten nach rechts wandern, wächst der grüne „Gelernt"-Bereich.{mlang}",
-      "targettype": "selector",
+      "content": "{mlang en}This bar shows your overall progress. Each color represents a box. As cards move to the right, the green Learned section grows.{mlang}{mlang de}Dieser Balken zeigt deinen Gesamtfortschritt. Jede Farbe steht f\u00fcr eine Box. Wenn Karten nach rechts wandern, w\u00e4chst der gr\u00fcne Gelernt-Bereich.{mlang}",
+      "targettype": 1,
       "targetvalue": ".progress.mb-1",
-      "placement": "bottom",
-      "delay": 0,
-      "backdrop": 1
+      "sortorder": 2,
+      "configdata": "{\"placement\":\"bottom\",\"orphan\":false,\"backdrop\":true,\"reflex\":false,\"delay\":0}"
     },
     {
       "title": "{mlang en}Start a Session{mlang}{mlang de}Session starten{mlang}",
-      "content": "{mlang en}Click here to begin a study session. You'll be shown a set of questions — answer them and watch your cards progress through the boxes!{mlang}{mlang de}Klicke hier, um eine Lernsession zu starten. Du bekommst Fragen gestellt — beantworte sie und sieh zu, wie deine Karten durch die Boxen wandern!{mlang}",
-      "targettype": "selector",
+      "content": "{mlang en}Click here to begin a study session. You will be shown a set of questions \u2014 answer them and watch your cards progress through the boxes!{mlang}{mlang de}Klicke hier, um eine Lernsession zu starten. Du bekommst Fragen gestellt \u2014 beantworte sie und sieh zu, wie deine Karten durch die Boxen wandern!{mlang}",
+      "targettype": 1,
       "targetvalue": ".btn-primary",
-      "placement": "top",
-      "delay": 0,
-      "backdrop": 1
+      "sortorder": 3,
+      "configdata": "{\"placement\":\"top\",\"orphan\":false,\"backdrop\":true,\"reflex\":false,\"delay\":0}"
     }
   ]
 }

@@ -41,6 +41,11 @@ function _leitnerflow_import_user_tour(): void {
     if (!class_exists('\tool_usertours\manager')) {
         return;
     }
-    $json = file_get_contents($tourfile);
-    \tool_usertours\manager::import_tour_from_json($json);
+    try {
+        $json = file_get_contents($tourfile);
+        \tool_usertours\manager::import_tour_from_json($json);
+    } catch (\Throwable $e) {
+        // Non-critical — tour import failure should not block install/upgrade.
+        debugging('LeitnerFlow: Could not import user tour: ' . $e->getMessage(), DEBUG_DEVELOPER);
+    }
 }
