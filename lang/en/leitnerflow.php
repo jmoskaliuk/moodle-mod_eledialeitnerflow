@@ -132,6 +132,11 @@ $string['box_n']  = 'Box {$a}';
 $string['box_1']  = 'Box 1 – New / Errors';
 $string['box_learned'] = 'Learned';
 
+// Events
+$string['event_session_started']   = 'Learning session started';
+$string['event_session_completed'] = 'Learning session completed';
+$string['event_progress_reset']    = 'Student progress reset';
+
 // Errors
 $string['invalidsession']   = 'Invalid or expired session.';
 $string['nocategory']       = 'No question category configured. Please edit the activity settings.';

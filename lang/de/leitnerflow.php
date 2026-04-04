@@ -124,6 +124,11 @@ $string['box_n']  = 'Box {$a}';
 $string['box_1']  = 'Box 1 – Neu / Fehler';
 $string['box_learned'] = 'Gelernt';
 
+// Events
+$string['event_session_started']   = 'Lernsession gestartet';
+$string['event_session_completed'] = 'Lernsession abgeschlossen';
+$string['event_progress_reset']    = 'Schülerfortschritt zurückgesetzt';
+
 $string['invalidsession']   = 'Ungültige oder abgelaufene Session.';
 $string['nocategory']       = 'Keine Fragenkategorie konfiguriert. Bitte Aktivitätseinstellungen bearbeiten.';
 $string['error_noattempt']  = 'Du hast keine Berechtigung, dieses Quiz durchzuführen.';

@@ -99,6 +99,14 @@ if ($start) {
     $session->timecreated    = time();
     $session->id = $DB->insert_record('leitnerflow_sessions', $session);
 
+    // Fire session_started event.
+    $event = \mod_leitnerflow\event\session_started::create([
+        'objectid' => $session->id,
+        'context'  => $context,
+        'other'    => ['questioncount' => count($questionids)],
+    ]);
+    $event->trigger();
+
     redirect(new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $session->id]));
 }
 
@@ -273,7 +281,18 @@ function _leitnerflow_finish_session(stdClass $session, stdClass $leitnerflow, s
     $session->timecompleted = time();
     $DB->update_record('leitnerflow_sessions', $session);
 
-    // Update gradebook
+    // Fire session_completed event.
+    $event = \mod_leitnerflow\event\session_completed::create([
+        'objectid' => $session->id,
+        'context'  => \core\context\module::instance($cm->id),
+        'other'    => [
+            'questionsasked' => $session->questionsasked,
+            'questionscorrect' => $session->questionscorrect,
+        ],
+    ]);
+    $event->trigger();
+
+    // Update gradebook.
     if ((int)$leitnerflow->grademethod > 0) {
         leitnerflow_update_grades($leitnerflow, $USER->id);
     }

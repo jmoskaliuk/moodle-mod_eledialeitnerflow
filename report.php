@@ -45,6 +45,15 @@ if ($resetuid > 0) {
     require_sesskey();
     require_capability('mod/leitnerflow:resetprogress', $context);
     leitner_engine::delete_user_data($leitnerflow->id, $resetuid);
+
+    // Fire progress_reset event.
+    $event = \mod_leitnerflow\event\progress_reset::create([
+        'objectid'      => $leitnerflow->id,
+        'context'       => $context,
+        'relateduserid' => $resetuid,
+    ]);
+    $event->trigger();
+
     redirect(
         new moodle_url('/mod/leitnerflow/report.php', ['id' => $cmid]),
         get_string('progressreset', 'mod_leitnerflow'),
