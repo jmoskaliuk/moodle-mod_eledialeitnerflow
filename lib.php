@@ -109,7 +109,7 @@ function eledialeitnerflow_supports(string $feature): ?bool {
 // Gradebook integration
 // -----------------------------------------------------------------------
 
-function elediaeledialeitnerflow_grade_item_update(stdClass $leitnerflow, $grades = null): int {
+function eledialeitnerflow_grade_item_update(stdClass $leitnerflow, $grades = null): int {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
 
@@ -143,7 +143,7 @@ function elediaeledialeitnerflow_grade_item_update(stdClass $leitnerflow, $grade
     );
 }
 
-function elediaeledialeitnerflow_grade_item_delete(stdClass $leitnerflow): int {
+function eledialeitnerflow_grade_item_delete(stdClass $leitnerflow): int {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
     return grade_update(
@@ -158,7 +158,7 @@ function elediaeledialeitnerflow_grade_item_delete(stdClass $leitnerflow): int {
     );
 }
 
-function elediaeledialeitnerflow_update_grades(stdClass $leitnerflow, int $userid = 0, bool $nullifnone = true): void {
+function eledialeitnerflow_update_grades(stdClass $leitnerflow, int $userid = 0, bool $nullifnone = true): void {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
 
@@ -175,7 +175,7 @@ function elediaeledialeitnerflow_update_grades(stdClass $leitnerflow, int $useri
     eledialeitnerflow_grade_item_update($leitnerflow, $grades);
 }
 
-function elediaeledialeitnerflow_get_user_grade(stdClass $leitnerflow, int $userid): array {
+function eledialeitnerflow_get_user_grade(stdClass $leitnerflow, int $userid): array {
     $categoryids = leitner_engine::get_category_ids($leitnerflow);
     $stats = leitner_engine::get_user_stats(
         $leitnerflow->id,
@@ -190,11 +190,11 @@ function elediaeledialeitnerflow_get_user_grade(stdClass $leitnerflow, int $user
     return [$userid => $grade];
 }
 
-function elediaeledialeitnerflow_get_all_grades(stdClass $leitnerflow): array {
+function eledialeitnerflow_get_all_grades(stdClass $leitnerflow): array {
     global $DB;
     $cm      = get_coursemodule_from_instance('eledialeitnerflow', $leitnerflow->id);
     $context = \core\context\module::instance($cm->id);
-    $students = get_enrolled_users($context, 'mod/elediaeledialeitnerflow:attempt');
+    $students = get_enrolled_users($context, 'mod/eledialeitnerflow:attempt');
 
     $categoryids = leitner_engine::get_category_ids($leitnerflow);
     $grades = [];

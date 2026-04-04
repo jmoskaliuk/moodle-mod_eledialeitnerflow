@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 $capabilities = [
 
     // Add a new LeitnerFlow instance to a course.
-    'mod/elediaeledialeitnerflow:addinstance' => [
+    'mod/eledialeitnerflow:addinstance' => [
         'riskbitmask'  => RISK_XSS,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -39,7 +39,7 @@ $capabilities = [
     ],
 
     // View the activity (students, teachers)
-    'mod/elediaeledialeitnerflow:view' => [
+    'mod/eledialeitnerflow:view' => [
         'captype'      => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes'   => [
@@ -52,7 +52,7 @@ $capabilities = [
     ],
 
     // Attempt the quiz (students)
-    'mod/elediaeledialeitnerflow:attempt' => [
+    'mod/eledialeitnerflow:attempt' => [
         'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes'   => [
@@ -64,7 +64,7 @@ $capabilities = [
     ],
 
     // View all students' results (teacher)
-    'mod/elediaelediaeledialeitnerflow:viewreport' => [
+    'mod/eledialeitnerflow:viewreport' => [
         'captype'      => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes'   => [
@@ -75,7 +75,7 @@ $capabilities = [
     ],
 
     // Manage settings (editing teacher)
-    'mod/elediaeledialeitnerflow:manage' => [
+    'mod/eledialeitnerflow:manage' => [
         'riskbitmask'  => RISK_CONFIG,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -86,7 +86,7 @@ $capabilities = [
     ],
 
     // Reset student progress
-    'mod/elediaeledialeitnerflow:resetprogress' => [
+    'mod/eledialeitnerflow:resetprogress' => [
         'riskbitmask'  => RISK_DATALOSS,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,

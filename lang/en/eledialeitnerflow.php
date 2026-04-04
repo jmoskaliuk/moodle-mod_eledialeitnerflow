@@ -208,7 +208,7 @@ $string['privacy:metadata:eledialeitnerflow_sessions:questionscorrect'] = 'Numbe
 $string['eledialeitnerflow:addinstance']   = 'Add a new LeitnerFlow activity';
 $string['eledialeitnerflow:view']          = 'View Leitner Flow';
 $string['eledialeitnerflow:attempt']       = 'Attempt Leitner Flow';
-$string['elediaeledialeitnerflow:viewreport']    = 'View student report';
+$string['eledialeitnerflow:viewreport']    = 'View student report';
 $string['eledialeitnerflow:manage']        = 'Manage Leitner Flow settings';
 $string['eledialeitnerflow:resetprogress'] = 'Reset student progress';
 

@@ -108,12 +108,12 @@ eledialeitnerflow/
 
 | Capability | Description | Default roles |
 |------------|-------------|---------------|
-| `mod/elediaeledialeitnerflow:addinstance` | Add a new activity | Editing teacher, Manager |
-| `mod/elediaeledialeitnerflow:view` | View the activity | Student, Teacher, Manager |
-| `mod/elediaeledialeitnerflow:attempt` | Answer questions | Student, Manager |
-| `mod/elediaelediaeledialeitnerflow:viewreport` | View student report | Teacher, Manager |
-| `mod/elediaeledialeitnerflow:manage` | Manage settings | Editing teacher, Manager |
-| `mod/elediaeledialeitnerflow:resetprogress` | Reset student progress | Editing teacher, Manager |
+| `mod/eledialeitnerflow:addinstance` | Add a new activity | Editing teacher, Manager |
+| `mod/eledialeitnerflow:view` | View the activity | Student, Teacher, Manager |
+| `mod/eledialeitnerflow:attempt` | Answer questions | Student, Manager |
+| `mod/eledialeitnerflow:viewreport` | View student report | Teacher, Manager |
+| `mod/eledialeitnerflow:manage` | Manage settings | Editing teacher, Manager |
+| `mod/eledialeitnerflow:resetprogress` | Reset student progress | Editing teacher, Manager |
 
 ## Running tests
 

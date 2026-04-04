@@ -470,7 +470,7 @@ class leitner_engine {
     public static function get_all_students_stats(\stdClass $leitnerflow, int $courseid, \context $context): array {
         global $DB;
 
-        $students = get_enrolled_users($context, 'mod/elediaeledialeitnerflow:attempt');
+        $students = get_enrolled_users($context, 'mod/eledialeitnerflow:attempt');
         $categoryids = self::get_category_ids($leitnerflow);
         $result   = [];
 

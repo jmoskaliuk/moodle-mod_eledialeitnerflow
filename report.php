@@ -38,12 +38,12 @@ $leitnerflow = $DB->get_record('eledialeitnerflow', ['id' => $cm->instance], '*'
 
 require_login($course, true, $cm);
 $context = \core\context\module::instance($cm->id);
-require_capability('mod/elediaelediaeledialeitnerflow:viewreport', $context);
+require_capability('mod/eledialeitnerflow:viewreport', $context);
 
 // ---- Handle reset ----------------------------------------------------------
 if ($resetuid > 0) {
     require_sesskey();
-    require_capability('mod/elediaeledialeitnerflow:resetprogress', $context);
+    require_capability('mod/eledialeitnerflow:resetprogress', $context);
     leitner_engine::delete_user_data($leitnerflow->id, $resetuid);
 
     // Fire progress_reset event.
@@ -158,7 +158,7 @@ foreach ($students as $student) {
     ]);
 
     $resetbtn = '';
-    if (has_capability('mod/elediaeledialeitnerflow:resetprogress', $context)) {
+    if (has_capability('mod/eledialeitnerflow:resetprogress', $context)) {
         $resetbtn = html_writer::link(
             $reseturl,
             get_string('resetprogress', 'mod_eledialeitnerflow'),

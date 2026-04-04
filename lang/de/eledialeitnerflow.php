@@ -192,7 +192,7 @@ $string['privacy:metadata:eledialeitnerflow_sessions:questionscorrect'] = 'Anzah
 $string['eledialeitnerflow:addinstance']   = 'Neue LeitnerFlow-Aktivität hinzufügen';
 $string['eledialeitnerflow:view']          = 'Leitner-Quiz ansehen';
 $string['eledialeitnerflow:attempt']       = 'Leitner-Quiz durchführen';
-$string['elediaeledialeitnerflow:viewreport']    = 'Schülerbericht anzeigen';
+$string['eledialeitnerflow:viewreport']    = 'Schülerbericht anzeigen';
 $string['eledialeitnerflow:manage']        = 'Leitner-Quiz-Einstellungen verwalten';
 $string['eledialeitnerflow:resetprogress'] = 'Schülerfortschritt zurücksetzen';
 

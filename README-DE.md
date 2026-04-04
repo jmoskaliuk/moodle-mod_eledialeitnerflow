@@ -108,12 +108,12 @@ eledialeitnerflow/
 
 | Berechtigung | Beschreibung | Standard-Rollen |
 |-------------|-------------|-----------------|
-| `mod/elediaeledialeitnerflow:addinstance` | Neue Aktivität anlegen | Trainer/in mit Bearbeitungsrecht, Manager/in |
-| `mod/elediaeledialeitnerflow:view` | Aktivität ansehen | Teilnehmer/in, Trainer/in, Manager/in |
-| `mod/elediaeledialeitnerflow:attempt` | Fragen beantworten | Teilnehmer/in, Manager/in |
-| `mod/elediaelediaeledialeitnerflow:viewreport` | Teilnehmerbericht einsehen | Trainer/in, Manager/in |
-| `mod/elediaeledialeitnerflow:manage` | Einstellungen verwalten | Trainer/in mit Bearbeitungsrecht, Manager/in |
-| `mod/elediaeledialeitnerflow:resetprogress` | Fortschritt zurücksetzen | Trainer/in mit Bearbeitungsrecht, Manager/in |
+| `mod/eledialeitnerflow:addinstance` | Neue Aktivität anlegen | Trainer/in mit Bearbeitungsrecht, Manager/in |
+| `mod/eledialeitnerflow:view` | Aktivität ansehen | Teilnehmer/in, Trainer/in, Manager/in |
+| `mod/eledialeitnerflow:attempt` | Fragen beantworten | Teilnehmer/in, Manager/in |
+| `mod/eledialeitnerflow:viewreport` | Teilnehmerbericht einsehen | Trainer/in, Manager/in |
+| `mod/eledialeitnerflow:manage` | Einstellungen verwalten | Trainer/in mit Bearbeitungsrecht, Manager/in |
+| `mod/eledialeitnerflow:resetprogress` | Fortschritt zurücksetzen | Trainer/in mit Bearbeitungsrecht, Manager/in |
 
 ## Tests ausführen
 

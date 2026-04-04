@@ -41,7 +41,7 @@ $course      = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST)
 $leitnerflow = $DB->get_record('eledialeitnerflow', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_login($course, true, $cm);
-require_capability('mod/elediaeledialeitnerflow:attempt', \core\context\module::instance($cm->id));
+require_capability('mod/eledialeitnerflow:attempt', \core\context\module::instance($cm->id));
 
 $context = \core\context\module::instance($cm->id);
 $viewurl = new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cm->id]);

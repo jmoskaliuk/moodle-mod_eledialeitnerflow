@@ -57,7 +57,7 @@ if (empty($leitnerflow->showtour)) {
 
 // ---- Handle reset action (teacher only) ------------------------------------
 if (optional_param('resetuserid', 0, PARAM_INT) > 0) {
-    require_capability('mod/elediaeledialeitnerflow:resetprogress', $context);
+    require_capability('mod/eledialeitnerflow:resetprogress', $context);
     require_sesskey();
     $resetuid = required_param('resetuserid', PARAM_INT);
     leitner_engine::delete_user_data($leitnerflow->id, $resetuid);
@@ -88,8 +88,8 @@ if (optional_param('cancelsession', 0, PARAM_INT)) {
 }
 
 // ---- Determine role --------------------------------------------------------
-$isteacher  = has_capability('mod/elediaelediaeledialeitnerflow:viewreport', $context);
-$canattempt = has_capability('mod/elediaeledialeitnerflow:attempt', $context);
+$isteacher  = has_capability('mod/eledialeitnerflow:viewreport', $context);
+$canattempt = has_capability('mod/eledialeitnerflow:attempt', $context);
 
 echo $OUTPUT->header();
 // Note: Moodle 4.x+ renders the activity name and intro in the page header
