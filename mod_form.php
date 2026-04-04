@@ -45,39 +45,27 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
         // ---- Question Bank -------------------------------------------------
         $mform->addElement('header', 'questionbanksettings', get_string('questioncategory', 'mod_leitnerflow'));
 
-        // Load ALL question categories from the entire Moodle instance.
-        // Simple, broad query — no context filtering that could miss categories.
-        $sql = "SELECT qc.id, qc.name, qc.contextid, qc.parent
-                  FROM {question_categories} qc
-                 WHERE qc.name <> 'top'
-              ORDER BY qc.name";
-        $cats = $DB->get_records_sql($sql);
-
+        // Load ALL question categories (simplest possible query).
         $categories = [];
-        foreach ($cats as $cat) {
-            // Count questions in this category (via Question Bank API).
-            $qcount = $DB->count_records_sql(
-                "SELECT COUNT(DISTINCT q.id)
-                   FROM {question} q
-                   JOIN {question_versions} qv ON qv.questionid = q.id
-                   JOIN {question_bank_entries} qbe ON qbe.id = qv.questionbankentryid
-                  WHERE qbe.questioncategoryid = :catid",
-                ['catid' => $cat->id]
-            );
-            $label = $cat->name . " ({$qcount} questions)";
-
-            // Try to add context name for disambiguation.
-            try {
-                $ctx = \context::instance_by_id($cat->contextid, IGNORE_MISSING);
-                if ($ctx) {
-                    $label = $cat->name . ' — ' . $ctx->get_context_name(false, true) . " ({$qcount} questions)";
+        $debuginfo = '';
+        try {
+            $allcats = $DB->get_records('question_categories', [], 'name ASC', 'id, name, contextid, parent');
+            $debuginfo .= 'Found ' . count($allcats) . ' total categories. ';
+            foreach ($allcats as $cat) {
+                if ($cat->name === 'top') {
+                    continue;
                 }
-            } catch (\Exception $e) {
-                // Context not found, use simple label.
+                $qcount = $DB->count_records('question_bank_entries', ['questioncategoryid' => $cat->id]);
+                $categories[$cat->id] = $cat->name . " ({$qcount} questions)";
             }
-
-            $categories[$cat->id] = $label;
+            $debuginfo .= count($categories) . ' shown in dropdown.';
+        } catch (\Exception $e) {
+            $debuginfo = 'ERROR: ' . $e->getMessage();
         }
+
+        // Always show debug info until this is resolved.
+        $mform->addElement('static', 'debug_categories', 'Debug',
+            \html_writer::tag('small', $debuginfo, ['class' => 'text-muted']));
 
         if (empty($categories)) {
             $mform->addElement('static', 'nocategory_warning', '',
