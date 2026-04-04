@@ -31,34 +31,34 @@ $string['modulenameplural']   = 'LeitnerFlow Activities';
 $string['modulename_help']    = 'The Leitner Flow uses spaced repetition (Leitner system) to help students efficiently memorise question content from the Question Bank. Cards move through boxes based on correct answers and are repeated until fully learned.';
 $string['pluginadministration'] = 'LeitnerFlow administration';
 
-// Settings form
+// Settings form — short labels, details in _help tooltips.
 $string['questioncategory']        = 'Question category';
-$string['questioncategory_help']   = 'Select the Question Bank category from which questions will be drawn. All questions in this category (excluding sub-categories) will be available.';
+$string['questioncategory_help']   = 'The Question Bank category from which cards are drawn. All questions in this category (excluding sub-categories) become flashcards. Create categories via the course Question Bank.';
 $string['sessionsize']             = 'Questions per session';
-$string['sessionsize_help']        = 'How many questions are shown in a single study session.';
-$string['boxcount']                = 'Number of Leitner boxes';
-$string['boxcount_help']           = 'The number of boxes (levels) in the Leitner system. More boxes give finer-grained progress tracking.';
-$string['correcttolearn']          = 'Correct answers to mark as learned';
-$string['correcttolearn_help']     = 'How many times a student must answer a question correctly (total) before it is marked as \'learned\' and removed from the active rotation.';
+$string['sessionsize_help']        = 'Maximum number of questions shown in one study session. Students can always finish early. Recommended: 5–20 for short, focused practice.';
+$string['boxcount']                = 'Number of boxes';
+$string['boxcount_help']           = 'How many Leitner boxes (levels) to use. Cards progress from Box 1 → Box N → Learned. More boxes = finer-grained spacing between reviews. 3 boxes is a good default; 5 gives more granularity for larger question pools.';
+$string['correcttolearn']          = 'Correct answers required';
+$string['correcttolearn_help']     = 'Total correct answers needed before a card is marked as "learned" and removed from active rotation. Higher values mean more repetition. Example: with 3, a student must answer correctly 3 times (across all sessions) before the card graduates.';
 $string['wrongbehavior']           = 'On wrong answer';
-$string['wrongbehavior_help']      = 'What happens to a card\'s progress when the student answers incorrectly.';
-$string['wrongbehavior_reset']     = 'Reset to Box 1 (full reset)';
-$string['wrongbehavior_back1']     = 'Go back one box';
-$string['wrongbehavior_nochange']  = 'No change (only stop counting up)';
+$string['wrongbehavior_help']      = 'What happens when a student answers incorrectly:<br><b>Reset to Box 1</b> — strictest, card restarts from scratch.<br><b>Back one box</b> — moderate, card drops one level.<br><b>No change</b> — lenient, card stays in current box but correct-count does not increase.';
+$string['wrongbehavior_reset']     = 'Reset to Box 1';
+$string['wrongbehavior_back1']     = 'Back one box';
+$string['wrongbehavior_nochange']  = 'No change';
 $string['questionrotation']        = 'Question rotation';
-$string['questionrotation_help']   = 'Dynamic: questions are always fetched fresh from the Question Bank (reflects additions/removals). Fixed: the pool is locked when the student first starts.';
-$string['questionrotation_dynamic'] = 'Dynamic (always from bank)';
-$string['questionrotation_fixed']   = 'Fixed pool (locked on first start)';
-$string['prioritystrategy']        = 'Card selection strategy';
-$string['prioritystrategy_help']   = 'Prioritised: questions in lower boxes (less known) are shown first. Mixed: random selection across all boxes.';
-$string['prioritystrategy_prio']   = 'Prioritise lower boxes first';
-$string['prioritystrategy_mixed']  = 'Mixed random selection';
-$string['grademethod']             = 'Grading method';
+$string['questionrotation_help']   = '<b>Dynamic</b>: questions are always fetched fresh from the Question Bank — new questions appear automatically, deleted ones disappear.<br><b>Fixed</b>: the question pool is locked when the student first starts. Later changes to the bank are not reflected.';
+$string['questionrotation_dynamic'] = 'Dynamic';
+$string['questionrotation_fixed']   = 'Fixed pool';
+$string['prioritystrategy']        = 'Card selection';
+$string['prioritystrategy_help']   = '<b>Prioritise lower boxes</b>: questions in Box 1 (least known) are shown first — good for focused review.<br><b>Mixed random</b>: questions from all boxes are mixed randomly — good for variety.';
+$string['prioritystrategy_prio']   = 'Lower boxes first';
+$string['prioritystrategy_mixed']  = 'Mixed random';
+$string['grademethod']             = 'Grading';
 $string['grademethod_none']        = 'No grade';
-$string['grademethod_percent']     = 'Percentage of cards learned';
-$string['gradingsettings']         = 'Grading settings';
-$string['leitnersettings']         = 'Leitner system settings';
-$string['sessionsettings']         = 'Session settings';
+$string['grademethod_percent']     = '% of cards learned';
+$string['gradingsettings']         = 'Grading';
+$string['leitnersettings']         = 'Leitner system';
+$string['sessionsettings']         = 'Session';
 
 // View page
 $string['startsession']            = 'Start study session';
