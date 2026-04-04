@@ -26,21 +26,45 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/eledialeitnerflow/backup/moodle2/backup_eledialeitnerflow_stepslib.php');
 
+/**
+ * Backup activity task for mod_eledialeitnerflow.
+ *
+ * @package    mod_eledialeitnerflow
+ * @copyright  2024 eLeDia GmbH
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class backup_eledialeitnerflow_activity_task extends backup_activity_task {
+    /**
+     * Define settings for backup.
+     *
+     * @return void
+     */
+    protected function define_my_settings(): void {
+    }
 
-    protected function define_my_settings(): void {}
-
+    /**
+     * Define steps for backup.
+     *
+     * @return void
+     */
     protected function define_my_steps(): void {
         $this->add_step(new backup_eledialeitnerflow_activity_structure_step(
-            'eledialeitnerflow_structure', 'eledialeitnerflow.xml'
+            'eledialeitnerflow_structure',
+            'eledialeitnerflow.xml'
         ));
     }
 
+    /**
+     * Encode content links for backup.
+     *
+     * @param string $content The content to encode.
+     * @return string The content with encoded links.
+     */
     public static function encode_content_links($content): string {
         global $CFG;
         $base = preg_quote($CFG->wwwroot, '/');
 
-        // view.php links
+        // View.php links.
         $search  = "/({$base}\/mod\/eledialeitnerflow\/view\.php\?id=)([0-9]+)/";
         $content = preg_replace($search, '$@LEITNERFLOWVIEWBYID*$2@$', $content);
 

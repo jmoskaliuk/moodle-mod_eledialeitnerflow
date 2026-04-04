@@ -32,7 +32,6 @@ use Behat\Mink\Exception\ExpectationException;
  * Custom Behat steps for LeitnerFlow.
  */
 class behat_mod_eledialeitnerflow extends behat_base {
-
     /**
      * Opens the activity chooser on the current course page.
      *

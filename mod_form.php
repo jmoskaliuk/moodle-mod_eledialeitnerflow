@@ -26,14 +26,25 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
+/**
+ * Module settings form for eLeDia Leitner Flow.
+ *
+ * @package    mod_eledialeitnerflow
+ * @copyright  2024 eLeDia GmbH
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mod_eledialeitnerflow_mod_form extends moodleform_mod {
-
+    /**
+     * Form definition.
+     *
+     * @return void
+     */
     public function definition(): void {
         global $CFG, $DB, $COURSE;
 
         $mform = $this->_form;
 
-        // ---- General -------------------------------------------------------
+        // ---
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         $mform->addElement('text', 'name', get_string('name'), ['size' => 64]);
@@ -42,7 +53,7 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
 
         $this->standard_intro_elements();
 
-        // ---- Question Bank -------------------------------------------------
+        // ---
         $mform->addElement('header', 'questionbanksettings', get_string('questioncategory', 'mod_eledialeitnerflow'));
 
         // Load ALL question categories (simplest possible query).
@@ -64,8 +75,12 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
         }
 
         if (empty($categories)) {
-            $mform->addElement('static', 'nocategory_warning', '',
-                \html_writer::tag('div',
+            $mform->addElement(
+                'static',
+                'nocategory_warning',
+                '',
+                \html_writer::tag(
+                    'div',
                     get_string('nocategory', 'mod_eledialeitnerflow'),
                     ['class' => 'alert alert-warning']
                 )
@@ -73,47 +88,73 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
             $categories = [0 => '---'];
         }
 
-        $mform->addElement('autocomplete', 'questioncategoryids_array',
-            get_string('categories'), $categories,
-            ['multiple' => true]);
+        $mform->addElement(
+            'autocomplete',
+            'questioncategoryids_array',
+            get_string('categories'),
+            $categories,
+            ['multiple' => true]
+        );
         $mform->addHelpButton('questioncategoryids_array', 'questioncategory', 'mod_eledialeitnerflow');
         $mform->addRule('questioncategoryids_array', null, 'required');
 
-        // Question rotation
+        // Question rotation.
         $rotationoptions = [
             1 => get_string('questionrotation_dynamic', 'mod_eledialeitnerflow'),
-            0 => get_string('questionrotation_fixed',   'mod_eledialeitnerflow'),
+            0 => get_string('questionrotation_fixed', 'mod_eledialeitnerflow'),
         ];
-        $mform->addElement('select', 'questionrotation',
-            get_string('questionrotation', 'mod_eledialeitnerflow'), $rotationoptions);
+        $mform->addElement(
+            'select',
+            'questionrotation',
+            get_string('questionrotation', 'mod_eledialeitnerflow'),
+            $rotationoptions
+        );
         $mform->addHelpButton('questionrotation', 'questionrotation', 'mod_eledialeitnerflow');
         $mform->setDefault('questionrotation', 1);
 
-        // ---- Session settings ----------------------------------------------
-        $mform->addElement('header', 'sessionsettingsheader',
-            get_string('sessionsettings', 'mod_eledialeitnerflow'));
+        // ---
+        $mform->addElement(
+            'header',
+            'sessionsettingsheader',
+            get_string('sessionsettings', 'mod_eledialeitnerflow')
+        );
 
-        $mform->addElement('text', 'sessionsize',
-            get_string('sessionsize', 'mod_eledialeitnerflow'), ['size' => 4]);
+        $mform->addElement(
+            'text',
+            'sessionsize',
+            get_string('sessionsize', 'mod_eledialeitnerflow'),
+            ['size' => 4]
+        );
         $mform->setType('sessionsize', PARAM_INT);
         $mform->setDefault('sessionsize', 20);
         $mform->addHelpButton('sessionsize', 'sessionsize', 'mod_eledialeitnerflow');
         $mform->addRule('sessionsize', null, 'required');
         $mform->addRule('sessionsize', null, 'numeric');
 
-        // ---- Leitner System settings ---------------------------------------
-        $mform->addElement('header', 'leitnersettingsheader',
-            get_string('leitnersettings', 'mod_eledialeitnerflow'));
+        // ---
+        $mform->addElement(
+            'header',
+            'leitnersettingsheader',
+            get_string('leitnersettings', 'mod_eledialeitnerflow')
+        );
         $mform->setExpanded('leitnersettingsheader', true);
 
         $boxoptions = [1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5'];
-        $mform->addElement('select', 'boxcount',
-            get_string('boxcount', 'mod_eledialeitnerflow'), $boxoptions);
+        $mform->addElement(
+            'select',
+            'boxcount',
+            get_string('boxcount', 'mod_eledialeitnerflow'),
+            $boxoptions
+        );
         $mform->addHelpButton('boxcount', 'boxcount', 'mod_eledialeitnerflow');
         $mform->setDefault('boxcount', 3);
 
-        $mform->addElement('text', 'correcttolearn',
-            get_string('correcttolearn', 'mod_eledialeitnerflow'), ['size' => 4]);
+        $mform->addElement(
+            'text',
+            'correcttolearn',
+            get_string('correcttolearn', 'mod_eledialeitnerflow'),
+            ['size' => 4]
+        );
         $mform->setType('correcttolearn', PARAM_INT);
         $mform->setDefault('correcttolearn', 3);
         $mform->addHelpButton('correcttolearn', 'correcttolearn', 'mod_eledialeitnerflow');
@@ -121,39 +162,54 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
         $mform->addRule('correcttolearn', null, 'numeric');
 
         $wrongoptions = [
-            0 => get_string('wrongbehavior_reset',    'mod_eledialeitnerflow'),
-            1 => get_string('wrongbehavior_back1',    'mod_eledialeitnerflow'),
+            0 => get_string('wrongbehavior_reset', 'mod_eledialeitnerflow'),
+            1 => get_string('wrongbehavior_back1', 'mod_eledialeitnerflow'),
             2 => get_string('wrongbehavior_nochange', 'mod_eledialeitnerflow'),
         ];
-        $mform->addElement('select', 'wrongbehavior',
-            get_string('wrongbehavior', 'mod_eledialeitnerflow'), $wrongoptions);
+        $mform->addElement(
+            'select',
+            'wrongbehavior',
+            get_string('wrongbehavior', 'mod_eledialeitnerflow'),
+            $wrongoptions
+        );
         $mform->addHelpButton('wrongbehavior', 'wrongbehavior', 'mod_eledialeitnerflow');
         $mform->setDefault('wrongbehavior', 0);
 
         $priorityoptions = [
-            0 => get_string('prioritystrategy_prio',  'mod_eledialeitnerflow'),
+            0 => get_string('prioritystrategy_prio', 'mod_eledialeitnerflow'),
             1 => get_string('prioritystrategy_mixed', 'mod_eledialeitnerflow'),
         ];
-        $mform->addElement('select', 'prioritystrategy',
-            get_string('cardselection', 'mod_eledialeitnerflow'), $priorityoptions);
+        $mform->addElement(
+            'select',
+            'prioritystrategy',
+            get_string('cardselection', 'mod_eledialeitnerflow'),
+            $priorityoptions
+        );
         $mform->addHelpButton('prioritystrategy', 'prioritystrategy', 'mod_eledialeitnerflow');
         $mform->setDefault('prioritystrategy', 0);
 
         // Display & feedback settings (within Leitner System section).
-        $mform->addElement('selectyesno', 'showanimation',
-            get_string('showanimation', 'mod_eledialeitnerflow'));
+        $mform->addElement(
+            'selectyesno',
+            'showanimation',
+            get_string('showanimation', 'mod_eledialeitnerflow')
+        );
         $mform->addHelpButton('showanimation', 'showanimation', 'mod_eledialeitnerflow');
         $mform->setDefault('showanimation', 1);
 
         $feedbackoptions = [
-            0 => get_string('feedbackstyle_off',      'mod_eledialeitnerflow'),
-            1 => get_string('feedbackstyle_minimal',  'mod_eledialeitnerflow'),
+            0 => get_string('feedbackstyle_off', 'mod_eledialeitnerflow'),
+            1 => get_string('feedbackstyle_minimal', 'mod_eledialeitnerflow'),
             2 => get_string('feedbackstyle_animated', 'mod_eledialeitnerflow'),
             3 => get_string('feedbackstyle_detailed', 'mod_eledialeitnerflow'),
             4 => get_string('feedbackstyle_gamified', 'mod_eledialeitnerflow'),
         ];
-        $mform->addElement('select', 'feedbackstyle',
-            get_string('feedbackstyle', 'mod_eledialeitnerflow'), $feedbackoptions);
+        $mform->addElement(
+            'select',
+            'feedbackstyle',
+            get_string('feedbackstyle', 'mod_eledialeitnerflow'),
+            $feedbackoptions
+        );
         $mform->addHelpButton('feedbackstyle', 'feedbackstyle', 'mod_eledialeitnerflow');
         $mform->setDefault('feedbackstyle', 2);
 
@@ -165,26 +221,40 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
             3000 => '3 s',
             5000 => '5 s',
         ];
-        $mform->addElement('select', 'animationdelay',
-            get_string('animationdelay', 'mod_eledialeitnerflow'), $delayoptions);
+        $mform->addElement(
+            'select',
+            'animationdelay',
+            get_string('animationdelay', 'mod_eledialeitnerflow'),
+            $delayoptions
+        );
         $mform->addHelpButton('animationdelay', 'animationdelay', 'mod_eledialeitnerflow');
         $mform->setDefault('animationdelay', 1000);
 
-        $mform->addElement('selectyesno', 'showtour',
-            get_string('showtour', 'mod_eledialeitnerflow'));
+        $mform->addElement(
+            'selectyesno',
+            'showtour',
+            get_string('showtour', 'mod_eledialeitnerflow')
+        );
         $mform->addHelpButton('showtour', 'showtour', 'mod_eledialeitnerflow');
         $mform->setDefault('showtour', 1);
 
-        // ---- Grading -------------------------------------------------------
-        $mform->addElement('header', 'gradingsettingsheader',
-            get_string('gradingsettings', 'mod_eledialeitnerflow'));
+        // ---
+        $mform->addElement(
+            'header',
+            'gradingsettingsheader',
+            get_string('gradingsettings', 'mod_eledialeitnerflow')
+        );
 
         $gradeoptions = [
-            0 => get_string('grademethod_none',    'mod_eledialeitnerflow'),
+            0 => get_string('grademethod_none', 'mod_eledialeitnerflow'),
             1 => get_string('grademethod_percent', 'mod_eledialeitnerflow'),
         ];
-        $mform->addElement('select', 'grademethod',
-            get_string('grademethod', 'mod_eledialeitnerflow'), $gradeoptions);
+        $mform->addElement(
+            'select',
+            'grademethod',
+            get_string('grademethod', 'mod_eledialeitnerflow'),
+            $gradeoptions
+        );
         $mform->setDefault('grademethod', 0);
 
         $this->standard_coursemodule_elements();
@@ -203,6 +273,13 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
         }
     }
 
+    /**
+     * Validate form data.
+     *
+     * @param array $data The form data to validate.
+     * @param array $files The files array.
+     * @return array Validation errors.
+     */
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
 

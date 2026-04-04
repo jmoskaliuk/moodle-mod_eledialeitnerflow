@@ -28,7 +28,6 @@ namespace mod_eledialeitnerflow\event;
  * Event triggered when a teacher resets a student's progress.
  */
 class progress_reset extends \core\event\base {
-
     /**
      * Initialise the event.
      */

@@ -28,7 +28,6 @@ namespace mod_eledialeitnerflow\event;
  * Event triggered when a student completes a learning session.
  */
 class session_completed extends \core\event\base {
-
     /**
      * Initialise the event.
      */

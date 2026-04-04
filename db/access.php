@@ -38,7 +38,7 @@ $capabilities = [
         'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ],
 
-    // View the activity (students, teachers)
+    // View the activity (students, teachers).
     'mod/eledialeitnerflow:view' => [
         'captype'      => 'read',
         'contextlevel' => CONTEXT_MODULE,
@@ -51,7 +51,7 @@ $capabilities = [
         ],
     ],
 
-    // Attempt the quiz (students)
+    // Attempt the quiz (students).
     'mod/eledialeitnerflow:attempt' => [
         'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -63,7 +63,7 @@ $capabilities = [
         ],
     ],
 
-    // View all students' results (teacher)
+    // View all students' results (teacher).
     'mod/eledialeitnerflow:viewreport' => [
         'captype'      => 'read',
         'contextlevel' => CONTEXT_MODULE,
@@ -74,7 +74,7 @@ $capabilities = [
         ],
     ],
 
-    // Manage settings (editing teacher)
+    // Manage settings (editing teacher).
     'mod/eledialeitnerflow:manage' => [
         'riskbitmask'  => RISK_CONFIG,
         'captype'      => 'write',
@@ -85,7 +85,7 @@ $capabilities = [
         ],
     ],
 
-    // Reset student progress
+    // Reset student progress.
     'mod/eledialeitnerflow:resetprogress' => [
         'riskbitmask'  => RISK_DATALOSS,
         'captype'      => 'write',

@@ -24,8 +24,6 @@
 
 namespace mod_eledialeitnerflow\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -35,11 +33,19 @@ use core_privacy\local\request\helper;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
+/**
+ * Privacy provider for mod_eledialeitnerflow.
+ */
 class provider implements
     \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\plugin\provider,
-    \core_privacy\local\request\core_userlist_provider {
-
+    \core_privacy\local\request\core_userlist_provider,
+    \core_privacy\local\request\plugin\provider {
+    /**
+     * Get metadata about this plugin's privacy data.
+     *
+     * @param collection $collection The metadata collection.
+     * @return collection The updated metadata collection.
+     */
     public static function get_metadata(collection $collection): collection {
 
         $collection->add_database_table(
@@ -70,6 +76,12 @@ class provider implements
         return $collection;
     }
 
+    /**
+     * Get contexts for a specific user.
+     *
+     * @param int $userid The user ID.
+     * @return contextlist The context list for the user.
+     */
     public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
         $sql = "SELECT ctx.id
@@ -81,6 +93,12 @@ class provider implements
         return $contextlist;
     }
 
+    /**
+     * Get users in a context.
+     *
+     * @param userlist $userlist The user list object.
+     * @return void
+     */
     public static function get_users_in_context(userlist $userlist): void {
         $context = $userlist->get_context();
         if ($context->contextlevel !== CONTEXT_MODULE) {
@@ -93,6 +111,12 @@ class provider implements
         $userlist->add_from_sql('userid', $sql, ['cmid' => $context->instanceid]);
     }
 
+    /**
+     * Export user data for a context list.
+     *
+     * @param approved_contextlist $contextlist The approved context list.
+     * @return void
+     */
     public static function export_user_data(approved_contextlist $contextlist): void {
         global $DB;
 
@@ -106,7 +130,7 @@ class provider implements
             }
             $userid = $contextlist->get_user()->id;
 
-            // Export card states
+            // Export card states.
             $states = $DB->get_records('eledialeitnerflow_card_state', [
                 'eledialeitnerflowid' => $cm->instance,
                 'userid'        => $userid,
@@ -118,7 +142,7 @@ class provider implements
                 );
             }
 
-            // Export sessions
+            // Export sessions.
             $sessions = $DB->get_records('eledialeitnerflow_sessions', [
                 'eledialeitnerflowid' => $cm->instance,
                 'userid'        => $userid,
@@ -132,6 +156,12 @@ class provider implements
         }
     }
 
+    /**
+     * Delete all user data for a context.
+     *
+     * @param \context $context The context to delete data from.
+     * @return void
+     */
     public static function delete_data_for_all_users_in_context(\context $context): void {
         global $DB;
         if ($context->contextlevel !== CONTEXT_MODULE) {
@@ -148,10 +178,16 @@ class provider implements
                 \question_engine::delete_questions_usage_by_activity($session->qubaid);
             }
         }
-        $DB->delete_records('eledialeitnerflow_sessions',   ['eledialeitnerflowid' => $cm->instance]);
+        $DB->delete_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $cm->instance]);
         $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $cm->instance]);
     }
 
+    /**
+     * Delete data for a specific user.
+     *
+     * @param approved_contextlist $contextlist The approved context list for the user.
+     * @return void
+     */
     public static function delete_data_for_user(approved_contextlist $contextlist): void {
         global $DB;
         $userid = $contextlist->get_user()->id;
@@ -168,6 +204,12 @@ class provider implements
         }
     }
 
+    /**
+     * Delete data for multiple users.
+     *
+     * @param approved_userlist $userlist The approved user list.
+     * @return void
+     */
     public static function delete_data_for_users(approved_userlist $userlist): void {
         $context = $userlist->get_context();
         if ($context->contextlevel !== CONTEXT_MODULE) {

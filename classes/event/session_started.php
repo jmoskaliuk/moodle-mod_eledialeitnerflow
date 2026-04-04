@@ -28,7 +28,6 @@ namespace mod_eledialeitnerflow\event;
  * Event triggered when a student starts a new learning session.
  */
 class session_started extends \core\event\base {
-
     /**
      * Initialise the event.
      */

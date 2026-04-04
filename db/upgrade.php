@@ -22,8 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Execute upgrade steps for mod_eledialeitnerflow.
+ *
+ * Handles database schema migrations and configuration updates.
+ *
+ * @param int $oldversion The previous version number.
+ * @return bool True on success.
+ */
 function xmldb_eledialeitnerflow_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
@@ -41,8 +47,12 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
         $instances = $DB->get_records('eledialeitnerflow', null, '', 'id, questioncategoryid');
         foreach ($instances as $inst) {
             if ((int) $inst->questioncategoryid > 0) {
-                $DB->set_field('eledialeitnerflow', 'questioncategoryids',
-                    (string) $inst->questioncategoryid, ['id' => $inst->id]);
+                $DB->set_field(
+                    'eledialeitnerflow',
+                    'questioncategoryids',
+                    (string) $inst->questioncategoryid,
+                    ['id' => $inst->id]
+                );
             }
         }
 
@@ -71,8 +81,11 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
     if ($oldversion < 2024120113) {
         // Delete any previously imported broken tour(s).
         try {
-            $oldtours = $DB->get_records_select('tool_usertours_tours',
-                $DB->sql_like('name', '?'), ['%LeitnerFlow%']);
+            $oldtours = $DB->get_records_select(
+                'tool_usertours_tours',
+                $DB->sql_like('name', '?'),
+                ['%LeitnerFlow%']
+            );
             foreach ($oldtours as $tour) {
                 $DB->delete_records('tool_usertours_steps', ['tourid' => $tour->id]);
                 $DB->delete_records('tool_usertours_tours', ['id' => $tour->id]);
@@ -94,8 +107,11 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
 
         // Delete old tours (they used {mlang} syntax which needs filter_multilang2).
         try {
-            $oldtours = $DB->get_records_select('tool_usertours_tours',
-                $DB->sql_like('name', '?'), ['%LeitnerFlow%']);
+            $oldtours = $DB->get_records_select(
+                'tool_usertours_tours',
+                $DB->sql_like('name', '?'),
+                ['%LeitnerFlow%']
+            );
             foreach ($oldtours as $tour) {
                 $DB->delete_records('tool_usertours_steps', ['tourid' => $tour->id]);
                 $DB->delete_records('tool_usertours_tours', ['id' => $tour->id]);
@@ -116,8 +132,11 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
 
         // Delete all LeitnerFlow tours (they had wrong targettype values).
         try {
-            $oldtours = $DB->get_records_select('tool_usertours_tours',
-                $DB->sql_like('name', '?'), ['%LeitnerFlow%']);
+            $oldtours = $DB->get_records_select(
+                'tool_usertours_tours',
+                $DB->sql_like('name', '?'),
+                ['%LeitnerFlow%']
+            );
             foreach ($oldtours as $tour) {
                 $DB->delete_records('tool_usertours_steps', ['tourid' => $tour->id]);
                 $DB->delete_records('tool_usertours_tours', ['id' => $tour->id]);
@@ -137,8 +156,11 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
         require_once(__DIR__ . '/install.php');
 
         try {
-            $oldtours = $DB->get_records_select('tool_usertours_tours',
-                $DB->sql_like('name', '?'), ['%LeitnerFlow%']);
+            $oldtours = $DB->get_records_select(
+                'tool_usertours_tours',
+                $DB->sql_like('name', '?'),
+                ['%LeitnerFlow%']
+            );
             foreach ($oldtours as $tour) {
                 $DB->delete_records('tool_usertours_steps', ['tourid' => $tour->id]);
                 $DB->delete_records('tool_usertours_tours', ['id' => $tour->id]);
@@ -169,8 +191,11 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
         require_once(__DIR__ . '/install.php');
 
         try {
-            $oldtours = $DB->get_records_select('tool_usertours_tours',
-                $DB->sql_like('name', '?'), ['%LeitnerFlow%']);
+            $oldtours = $DB->get_records_select(
+                'tool_usertours_tours',
+                $DB->sql_like('name', '?'),
+                ['%LeitnerFlow%']
+            );
             foreach ($oldtours as $tour) {
                 $DB->delete_records('tool_usertours_steps', ['tourid' => $tour->id]);
                 $DB->delete_records('tool_usertours_tours', ['id' => $tour->id]);
@@ -238,8 +263,10 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
 
         // Delete any existing teacher tour to avoid duplicates.
         try {
-            $oldtours = $DB->get_records_select('tool_usertours_tours',
-                "pathmatch LIKE '%/mod/eledialeitnerflow/report.php%'");
+            $oldtours = $DB->get_records_select(
+                'tool_usertours_tours',
+                "pathmatch LIKE '%/mod/eledialeitnerflow/report.php%'"
+            );
             foreach ($oldtours as $tour) {
                 $DB->delete_records('tool_usertours_steps', ['tourid' => $tour->id]);
                 $DB->delete_records('tool_usertours_tours', ['id' => $tour->id]);

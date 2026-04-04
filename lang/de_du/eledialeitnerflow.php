@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['sessionresult']           = 'Du hast {$a->correct} von {$a->total} Fragen richtig beantwortet.';
+$string['error_noattempt']         = 'Du hast keine Berechtigung, dieses Quiz durchzuführen.';
 $string['nocardsinpool']           = 'Keine Fragen in der gewählten Kategorie gefunden. Bitte füge zuerst Fragen zur Fragensammlung hinzu.';
 $string['nounlearnedcards']        = 'Alle Karten sind bereits gelernt! Du kannst deinen Fortschritt zurücksetzen, um neu zu beginnen.';
-$string['error_noattempt']         = 'Du hast keine Berechtigung, dieses Quiz durchzuführen.';
+$string['sessionresult']           = 'Du hast {$a->correct} von {$a->total} Fragen richtig beantwortet.';

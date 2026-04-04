@@ -25,10 +25,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 class mod_eledialeitnerflow_generator extends testing_module_generator {
-
     /**
      * Create an eledialeitnerflow activity with sensible Leitner defaults.
      *
@@ -42,16 +39,16 @@ class mod_eledialeitnerflow_generator extends testing_module_generator {
     public function create_instance($record = null, array $options = null): stdClass {
         $record = (object)(array)($record ?? []);
 
-        // Default Leitner settings
+        // Default Leitner settings.
         $defaults = [
             'name'               => 'Test Leitner Flow ' . $this->instancecount,
             'intro'              => 'Test intro',
             'introformat'        => FORMAT_HTML,
-            'questioncategoryid' => 0,   // Will be set by tests that need real questions
+            'questioncategoryid' => 0, // Will be set by tests that need real questions.
             'sessionsize'        => 10,
             'boxcount'           => 3,
             'correcttolearn'     => 3,
-            'wrongbehavior'      => 0,   // WRONG_RESET
+            'wrongbehavior'      => 0, // WRONG_RESET.
             'questionrotation'   => 1,
             'prioritystrategy'   => 0,
             'grade'              => 0,
@@ -82,14 +79,14 @@ class mod_eledialeitnerflow_generator extends testing_module_generator {
             'currentbox'   => 1,
             'correctcount' => 0,
             'attemptcount' => 0,
-            'status'       => 0,   // STATUS_OPEN
+            'status'       => 0, // STATUS_OPEN.
             'timecreated'  => time(),
             'timemodified' => time(),
         ];
 
         $record = (object)array_merge($defaults, $data);
 
-        // Upsert: delete existing state for same quiz+user+question if present
+        // Upsert: delete existing state for same quiz+user+question if present.
         $DB->delete_records('eledialeitnerflow_card_state', [
             'eledialeitnerflowid' => $record->eledialeitnerflowid,
             'userid'        => $record->userid,
@@ -115,7 +112,7 @@ class mod_eledialeitnerflow_generator extends testing_module_generator {
             'currentindex'     => 0,
             'questionsasked'   => 5,
             'questionscorrect' => 3,
-            'status'           => 1,  // completed
+            'status'           => 1, // Completed.
             'timecreated'      => time() - 3600,
             'timecompleted'    => time(),
         ];

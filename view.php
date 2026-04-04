@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/question/engine/lib.php');
 
 use mod_eledialeitnerflow\engine\leitner_engine;
 
-$id = required_param('id', PARAM_INT); // course module id
+$id = required_param('id', PARAM_INT); // Course module id.
 
 $cm         = get_coursemodule_from_id('eledialeitnerflow', $id, 0, false, MUST_EXIST);
 $course     = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
@@ -55,17 +55,21 @@ if (empty($leitnerflow->showtour)) {
     $PAGE->add_body_class('eledialeitnerflow-notour');
 }
 
-// ---- Handle reset action (teacher only) ------------------------------------
+// ---
 if (optional_param('resetuserid', 0, PARAM_INT) > 0) {
     require_capability('mod/eledialeitnerflow:resetprogress', $context);
     require_sesskey();
     $resetuid = required_param('resetuserid', PARAM_INT);
     leitner_engine::delete_user_data($leitnerflow->id, $resetuid);
-    redirect(new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cm->id]),
-        get_string('progressreset', 'mod_eledialeitnerflow'), null, \core\output\notification::NOTIFY_SUCCESS);
+    redirect(
+        new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cm->id]),
+        get_string('progressreset', 'mod_eledialeitnerflow'),
+        null,
+        \core\output\notification::NOTIFY_SUCCESS
+    );
 }
 
-// ---- Handle cancel session action ------------------------------------------
+// ---
 if (optional_param('cancelsession', 0, PARAM_INT)) {
     require_sesskey();
     $stale = $DB->get_records('eledialeitnerflow_sessions', [
@@ -83,11 +87,15 @@ if (optional_param('cancelsession', 0, PARAM_INT)) {
         'userid'        => $USER->id,
         'status'        => 0,
     ]);
-    redirect(new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cm->id]),
-        get_string('sessioncancelled', 'mod_eledialeitnerflow'), null, \core\output\notification::NOTIFY_INFO);
+    redirect(
+        new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cm->id]),
+        get_string('sessioncancelled', 'mod_eledialeitnerflow'),
+        null,
+        \core\output\notification::NOTIFY_INFO
+    );
 }
 
-// ---- Determine role --------------------------------------------------------
+// ---
 $isteacher  = has_capability('mod/eledialeitnerflow:viewreport', $context);
 $canattempt = has_capability('mod/eledialeitnerflow:attempt', $context);
 
@@ -95,7 +103,7 @@ echo $OUTPUT->header();
 // Note: Moodle 4.x+ renders the activity name and intro in the page header
 // automatically. Do NOT call format_module_intro() here to avoid duplication.
 
-// ---- Student view ----------------------------------------------------------
+// ---
 if ($canattempt) {
     $categoryids = leitner_engine::get_category_ids($leitnerflow);
     $stats = leitner_engine::get_user_stats($leitnerflow->id, $USER->id, $categoryids);
@@ -107,14 +115,17 @@ if ($canattempt) {
         'status'        => 0,
     ]);
 
-    // ---- Dashboard card (Moodle card component) ----
+    // Dashboard card (Moodle card component).
     echo html_writer::start_div('card mb-4');
     echo html_writer::start_div('card-body');
     echo html_writer::tag('h5', get_string('yourprogress', 'mod_eledialeitnerflow'), ['class' => 'card-title']);
 
-    // ---- Leitner box visualization (custom — no Moodle equivalent) ----
+    // Leitner box visualization (custom — no Moodle equivalent).
     $boxdist = leitner_engine::get_box_distribution(
-        $leitnerflow->id, $USER->id, $categoryids, $leitnerflow->boxcount
+        $leitnerflow->id,
+        $USER->id,
+        $categoryids,
+        $leitnerflow->boxcount
     );
     $boxcount = (int) $leitnerflow->boxcount;
 
@@ -187,9 +198,9 @@ if ($canattempt) {
     echo html_writer::end_div();
     echo html_writer::end_div();
 
-    echo html_writer::end_div(); // eledialeitnerflow-boxes
+    echo html_writer::end_div(); // Eledialeitnerflow-boxes.
 
-    // ---- Per-box progress bar (Moodle progress component) ----
+    // Per-box progress bar (Moodle progress component).
     if ($stats->total > 0) {
         $pctlearned = round($stats->learned / $stats->total * 100, 1);
 
@@ -198,16 +209,26 @@ if ($canattempt) {
             $cnt = $boxdist[$b] ?? 0;
             if ($cnt > 0) {
                 $pct = round($cnt / $stats->total * 100, 1);
-                echo html_writer::div('', "progress-bar lf-seg-box{$b}",
+                echo html_writer::div(
+                    '',
+                    "progress-bar lf-seg-box{$b}",
                     ['style' => "width:{$pct}%", 'role' => 'progressbar',
-                     'aria-valuenow' => $pct, 'aria-valuemin' => 0, 'aria-valuemax' => 100]);
+                    'aria-valuenow' => $pct,
+                    'aria-valuemin' => 0,
+                    'aria-valuemax' => 100]
+                );
             }
         }
         if ($stats->learned > 0) {
             $pct = round($stats->learned / $stats->total * 100, 1);
-            echo html_writer::div('', 'progress-bar lf-seg-learned',
+            echo html_writer::div(
+                '',
+                'progress-bar lf-seg-learned',
                 ['style' => "width:{$pct}%", 'role' => 'progressbar',
-                 'aria-valuenow' => $pct, 'aria-valuemin' => 0, 'aria-valuemax' => 100]);
+                'aria-valuenow' => $pct,
+                'aria-valuemin' => 0,
+                'aria-valuemax' => 100]
+            );
         }
         echo html_writer::end_div();
 
@@ -221,15 +242,14 @@ if ($canattempt) {
         );
     }
 
-    echo html_writer::end_div(); // card-body
-    echo html_writer::end_div(); // card
+    echo html_writer::end_div(); // Card-body.
+    echo html_writer::end_div(); // Card.
 
-    // ---- Session action area ----
+    // Session action area.
     echo html_writer::start_div('mt-3 mb-4');
 
     if ($stats->total === 0) {
         echo $OUTPUT->notification(get_string('nocardsinpool', 'mod_eledialeitnerflow'), 'warning');
-
     } else if ($stats->learned >= $stats->total) {
         // All learned — Moodle alert + celebration.
         echo html_writer::start_div('alert alert-success d-flex align-items-center', ['role' => 'status']);
@@ -243,11 +263,12 @@ if ($canattempt) {
             'resetuserid' => $USER->id,
             'sesskey' => sesskey(),
         ]);
-        echo html_writer::link($reseturl,
+        echo html_writer::link(
+            $reseturl,
             get_string('resetandrestart', 'mod_eledialeitnerflow'),
-            ['class' => 'btn btn-outline-secondary']);
+            ['class' => 'btn btn-outline-secondary']
+        );
         echo html_writer::end_div();
-
     } else if ($activesession) {
         // Active session — Moodle alert as session banner.
         $answered = (int) $activesession->questionsasked;
@@ -269,15 +290,19 @@ if ($canattempt) {
             'id'     => $cm->id,
             'sessid' => $activesession->id,
         ]);
-        echo html_writer::link($continueurl,
+        echo html_writer::link(
+            $continueurl,
             get_string('continuesession', 'mod_eledialeitnerflow'),
-            ['class' => 'btn btn-primary']);
+            ['class' => 'btn btn-primary']
+        );
 
         // New session.
         $newurl = new moodle_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cm->id, 'start' => 1]);
-        echo html_writer::link($newurl,
+        echo html_writer::link(
+            $newurl,
             get_string('newsession', 'mod_eledialeitnerflow'),
-            ['class' => 'btn btn-outline-secondary']);
+            ['class' => 'btn btn-outline-secondary']
+        );
 
         // End session.
         $cancelurl = new moodle_url('/mod/eledialeitnerflow/view.php', [
@@ -285,25 +310,28 @@ if ($canattempt) {
             'cancelsession' => 1,
             'sesskey' => sesskey(),
         ]);
-        echo html_writer::link($cancelurl,
+        echo html_writer::link(
+            $cancelurl,
             get_string('endsession', 'mod_eledialeitnerflow'),
-            ['class' => 'btn btn-outline-danger']);
+            ['class' => 'btn btn-outline-danger']
+        );
 
         echo html_writer::end_div();
-
     } else {
         // No active session — start button.
         echo html_writer::start_div('d-flex');
         $starturl = new moodle_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cm->id, 'start' => 1]);
-        echo html_writer::link($starturl,
+        echo html_writer::link(
+            $starturl,
             get_string('startsession', 'mod_eledialeitnerflow'),
-            ['class' => 'btn btn-primary']);
+            ['class' => 'btn btn-primary']
+        );
         echo html_writer::end_div();
     }
 
-    echo html_writer::end_div(); // actions
+    echo html_writer::end_div(); // Actions.
 
-    // ---- Session history card (Progress Dashboard) ----
+    // Session history card (Progress Dashboard).
     $sessionhistory = leitner_engine::get_session_history($leitnerflow->id, $USER->id, 5);
     $sessionstats   = leitner_engine::get_session_stats($leitnerflow->id, $USER->id);
 
@@ -371,8 +399,11 @@ if ($canattempt) {
         echo html_writer::tag('th', get_string('date'), ['class' => 'small text-muted']);
         echo html_writer::tag('th', get_string('correctrate', 'mod_eledialeitnerflow'), ['class' => 'small text-muted']);
         echo html_writer::tag('th', get_string('progress'), ['class' => 'small text-muted', 'style' => 'width: 40%;']);
-        echo html_writer::tag('th', get_string('sessionduration', 'mod_eledialeitnerflow'),
-            ['class' => 'small text-muted text-end']);
+        echo html_writer::tag(
+            'th',
+            get_string('sessionduration', 'mod_eledialeitnerflow'),
+            ['class' => 'small text-muted text-end']
+        );
         echo html_writer::end_tag('tr');
         echo html_writer::end_tag('thead');
         echo html_writer::start_tag('tbody');
@@ -408,13 +439,15 @@ if ($canattempt) {
             echo html_writer::start_tag('tr');
 
             // Date.
-            echo html_writer::tag('td',
+            echo html_writer::tag(
+                'td',
                 userdate($sess->timecompleted, get_string('strftimedateshort')),
                 ['class' => 'small']
             );
 
             // Correct count.
-            echo html_writer::tag('td',
+            echo html_writer::tag(
+                'td',
                 get_string('sessioncorrectof', 'mod_eledialeitnerflow', (object) [
                     'correct' => $correct, 'total' => $asked,
                 ]) . ' (' . $pct . '%)',
@@ -424,10 +457,15 @@ if ($canattempt) {
             // Mini progress bar.
             echo html_writer::start_tag('td');
             echo html_writer::start_div('progress', ['style' => 'height: 12px;']);
-            echo html_writer::div('', 'progress-bar ' . $barclass,
+            echo html_writer::div(
+                '',
+                'progress-bar ' . $barclass,
                 ['style' => "width:{$pct}%",
                  'role' => 'progressbar',
-                 'aria-valuenow' => $pct, 'aria-valuemin' => 0, 'aria-valuemax' => 100]);
+                'aria-valuenow' => $pct,
+                'aria-valuemin' => 0,
+                'aria-valuemax' => 100]
+            );
             echo html_writer::end_div();
             echo html_writer::end_tag('td');
 
@@ -440,13 +478,12 @@ if ($canattempt) {
         echo html_writer::end_tag('tbody');
         echo html_writer::end_tag('table');
 
-        echo html_writer::end_div(); // card-body
-        echo html_writer::end_div(); // card
+        echo html_writer::end_div(); // Card-body.
+        echo html_writer::end_div(); // Card.
     }
-
 }
 
-// ---- Teacher view ----------------------------------------------------------
+// ---
 if ($isteacher) {
     $reporturl = new moodle_url('/mod/eledialeitnerflow/report.php', ['id' => $cm->id]);
     echo html_writer::div(

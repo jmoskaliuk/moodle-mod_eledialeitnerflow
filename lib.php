@@ -22,14 +22,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 use mod_eledialeitnerflow\engine\leitner_engine;
 
 // -----------------------------------------------------------------------
 // Required activity module callbacks
 // -----------------------------------------------------------------------
 
+/**
+ * Create a new instance of the eledialeitnerflow activity.
+ *
+ * @param stdClass $data Form data object.
+ * @param mixed $mform Optional form object.
+ * @return int The ID of the newly created instance.
+ */
 function eledialeitnerflow_add_instance(stdClass $data, $mform = null): int {
     global $DB;
     $data->timecreated  = time();
@@ -40,6 +45,13 @@ function eledialeitnerflow_add_instance(stdClass $data, $mform = null): int {
     return $data->id;
 }
 
+/**
+ * Update an existing instance of the eledialeitnerflow activity.
+ *
+ * @param stdClass $data Form data object.
+ * @param mixed $mform Optional form object.
+ * @return bool True if successful.
+ */
 function eledialeitnerflow_update_instance(stdClass $data, $mform = null): bool {
     global $DB;
     $data->id           = $data->instance;
@@ -55,7 +67,7 @@ function eledialeitnerflow_update_instance(stdClass $data, $mform = null): bool 
  *
  * Also keeps the legacy questioncategoryid field in sync (first selected category).
  *
- * @param stdClass $data Form data object (modified in place)
+ * @param stdClass $data Form data object (modified in place).
  */
 function _eledialeitnerflow_process_categories(stdClass &$data): void {
     if (!empty($data->questioncategoryids_array) && is_array($data->questioncategoryids_array)) {
@@ -68,6 +80,12 @@ function _eledialeitnerflow_process_categories(stdClass &$data): void {
     }
 }
 
+/**
+ * Delete an instance of the eledialeitnerflow activity.
+ *
+ * @param int $id The instance ID to delete.
+ * @return bool True if successful, false otherwise.
+ */
 function eledialeitnerflow_delete_instance(int $id): bool {
     global $DB;
 
@@ -84,15 +102,21 @@ function eledialeitnerflow_delete_instance(int $id): bool {
             question_engine::delete_questions_usage_by_activity($session->qubaid);
         }
     }
-    $DB->delete_records('eledialeitnerflow_sessions',   ['eledialeitnerflowid' => $id]);
+    $DB->delete_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $id]);
     $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $id]);
-    $DB->delete_records('eledialeitnerflow',            ['id' => $id]);
+    $DB->delete_records('eledialeitnerflow', ['id' => $id]);
 
     // Pass the full object with 'course' property to avoid fatal error in grade_update().
     eledialeitnerflow_grade_item_delete($leitnerflow);
     return true;
 }
 
+/**
+ * Check if the activity module supports a given feature.
+ *
+ * @param string $feature The feature name to check.
+ * @return bool|string|null The feature support status.
+ */
 function eledialeitnerflow_supports(string $feature): bool|string|null {
     return match ($feature) {
         FEATURE_MOD_INTRO              => true,
@@ -106,9 +130,16 @@ function eledialeitnerflow_supports(string $feature): bool|string|null {
 }
 
 // -----------------------------------------------------------------------
-// Gradebook integration
+// Gradebook integration.
 // -----------------------------------------------------------------------
 
+/**
+ * Update the grade item for the activity in the gradebook.
+ *
+ * @param stdClass $leitnerflow The eledialeitnerflow instance object.
+ * @param mixed $grades Optional grades array or 'reset' string.
+ * @return int Gradebook update status code.
+ */
 function eledialeitnerflow_grade_item_update(stdClass $leitnerflow, $grades = null): int {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
@@ -143,6 +174,12 @@ function eledialeitnerflow_grade_item_update(stdClass $leitnerflow, $grades = nu
     );
 }
 
+/**
+ * Delete the grade item for the activity from the gradebook.
+ *
+ * @param stdClass $leitnerflow The eledialeitnerflow instance object.
+ * @return int Gradebook update status code.
+ */
 function eledialeitnerflow_grade_item_delete(stdClass $leitnerflow): int {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
@@ -158,6 +195,14 @@ function eledialeitnerflow_grade_item_delete(stdClass $leitnerflow): int {
     );
 }
 
+/**
+ * Update grades for users in the activity.
+ *
+ * @param stdClass $leitnerflow The eledialeitnerflow instance object.
+ * @param int $userid Optional user ID. If 0, updates all users.
+ * @param bool $nullifnone Whether to set null grades if no data exists.
+ * @return void
+ */
 function eledialeitnerflow_update_grades(stdClass $leitnerflow, int $userid = 0, bool $nullifnone = true): void {
     global $CFG;
     require_once($CFG->libdir . '/gradelib.php');
@@ -175,6 +220,13 @@ function eledialeitnerflow_update_grades(stdClass $leitnerflow, int $userid = 0,
     eledialeitnerflow_grade_item_update($leitnerflow, $grades);
 }
 
+/**
+ * Get the grade for a specific user.
+ *
+ * @param stdClass $leitnerflow The eledialeitnerflow instance object.
+ * @param int $userid The user ID.
+ * @return array Grade array with userid as key.
+ */
 function eledialeitnerflow_get_user_grade(stdClass $leitnerflow, int $userid): array {
     $categoryids = leitner_engine::get_category_ids($leitnerflow);
     $stats = leitner_engine::get_user_stats(
@@ -190,6 +242,12 @@ function eledialeitnerflow_get_user_grade(stdClass $leitnerflow, int $userid): a
     return [$userid => $grade];
 }
 
+/**
+ * Get grades for all enrolled users.
+ *
+ * @param stdClass $leitnerflow The eledialeitnerflow instance object.
+ * @return array Grade array with userid as key for each user.
+ */
 function eledialeitnerflow_get_all_grades(stdClass $leitnerflow): array {
     global $DB;
     $cm      = get_coursemodule_from_instance('eledialeitnerflow', $leitnerflow->id);
@@ -213,13 +271,22 @@ function eledialeitnerflow_get_all_grades(stdClass $leitnerflow): array {
 }
 
 // -----------------------------------------------------------------------
-// Course module info (for mobile app compatibility)
+// Course module info (for mobile app compatibility).
 // -----------------------------------------------------------------------
 
+/**
+ * Get the cached course module info.
+ *
+ * @param stdClass $coursemodule The course module object.
+ * @return cached_cm_info The cached course module info object.
+ */
 function eledialeitnerflow_get_coursemodule_info(stdClass $coursemodule): cached_cm_info {
     global $DB;
-    $lq = $DB->get_record('eledialeitnerflow', ['id' => $coursemodule->instance],
-        'id, name, intro, introformat');
+    $lq = $DB->get_record(
+        'eledialeitnerflow',
+        ['id' => $coursemodule->instance],
+        'id, name, intro, introformat'
+    );
     if (!$lq) {
         return new cached_cm_info();
     }
@@ -232,14 +299,26 @@ function eledialeitnerflow_get_coursemodule_info(stdClass $coursemodule): cached
 }
 
 // -----------------------------------------------------------------------
-// Reset course (teacher)
+// Reset course (teacher).
 // -----------------------------------------------------------------------
 
+/**
+ * Add form elements for course reset.
+ *
+ * @param moodleform $mform The reset form object.
+ * @return void
+ */
 function eledialeitnerflow_reset_course_form_definition(&$mform): void {
     $mform->addElement('header', 'eledialeitnerflowheader', get_string('modulename', 'mod_eledialeitnerflow'));
     $mform->addElement('checkbox', 'reset_eledialeitnerflow', get_string('resetprogress', 'mod_eledialeitnerflow'));
 }
 
+/**
+ * Process course reset and delete user data.
+ *
+ * @param stdClass $data The reset data object.
+ * @return array Status array with reset result information.
+ */
 function eledialeitnerflow_reset_userdata(stdClass $data): array {
     global $DB;
 
@@ -253,7 +332,7 @@ function eledialeitnerflow_reset_userdata(stdClass $data): array {
                     question_engine::delete_questions_usage_by_activity($session->qubaid);
                 }
             }
-            $DB->delete_records('eledialeitnerflow_sessions',   ['eledialeitnerflowid' => $quiz->id]);
+            $DB->delete_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $quiz->id]);
             $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $quiz->id]);
         }
         $status[] = [

@@ -22,10 +22,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Activity restoration structure step class.
+ *
+ * @package    mod_eledialeitnerflow
+ * @copyright  2024 eLeDia GmbH
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class restore_eledialeitnerflow_activity_structure_step extends restore_activity_structure_step {
-
+    /**
+     * Define the structure for restoration.
+     *
+     * @return array Array of restore path elements.
+     */
     protected function define_structure(): array {
         $paths   = [];
         $userinfo = $this->get_setting_value('userinfo');
@@ -46,6 +55,12 @@ class restore_eledialeitnerflow_activity_structure_step extends restore_activity
         return $this->prepare_activity_structure($paths);
     }
 
+    /**
+     * Process eledialeitnerflow activity data during restoration.
+     *
+     * @param array $data The activity data.
+     * @return void
+     */
     protected function process_eledialeitnerflow(array $data): void {
         global $DB;
 
@@ -62,6 +77,12 @@ class restore_eledialeitnerflow_activity_structure_step extends restore_activity
         $this->apply_activity_instance($newid);
     }
 
+    /**
+     * Process card state data during restoration.
+     *
+     * @param array $data The card state data.
+     * @return void
+     */
     protected function process_eledialeitnerflow_card_state(array $data): void {
         global $DB;
 
@@ -77,6 +98,12 @@ class restore_eledialeitnerflow_activity_structure_step extends restore_activity
         }
     }
 
+    /**
+     * Process session data during restoration.
+     *
+     * @param array $data The session data.
+     * @return void
+     */
     protected function process_eledialeitnerflow_session(array $data): void {
         global $DB;
 
@@ -86,15 +113,21 @@ class restore_eledialeitnerflow_activity_structure_step extends restore_activity
         $data->timecreated    = $this->apply_date_offset($data->timecreated);
         $data->timecompleted  = !empty($data->timecompleted)
             ? $this->apply_date_offset($data->timecompleted) : null;
-        // qubaid is not restored (question_usages are not portable)
+        // Qubaid is not restored (question_usages are not portable).
         $data->qubaid = null;
-        $data->status = 1; // mark as completed so no stale active sessions
+        // Mark as completed so no stale active sessions.
+        $data->status = 1;
 
         if ($data->userid) {
             $DB->insert_record('eledialeitnerflow_sessions', $data);
         }
     }
 
+    /**
+     * Perform actions after restoration is complete.
+     *
+     * @return void
+     */
     protected function after_execute(): void {
         $this->add_related_files('mod_eledialeitnerflow', 'intro', null);
     }

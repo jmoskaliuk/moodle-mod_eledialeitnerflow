@@ -6,8 +6,13 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * CLI script to generate test data for LeitnerFlow development.
@@ -33,7 +38,7 @@ require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/user/lib.php');
 
 // Parse CLI options.
-list($options, $unrecognised) = cli_get_params(
+[$options, $unrecognised] = cli_get_params(
     ['clean' => false, 'help' => false],
     ['c' => 'clean', 'h' => 'help']
 );
@@ -55,21 +60,21 @@ Options:
 }
 
 // Marker to identify generated test data.
-$MARKER = 'LFLOW_TESTDATA';
+$marker = 'LFLOW_TESTDATA';
 
 // ─── Clean mode ────────────────────────────────────────────────────────────────
 if ($options['clean']) {
     cli_heading('Cleaning previous test data');
 
     // Find courses with our marker in idnumber.
-    $courses = $DB->get_records_select('course', "idnumber LIKE ?", ["{$MARKER}_%"]);
+    $courses = $DB->get_records_select('course', "idnumber LIKE ?", ["{$marker}_%"]);
     foreach ($courses as $course) {
         cli_writeln("  Deleting course: {$course->fullname} (id={$course->id})");
         delete_course($course->id, false);
     }
 
     // Find users with our marker.
-    $users = $DB->get_records_select('user', "idnumber LIKE ?", ["{$MARKER}_%"]);
+    $users = $DB->get_records_select('user', "idnumber LIKE ?", ["{$marker}_%"]);
     foreach ($users as $user) {
         cli_writeln("  Deleting user: {$user->username} (id={$user->id})");
         delete_user($user);
@@ -103,10 +108,14 @@ $coursedata = [
         'shortname' => 'Eng-Vokab',
         'questions' => [
             ['name' => 'What is "Schmetterling" in English?', 'answer' => 'butterfly', 'wrong' => ['dragonfly', 'moth', 'beetle']],
-            ['name' => 'What is "Kühlschrank" in English?', 'answer' => 'refrigerator', 'wrong' => ['freezer', 'microwave', 'dishwasher']],
-            ['name' => 'What is "Wissenschaft" in English?', 'answer' => 'science', 'wrong' => ['knowledge', 'research', 'wisdom']],
-            ['name' => 'What is "Krankenhaus" in English?', 'answer' => 'hospital', 'wrong' => ['clinic', 'pharmacy', 'ambulance']],
-            ['name' => 'What is "Geschwindigkeit" in English?', 'answer' => 'speed', 'wrong' => ['history', 'story', 'velocity']],
+            ['name' => 'What is "Kühlschrank" in English?', 'answer' => 'refrigerator',
+             'wrong' => ['freezer', 'microwave', 'dishwasher']],
+            ['name' => 'What is "Wissenschaft" in English?', 'answer' => 'science',
+             'wrong' => ['knowledge', 'research', 'wisdom']],
+            ['name' => 'What is "Krankenhaus" in English?', 'answer' => 'hospital',
+             'wrong' => ['clinic', 'pharmacy', 'ambulance']],
+            ['name' => 'What is "Geschwindigkeit" in English?', 'answer' => 'speed',
+             'wrong' => ['history', 'story', 'velocity']],
             ['name' => 'What is "Umwelt" in English?', 'answer' => 'environment', 'wrong' => ['surroundings', 'nature', 'world']],
             ['name' => 'What is "Gleichung" in English?', 'answer' => 'equation', 'wrong' => ['equality', 'balance', 'formula']],
             ['name' => 'What is "Tastatur" in English?', 'answer' => 'keyboard', 'wrong' => ['mouse', 'monitor', 'printer']],
@@ -118,12 +127,17 @@ $coursedata = [
         'fullname'  => 'Biologie Zellkunde',
         'shortname' => 'Bio-Zelle',
         'questions' => [
-            ['name' => 'Welches Organell ist das "Kraftwerk" der Zelle?', 'answer' => 'Mitochondrium', 'wrong' => ['Ribosom', 'Zellkern', 'Golgi-Apparat']],
-            ['name' => 'Was ist die Funktion der Ribosomen?', 'answer' => 'Proteinbiosynthese', 'wrong' => ['Zellatmung', 'Fotosynthese', 'DNA-Replikation']],
-            ['name' => 'Welche Struktur umgibt den Zellkern?', 'answer' => 'Kernmembran', 'wrong' => ['Zellwand', 'Zellmembran', 'Vakuole']],
+            ['name' => 'Welches Organell ist das "Kraftwerk" der Zelle?', 'answer' => 'Mitochondrium',
+             'wrong' => ['Ribosom', 'Zellkern', 'Golgi-Apparat']],
+            ['name' => 'Was ist die Funktion der Ribosomen?', 'answer' => 'Proteinbiosynthese',
+             'wrong' => ['Zellatmung', 'Fotosynthese', 'DNA-Replikation']],
+            ['name' => 'Welche Struktur umgibt den Zellkern?', 'answer' => 'Kernmembran',
+             'wrong' => ['Zellwand', 'Zellmembran', 'Vakuole']],
             ['name' => 'Was speichert die DNA?', 'answer' => 'Erbinformation', 'wrong' => ['Energie', 'Proteine', 'Wasser']],
-            ['name' => 'In welchem Organell findet die Fotosynthese statt?', 'answer' => 'Chloroplast', 'wrong' => ['Mitochondrium', 'Ribosom', 'Lysosom']],
-            ['name' => 'Was ist die Hauptfunktion der Vakuole in Pflanzenzellen?', 'answer' => 'Speicherung', 'wrong' => ['Zellteilung', 'Energieproduktion', 'Bewegung']],
+            ['name' => 'In welchem Organell findet die Fotosynthese statt?', 'answer' => 'Chloroplast',
+             'wrong' => ['Mitochondrium', 'Ribosom', 'Lysosom']],
+            ['name' => 'Was ist die Hauptfunktion der Vakuole in Pflanzenzellen?', 'answer' => 'Speicherung',
+             'wrong' => ['Zellteilung', 'Energieproduktion', 'Bewegung']],
         ],
     ],
     [
@@ -131,12 +145,15 @@ $coursedata = [
         'shortname' => 'Gesch-Mod',
         'questions' => [
             ['name' => 'In welchem Jahr fiel die Berliner Mauer?', 'answer' => '1989', 'wrong' => ['1987', '1990', '1991']],
-            ['name' => 'Wer war der erste Bundeskanzler der BRD?', 'answer' => 'Konrad Adenauer', 'wrong' => ['Willy Brandt', 'Ludwig Erhard', 'Helmut Schmidt']],
+            ['name' => 'Wer war der erste Bundeskanzler der BRD?', 'answer' => 'Konrad Adenauer',
+             'wrong' => ['Willy Brandt', 'Ludwig Erhard', 'Helmut Schmidt']],
             ['name' => 'Wann wurde die EU gegründet (Maastricht)?', 'answer' => '1992', 'wrong' => ['1990', '1995', '1989']],
-            ['name' => 'Welches Ereignis war am 11. September 2001?', 'answer' => 'Terroranschläge in den USA', 'wrong' => ['Mondlandung', 'Mauerfall', 'Tsunami']],
+            ['name' => 'Welches Ereignis war am 11. September 2001?', 'answer' => 'Terroranschläge in den USA',
+             'wrong' => ['Mondlandung', 'Mauerfall', 'Tsunami']],
             ['name' => 'Wann begann der Erste Weltkrieg?', 'answer' => '1914', 'wrong' => ['1912', '1916', '1918']],
             ['name' => 'Wann endete der Zweite Weltkrieg in Europa?', 'answer' => '1945', 'wrong' => ['1944', '1946', '1943']],
-            ['name' => 'Wer hielt die Rede "Ich bin ein Berliner"?', 'answer' => 'John F. Kennedy', 'wrong' => ['Ronald Reagan', 'Winston Churchill', 'Willy Brandt']],
+            ['name' => 'Wer hielt die Rede "Ich bin ein Berliner"?', 'answer' => 'John F. Kennedy',
+             'wrong' => ['Ronald Reagan', 'Winston Churchill', 'Willy Brandt']],
         ],
     ],
 ];
@@ -157,7 +174,7 @@ cli_heading('Creating 20 test students');
 
 $students = [];
 foreach ($studentnames as $i => $namepair) {
-    $username = strtolower($namepair[0]) . '.' . strtolower(str_replace(['ä','ö','ü'], ['ae','oe','ue'], $namepair[1]));
+    $username = strtolower($namepair[0]) . '.' . strtolower(str_replace(['ä', 'ö', 'ü'], ['ae', 'oe', 'ue'], $namepair[1]));
 
     // Check if already exists.
     $existing = $DB->get_record('user', ['username' => $username]);
@@ -175,7 +192,7 @@ foreach ($studentnames as $i => $namepair) {
     $user->email       = $username . '@example.com';
     $user->confirmed   = 1;
     $user->mnethostid  = $CFG->mnet_localhost_id;
-    $user->idnumber    = $MARKER . '_user_' . ($i + 1);
+    $user->idnumber    = $marker . '_user_' . ($i + 1);
     $user->auth        = 'manual';
 
     $user->id = user_create_user($user, true, false);
@@ -190,7 +207,7 @@ $manualenrol = enrol_get_plugin('manual');
 
 foreach ($coursedata as $ci => $cdata) {
     // Check if course already exists.
-    $idnumber = $MARKER . '_course_' . ($ci + 1);
+    $idnumber = $marker . '_course_' . ($ci + 1);
     $existing = $DB->get_record('course', ['idnumber' => $idnumber]);
 
     if ($existing) {

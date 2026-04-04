@@ -24,8 +24,6 @@
 
 namespace mod_eledialeitnerflow\engine;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Leitner engine — implements the spaced repetition logic.
  *
@@ -40,16 +38,19 @@ defined('MOODLE_INTERNAL') || die();
  *   correctcount >= threshold → learned
  */
 class leitner_engine {
-
     /** Card status constants */
     const STATUS_OPEN    = 0;
+    /** @var int Card has been learned. */
     const STATUS_LEARNED = 1;
+    /** @var int Card triggered an error. */
     const STATUS_ERROR   = 2;
 
     /** Wrong-answer behavior constants */
-    const WRONG_RESET   = 0; // reset correctcount to 0 → box 1
-    const WRONG_BACK1   = 1; // subtract one step
-    const WRONG_NOCHANGE = 2; // no change to correctcount
+    const WRONG_RESET   = 0;
+    /** @var int Subtract one step from correctcount. */
+    const WRONG_BACK1   = 1;
+    /** @var int No change to correctcount. */
+    const WRONG_NOCHANGE = 2;
 
     /**
      * Calculate which box a card belongs to based on its correctcount.
@@ -64,9 +65,9 @@ class leitner_engine {
             return 1;
         }
         if ($correctcount >= $correcttolearn) {
-            return $boxcount; // Will be marked learned separately
+            return $boxcount; // Will be marked learned separately.
         }
-        // Spread correctcount 1..($correcttolearn-1) across boxes 1..$boxcount
+        // Spread correctcount 1..($correcttolearn-1) across boxes 1..$boxcount.
         $step = ($correcttolearn > 1) ? ($correcttolearn - 1) / $boxcount : 1;
         $box  = (int) ceil($correctcount / $step);
         return max(1, min($box, $boxcount));
@@ -94,7 +95,7 @@ class leitner_engine {
         $now = time();
 
         if ($state === null) {
-            // First attempt for this card
+            // First attempt for this card.
             $state                = new \stdClass();
             $state->eledialeitnerflowid = $leitnerflow->id;
             $state->userid        = $userid;
@@ -111,7 +112,7 @@ class leitner_engine {
 
         if ($correct) {
             $state->correctcount++;
-            // Check if learned
+            // Check if learned.
             if ($state->correctcount >= $leitnerflow->correcttolearn) {
                 $state->status     = self::STATUS_LEARNED;
                 $state->currentbox = $leitnerflow->boxcount;
@@ -124,7 +125,7 @@ class leitner_engine {
                 );
             }
         } else {
-            // Wrong answer — apply configured behavior
+            // Wrong answer — apply configured behavior.
             switch ((int) $leitnerflow->wrongbehavior) {
                 case self::WRONG_RESET:
                     $state->correctcount = 0;
@@ -144,7 +145,7 @@ class leitner_engine {
 
                 case self::WRONG_NOCHANGE:
                 default:
-                    // correctcount stays, but status reflects error for display
+                    // Correctcount stays, but status reflects error for display.
                     $state->status = self::STATUS_ERROR;
                     break;
             }
@@ -307,7 +308,7 @@ class leitner_engine {
                     $selected[] = $qid;
                 }
             } else if ($box === 1) {
-                // Never attempted → treated as box 1.
+                // Never attempted — treated as box 1.
                 $selected[] = $qid;
             }
         }
@@ -335,8 +336,8 @@ class leitner_engine {
         $states    = self::get_all_card_states($leitnerflow->id, $userid);
         $sessionsize = (int) $leitnerflow->sessionsize;
 
-        // Separate into buckets
-        $buckets = []; // box => [questionids]
+        // Separate into buckets.
+        $buckets = []; // box => [questionids].
         $boxcount = (int) $leitnerflow->boxcount;
         for ($b = 1; $b <= $boxcount; $b++) {
             $buckets[$b] = [];
@@ -346,29 +347,29 @@ class leitner_engine {
             if (isset($states[$qid])) {
                 $s = $states[$qid];
                 if ((int) $s->status === self::STATUS_LEARNED) {
-                    continue; // skip learned
+                    continue; // Skip learned.
                 }
                 $buckets[(int) $s->currentbox][] = $qid;
             } else {
-                // Never attempted → box 1
+                // Never attempted — box 1.
                 $buckets[1][] = $qid;
             }
         }
 
-        // Shuffle within each bucket
+        // Shuffle within each bucket.
         foreach ($buckets as &$bucket) {
             shuffle($bucket);
         }
         unset($bucket);
 
         if ((int) $leitnerflow->prioritystrategy === 1) {
-            // Mixed strategy: merge all and take randomly
+            // Mixed strategy: merge all and take randomly.
             $all = array_merge(...array_values($buckets));
             shuffle($all);
             return array_slice($all, 0, $sessionsize);
         }
 
-        // Priority strategy: fill from box 1 upwards
+        // Priority strategy: fill from box 1 upwards.
         $selected = [];
         for ($b = 1; $b <= $boxcount && count($selected) < $sessionsize; $b++) {
             $needed = $sessionsize - count($selected);
@@ -404,7 +405,7 @@ class leitner_engine {
                 $s = $states[$qid];
                 if ((int) $s->status === self::STATUS_LEARNED) {
                     $learned++;
-                } elseif ((int) $s->status === self::STATUS_ERROR) {
+                } else if ((int) $s->status === self::STATUS_ERROR) {
                     $errors++;
                 }
             }
@@ -481,7 +482,7 @@ class leitner_engine {
                 $categoryids
             );
 
-            // Session count + last session
+            // Session count + last session.
             $sessions = $DB->count_records('eledialeitnerflow_sessions', [
                 'eledialeitnerflowid' => $leitnerflow->id,
                 'userid'        => $student->id,
@@ -584,7 +585,7 @@ class leitner_engine {
             }
         }
 
-        $DB->delete_records('eledialeitnerflow_sessions',   ['eledialeitnerflowid' => $eledialeitnerflowid, 'userid' => $userid]);
+        $DB->delete_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $eledialeitnerflowid, 'userid' => $userid]);
         $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $eledialeitnerflowid, 'userid' => $userid]);
     }
 }

@@ -38,8 +38,10 @@ echo $OUTPUT->heading(get_string('modulenameplural', 'mod_eledialeitnerflow'));
 
 $instances = get_all_instances_in_course('eledialeitnerflow', $course);
 if (empty($instances)) {
-    notice(get_string('thereareno', 'moodle', get_string('modulenameplural', 'mod_eledialeitnerflow')),
-        new moodle_url('/course/view.php', ['id' => $courseid]));
+    notice(
+        get_string('thereareno', 'moodle', get_string('modulenameplural', 'mod_eledialeitnerflow')),
+        new moodle_url('/course/view.php', ['id' => $courseid])
+    );
 }
 
 $table          = new html_table();

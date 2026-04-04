@@ -55,7 +55,7 @@ require_login($course, true, $cm);
 $context = \core\context\module::instance($cm->id);
 require_capability('mod/eledialeitnerflow:viewreport', $context);
 
-// ---- Handle reset ----------------------------------------------------------
+// ---
 if ($resetuid > 0) {
     require_sesskey();
     require_capability('mod/eledialeitnerflow:resetprogress', $context);
@@ -76,7 +76,7 @@ if ($resetuid > 0) {
     );
 }
 
-// ---- Page setup ------------------------------------------------------------
+// ---
 $baseurl = new moodle_url('/mod/eledialeitnerflow/report.php', [
     'id' => $cmid, 'tsort' => $tsort, 'tdir' => $tdir, 'perpage' => $perpage, 'search' => $search,
 ]);
@@ -92,7 +92,7 @@ $viewurl = new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cmid]);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('report', 'mod_eledialeitnerflow'), 4);
 
-// ---- Load student data -----------------------------------------------------
+// ---
 $students = leitner_engine::get_all_students_stats($leitnerflow, $course->id, $context);
 
 if (empty($students)) {
@@ -102,16 +102,16 @@ if (empty($students)) {
     exit;
 }
 
-// ---- Filter by search term -------------------------------------------------
+// ---
 if ($search !== '') {
     $searchlower = core_text::strtolower($search);
-    $students = array_filter($students, function($s) use ($searchlower) {
+    $students = array_filter($students, function ($s) use ($searchlower) {
         return str_contains(core_text::strtolower($s->fullname), $searchlower);
     });
 }
 
-// ---- Sort ------------------------------------------------------------------
-usort($students, function($a, $b) use ($tsort, $tdir) {
+// ---
+usort($students, function ($a, $b) use ($tsort, $tdir) {
     switch ($tsort) {
         case 'learned':
             $cmp = $a->stats->learned <=> $b->stats->learned;
@@ -125,8 +125,8 @@ usort($students, function($a, $b) use ($tsort, $tdir) {
         case 'lastsession':
             $cmp = ($a->lastsession ?? 0) <=> ($b->lastsession ?? 0);
             break;
-        default: // fullname.
-            $cmp = strcmp(
+        default: // Fullname.
+            $cmp = core_text::strcmp(
                 core_text::strtolower($a->fullname),
                 core_text::strtolower($b->fullname)
             );
@@ -138,7 +138,7 @@ $totalcount    = count($students);
 $allstudents   = $students; // Keep full set for summary cards.
 $students      = array_slice($students, $page * $perpage, $perpage);
 
-// ---- Summary cards (course-wide, computed from all students) ----------------
+// ---
 $totallearned = 0;
 $totalcards   = 0;
 foreach ($allstudents as $s) {
@@ -169,7 +169,7 @@ foreach ($summaries as $sum) {
 }
 echo html_writer::end_div();
 
-// ---- Search bar + per-page selector ----------------------------------------
+// ---
 $searchurl = new moodle_url('/mod/eledialeitnerflow/report.php', [
     'id' => $cmid, 'tsort' => $tsort, 'tdir' => $tdir, 'perpage' => $perpage,
 ]);
@@ -217,7 +217,7 @@ echo html_writer::end_div();
 
 echo html_writer::end_tag('form');
 
-// ---- Sortable column headers -----------------------------------------------
+// ---
 /**
  * Build a sort link for a table header.
  *
@@ -230,8 +230,15 @@ echo html_writer::end_tag('form');
  * @param string $search   Current search term.
  * @return string HTML link.
  */
-function _eledialeitnerflow_sort_link(string $column, string $label, string $tsort,
-        string $tdir, int $cmid, int $perpage, string $search): string {
+function _eledialeitnerflow_sort_link(
+    string $column,
+    string $label,
+    string $tsort,
+    string $tdir,
+    int $cmid,
+    int $perpage,
+    string $search
+): string {
     $newdir = ($tsort === $column && $tdir === 'ASC') ? 'DESC' : 'ASC';
     $url = new moodle_url('/mod/eledialeitnerflow/report.php', [
         'id' => $cmid, 'tsort' => $column, 'tdir' => $newdir, 'perpage' => $perpage, 'search' => $search,
@@ -243,24 +250,26 @@ function _eledialeitnerflow_sort_link(string $column, string $label, string $tso
     return html_writer::link($url, $label . $arrow, ['class' => 'text-nowrap']);
 }
 
-// ---- Student table ---------------------------------------------------------
+// ---
 echo html_writer::start_tag('table', ['class' => 'table table-striped table-hover generaltable']);
 echo html_writer::start_tag('thead');
 echo html_writer::start_tag('tr');
 $headers = [
-    ['key' => 'fullname',    'label' => get_string('participants')],
-    ['key' => 'learned',     'label' => get_string('learned', 'mod_eledialeitnerflow')],
-    ['key' => '',            'label' => get_string('open', 'mod_eledialeitnerflow')],
-    ['key' => '',            'label' => get_string('witherrors', 'mod_eledialeitnerflow')],
-    ['key' => 'progress',    'label' => get_string('progress')],
-    ['key' => 'sessions',    'label' => get_string('sessionhistory', 'mod_eledialeitnerflow')],
+    ['key' => 'fullname', 'label' => get_string('participants')],
+    ['key' => 'learned', 'label' => get_string('learned', 'mod_eledialeitnerflow')],
+    ['key' => '', 'label' => get_string('open', 'mod_eledialeitnerflow')],
+    ['key' => '', 'label' => get_string('witherrors', 'mod_eledialeitnerflow')],
+    ['key' => 'progress', 'label' => get_string('progress')],
+    ['key' => 'sessions', 'label' => get_string('sessionhistory', 'mod_eledialeitnerflow')],
     ['key' => 'lastsession', 'label' => get_string('lastsession', 'mod_eledialeitnerflow')],
-    ['key' => '',            'label' => ''],
+    ['key' => '', 'label' => ''],
 ];
 foreach ($headers as $h) {
     if (!empty($h['key'])) {
-        echo html_writer::tag('th',
-            _eledialeitnerflow_sort_link($h['key'], $h['label'], $tsort, $tdir, $cmid, $perpage, $search));
+        echo html_writer::tag(
+            'th',
+            _eledialeitnerflow_sort_link($h['key'], $h['label'], $tsort, $tdir, $cmid, $perpage, $search)
+        );
     } else {
         echo html_writer::tag('th', $h['label']);
     }
@@ -274,8 +283,11 @@ foreach ($students as $student) {
     $pct   = $stats->percent_learned;
 
     $progressbar = html_writer::start_div('progress', ['style' => 'height: 14px; min-width: 80px;']);
-    $progressbar .= html_writer::div('', 'progress-bar bg-success',
-        ['style' => "width:{$pct}%", 'title' => "{$pct}%"]);
+    $progressbar .= html_writer::div(
+        '',
+        'progress-bar bg-success',
+        ['style' => "width:{$pct}%", 'title' => "{$pct}%"]
+    );
     $progressbar .= html_writer::end_div();
 
     $lastsessionstr = $student->lastsession
@@ -303,11 +315,13 @@ foreach ($students as $student) {
     echo html_writer::start_tag('tr');
     $userpic = $OUTPUT->user_picture($student->user, ['size' => 24]);
     $profileurl = new moodle_url('/user/view.php', ['id' => $student->userid, 'course' => $course->id]);
-    echo html_writer::tag('td',
-        $userpic . ' ' . html_writer::link($profileurl, $student->fullname));
+    echo html_writer::tag(
+        'td',
+        $userpic . ' ' . html_writer::link($profileurl, $student->fullname)
+    );
     echo html_writer::tag('td', html_writer::span($stats->learned, 'badge bg-success text-white'));
-    echo html_writer::tag('td', html_writer::span($stats->open,    'badge bg-secondary text-white'));
-    echo html_writer::tag('td', html_writer::span($stats->errors,  'badge bg-danger text-white'));
+    echo html_writer::tag('td', html_writer::span($stats->open, 'badge bg-secondary text-white'));
+    echo html_writer::tag('td', html_writer::span($stats->errors, 'badge bg-danger text-white'));
     echo html_writer::tag('td', $progressbar . html_writer::span(" {$pct} %", 'ms-1 small'));
     echo html_writer::tag('td', $student->sessions);
     echo html_writer::tag('td', $lastsessionstr);
@@ -318,10 +332,10 @@ foreach ($students as $student) {
 echo html_writer::end_tag('tbody');
 echo html_writer::end_tag('table');
 
-// ---- Pagination bar --------------------------------------------------------
+// ---
 echo $OUTPUT->paging_bar($totalcount, $page, $perpage, $baseurl);
 
-// ---- Back button -----------------------------------------------------------
+// ---
 echo html_writer::div(
     $OUTPUT->single_button($viewurl, get_string('back'), 'get'),
     'mt-3'

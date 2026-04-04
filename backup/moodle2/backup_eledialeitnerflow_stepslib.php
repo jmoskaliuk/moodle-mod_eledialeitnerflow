@@ -22,14 +22,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Activity backup structure step class.
+ *
+ * @package    mod_eledialeitnerflow
+ * @copyright  2024 eLeDia GmbH
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class backup_eledialeitnerflow_activity_structure_step extends backup_activity_structure_step {
-
+    /**
+     * Define the structure for backup.
+     *
+     * @return backup_nested_element The nested element tree structure.
+     */
     protected function define_structure(): backup_nested_element {
         $userinfo = $this->get_setting_value('userinfo');
 
-        // Root: leitnerflow instance
+        // Root: leitnerflow instance.
         $leitnerflow = new backup_nested_element('eledialeitnerflow', ['id'], [
             'name', 'intro', 'introformat',
             'questioncategoryid', 'questioncategoryids', 'sessionsize', 'boxcount',
@@ -38,14 +47,14 @@ class backup_eledialeitnerflow_activity_structure_step extends backup_activity_s
             'timecreated', 'timemodified',
         ]);
 
-        // Card states per user
+        // Card states per user.
         $cardstates = new backup_nested_element('card_states');
         $cardstate  = new backup_nested_element('card_state', ['id'], [
             'userid', 'questionid', 'currentbox', 'correctcount',
             'attemptcount', 'status', 'timecreated', 'timemodified',
         ]);
 
-        // Sessions per user
+        // Sessions per user.
         $sessions = new backup_nested_element('sessions');
         $session  = new backup_nested_element('session', ['id'], [
             'userid', 'questionids', 'currentindex',
@@ -54,23 +63,27 @@ class backup_eledialeitnerflow_activity_structure_step extends backup_activity_s
             'timecreated', 'timecompleted',
         ]);
 
-        // Build tree
+        // Build tree.
         $leitnerflow->add_child($cardstates);
         $cardstates->add_child($cardstate);
         $leitnerflow->add_child($sessions);
         $sessions->add_child($session);
 
-        // Data sources
+        // Data sources.
         $leitnerflow->set_source_table('eledialeitnerflow', ['id' => backup::VAR_ACTIVITYID]);
 
         if ($userinfo) {
-            $cardstate->set_source_table('eledialeitnerflow_card_state',
-                ['eledialeitnerflowid' => backup::VAR_PARENTID]);
+            $cardstate->set_source_table(
+                'eledialeitnerflow_card_state',
+                ['eledialeitnerflowid' => backup::VAR_PARENTID]
+            );
             $cardstate->annotate_ids('user', 'userid');
             $cardstate->annotate_ids('question', 'questionid');
 
-            $session->set_source_table('eledialeitnerflow_sessions',
-                ['eledialeitnerflowid' => backup::VAR_PARENTID]);
+            $session->set_source_table(
+                'eledialeitnerflow_sessions',
+                ['eledialeitnerflowid' => backup::VAR_PARENTID]
+            );
             $session->annotate_ids('user', 'userid');
         }
 

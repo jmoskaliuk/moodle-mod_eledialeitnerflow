@@ -22,8 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Execute post-install tasks for mod_eledialeitnerflow.
+ *
+ * Ensures the multilang filter is active and imports user tours.
+ *
+ * @return void
+ */
 function xmldb_eledialeitnerflow_install() {
     // Ensure the core multi-language content filter is active (needed for tour translations).
     _eledialeitnerflow_ensure_multilang_filter();
