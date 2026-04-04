@@ -46,14 +46,7 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
         $mform->addElement('header', 'questionbanksettings', get_string('questioncategory', 'mod_leitnerflow'));
 
         // Load all question categories accessible from this course.
-        // Ensure a default category exists for this course context first.
-        require_once($CFG->libdir . '/questionlib.php');
-
         $coursecontext = \core\context\course::instance($COURSE->id);
-
-        // This creates the default "Top" + "Default for <course>" categories
-        // if they don't exist yet (e.g. fresh course, never visited question bank).
-        question_get_default_category($coursecontext->id);
 
         // Search in all contexts the course has access to (course, coursecat, system).
         $contextids = $coursecontext->get_parent_context_ids(true); // Includes self.
@@ -61,18 +54,17 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
         $categories = [];
         if (!empty($contextids)) {
             list($insql, $inparams) = $DB->get_in_or_equal($contextids, SQL_PARAMS_NAMED);
+            // Find all question categories in accessible contexts.
+            // Exclude only the literal "top" containers (name = 'top' AND parent = 0).
             $sql = "SELECT qc.id, qc.name, qc.contextid, ctx.contextlevel, qc.parent
                       FROM {question_categories} qc
                       JOIN {context} ctx ON ctx.id = qc.contextid
                      WHERE qc.contextid {$insql}
+                       AND NOT (qc.parent = 0 AND " . $DB->sql_compare_text('qc.name') . " = :topname)
                   ORDER BY ctx.contextlevel DESC, qc.sortorder, qc.name";
+            $inparams['topname'] = 'top';
             $cats = $DB->get_records_sql($sql, $inparams);
             foreach ($cats as $cat) {
-                // Skip "Top" categories (parent = 0) — they are structural containers,
-                // not meant for direct question assignment.
-                if ((int) $cat->parent === 0) {
-                    continue;
-                }
                 $ctx = \context::instance_by_id($cat->contextid);
                 $categories[$cat->id] = $cat->name . ' (' . $ctx->get_context_name(false, true) . ')';
             }
