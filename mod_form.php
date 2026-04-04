@@ -45,34 +45,43 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
         // ---- Question Bank -------------------------------------------------
         $mform->addElement('header', 'questionbanksettings', get_string('questioncategory', 'mod_leitnerflow'));
 
-        // Load all question categories accessible from this course.
-        $coursecontext = \core\context\course::instance($COURSE->id);
-
-        // Search in all contexts the course has access to (course, coursecat, system).
-        $contextids = $coursecontext->get_parent_context_ids(true); // Includes self.
+        // Load ALL question categories from the entire Moodle instance.
+        // Simple, broad query — no context filtering that could miss categories.
+        $sql = "SELECT qc.id, qc.name, qc.contextid, qc.parent
+                  FROM {question_categories} qc
+                 WHERE qc.name <> 'top'
+              ORDER BY qc.name";
+        $cats = $DB->get_records_sql($sql);
 
         $categories = [];
-        if (!empty($contextids)) {
-            list($insql, $inparams) = $DB->get_in_or_equal($contextids, SQL_PARAMS_NAMED);
-            // Find all question categories in accessible contexts.
-            // Exclude only the literal "top" containers (name = 'top' AND parent = 0).
-            $sql = "SELECT qc.id, qc.name, qc.contextid, ctx.contextlevel, qc.parent
-                      FROM {question_categories} qc
-                      JOIN {context} ctx ON ctx.id = qc.contextid
-                     WHERE qc.contextid {$insql}
-                       AND NOT (qc.parent = 0 AND " . $DB->sql_compare_text('qc.name') . " = :topname)
-                  ORDER BY ctx.contextlevel DESC, qc.sortorder, qc.name";
-            $inparams['topname'] = 'top';
-            $cats = $DB->get_records_sql($sql, $inparams);
-            foreach ($cats as $cat) {
-                $ctx = \context::instance_by_id($cat->contextid);
-                $categories[$cat->id] = $cat->name . ' (' . $ctx->get_context_name(false, true) . ')';
+        foreach ($cats as $cat) {
+            // Count questions in this category (via Question Bank API).
+            $qcount = $DB->count_records_sql(
+                "SELECT COUNT(DISTINCT q.id)
+                   FROM {question} q
+                   JOIN {question_versions} qv ON qv.questionid = q.id
+                   JOIN {question_bank_entries} qbe ON qbe.id = qv.questionbankentryid
+                  WHERE qbe.questioncategoryid = :catid",
+                ['catid' => $cat->id]
+            );
+            $label = $cat->name . " ({$qcount} questions)";
+
+            // Try to add context name for disambiguation.
+            try {
+                $ctx = \context::instance_by_id($cat->contextid, IGNORE_MISSING);
+                if ($ctx) {
+                    $label = $cat->name . ' — ' . $ctx->get_context_name(false, true) . " ({$qcount} questions)";
+                }
+            } catch (\Exception $e) {
+                // Context not found, use simple label.
             }
+
+            $categories[$cat->id] = $label;
         }
 
         if (empty($categories)) {
             $mform->addElement('static', 'nocategory_warning', '',
-                html_writer::tag('div',
+                \html_writer::tag('div',
                     get_string('nocategory', 'mod_leitnerflow'),
                     ['class' => 'alert alert-warning']
                 )
