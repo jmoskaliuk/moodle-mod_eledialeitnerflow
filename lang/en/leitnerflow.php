@@ -70,10 +70,30 @@ $string['grademethod_percent']       = '% of cards learned';
 $string['gradingsettings']           = 'Grading';
 $string['displaysettings']           = 'Display';
 $string['feedbackstyle']             = 'Feedback style';
-$string['feedbackstyle_help']        = '<b>Minimal</b>: brief factual message ("Card → Box 3").<br><b>Encouraging</b>: random motivational messages that vary each time.<br><b>Off</b>: no text feedback, only the box animation.';
+$string['feedbackstyle_help']        = 'Controls how students receive feedback after answering a question.<br><b>Off</b>: no feedback, advances to the next question immediately.<br><b>Minimal</b>: brief factual message ("Card → Box 3"), fades after 2 seconds.<br><b>Animated</b>: motivational messages that vary each time, plus a glow effect on the target box.<br><b>Detailed</b>: shows the correct answer and the box change (from → to). Stays visible until the student clicks "Next question".<br><b>Gamified</b>: points, streak counter, and celebrations at milestones. Great for younger learners.';
 $string['feedbackstyle_off']         = 'Off';
 $string['feedbackstyle_minimal']     = 'Minimal';
-$string['feedbackstyle_encouraging'] = 'Encouraging';
+$string['feedbackstyle_animated']    = 'Animated';
+$string['feedbackstyle_detailed']    = 'Detailed';
+$string['feedbackstyle_gamified']    = 'Gamified';
+
+// Detailed feedback strings.
+$string['detailed_correct']          = 'Correct! The card moves from Box {$a->from} to Box {$a->to}.';
+$string['detailed_correct_stay']     = 'Correct! The card stays in Box {$a}.';
+$string['detailed_learned']          = 'Correct! This card is now fully learned!';
+$string['detailed_wrong_back']       = 'Incorrect. The card moves back from Box {$a->from} to Box {$a->to}.';
+$string['detailed_wrong_stay']       = 'Incorrect. The card stays in Box {$a}.';
+$string['nextquestionbtn']           = 'Next question';
+
+// Gamified feedback strings.
+$string['points']                    = '{$a} points';
+$string['streakcounter']             = '{$a}x streak!';
+$string['streakbroken']              = 'Streak ended';
+$string['milestone_5learned']        = '5 cards learned!';
+$string['milestone_10learned']       = '10 cards learned!';
+$string['milestone_streak3']         = '3 in a row!';
+$string['milestone_streak5']         = '5 in a row! On fire!';
+$string['milestone_streak10']        = '10 in a row! Unstoppable!';
 
 // Encouraging feedback — correct + move forward (random pick, {$a} = target box).
 $string['encourage_correct_1']       = 'Great job! Moving to Box {$a}.';
@@ -98,6 +118,8 @@ $string['encourage_wrong_stay_1']    = 'Close! The card stays in Box {$a}.';
 $string['encourage_wrong_stay_2']    = 'Keep practising — it stays where it is.';
 $string['showanimation']             = 'Card animation';
 $string['showanimation_help']        = 'When enabled, a brief visual animation shows which Leitner box the card moved to after answering a question. When disabled, the next question appears immediately.';
+$string['showtour']                  = 'Show intro tour';
+$string['showtour_help']             = 'When enabled, students see a guided tour explaining the LeitnerFlow interface on their first visit. The tour is managed by Moodle\'s User Tours system and is shown once per user across the entire site (not per course). Disable this if you prefer to introduce the activity yourself.';
 $string['leitnersettings']           = 'Leitner system';
 $string['sessionsettings']           = 'Session';
 

@@ -50,6 +50,11 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 $PAGE->add_body_class('mod-leitnerflow');
 
+// Suppress user tour if activity setting disables it.
+if (empty($leitnerflow->showtour)) {
+    $PAGE->add_body_class('leitnerflow-notour');
+}
+
 // ---- Handle reset action (teacher only) ------------------------------------
 if (optional_param('resetuserid', 0, PARAM_INT) > 0) {
     require_capability('mod/leitnerflow:resetprogress', $context);

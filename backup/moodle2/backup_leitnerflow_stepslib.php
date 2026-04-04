@@ -34,7 +34,7 @@ class backup_leitnerflow_activity_structure_step extends backup_activity_structu
             'name', 'intro', 'introformat',
             'questioncategoryid', 'questioncategoryids', 'sessionsize', 'boxcount',
             'correcttolearn', 'wrongbehavior', 'questionrotation',
-            'prioritystrategy', 'grade', 'grademethod', 'showanimation', 'feedbackstyle',
+            'prioritystrategy', 'grade', 'grademethod', 'showanimation', 'feedbackstyle', 'showtour',
             'timecreated', 'timemodified',
         ]);
 
@@ -49,7 +49,8 @@ class backup_leitnerflow_activity_structure_step extends backup_activity_structu
         $sessions = new backup_nested_element('sessions');
         $session  = new backup_nested_element('session', ['id'], [
             'userid', 'questionids', 'currentindex',
-            'questionsasked', 'questionscorrect', 'status',
+            'questionsasked', 'questionscorrect',
+            'currentstreak', 'beststreak', 'status',
             'timecreated', 'timecompleted',
         ]);
 

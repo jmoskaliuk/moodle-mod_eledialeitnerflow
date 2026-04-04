@@ -159,15 +159,22 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
         $mform->addHelpButton('showanimation', 'showanimation', 'mod_leitnerflow');
         $mform->setDefault('showanimation', 1);
 
+        $mform->addElement('selectyesno', 'showtour',
+            get_string('showtour', 'mod_leitnerflow'));
+        $mform->addHelpButton('showtour', 'showtour', 'mod_leitnerflow');
+        $mform->setDefault('showtour', 1);
+
         $feedbackoptions = [
-            0 => get_string('feedbackstyle_off',         'mod_leitnerflow'),
-            1 => get_string('feedbackstyle_minimal',     'mod_leitnerflow'),
-            2 => get_string('feedbackstyle_encouraging', 'mod_leitnerflow'),
+            0 => get_string('feedbackstyle_off',      'mod_leitnerflow'),
+            1 => get_string('feedbackstyle_minimal',  'mod_leitnerflow'),
+            2 => get_string('feedbackstyle_animated', 'mod_leitnerflow'),
+            3 => get_string('feedbackstyle_detailed', 'mod_leitnerflow'),
+            4 => get_string('feedbackstyle_gamified', 'mod_leitnerflow'),
         ];
         $mform->addElement('select', 'feedbackstyle',
             get_string('feedbackstyle', 'mod_leitnerflow'), $feedbackoptions);
         $mform->addHelpButton('feedbackstyle', 'feedbackstyle', 'mod_leitnerflow');
-        $mform->setDefault('feedbackstyle', 1);
+        $mform->setDefault('feedbackstyle', 2);
 
         $this->standard_coursemodule_elements();
         $this->add_action_buttons();

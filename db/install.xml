@@ -20,7 +20,8 @@
         <FIELD NAME="grade"              TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"  COMMENT="Max grade (0 = no grade)"/>
         <FIELD NAME="grademethod"        TYPE="int"  LENGTH="2"  NOTNULL="true" DEFAULT="0"  COMMENT="0=no grade, 1=percentage learned"/>
         <FIELD NAME="showanimation"     TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="1"  COMMENT="1=show card-move animation, 0=off"/>
-        <FIELD NAME="feedbackstyle"    TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="1"  COMMENT="0=off, 1=minimal, 2=encouraging"/>
+        <FIELD NAME="feedbackstyle"    TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="2"  COMMENT="0=off, 1=minimal, 2=animated, 3=detailed, 4=gamified"/>
+        <FIELD NAME="showtour"         TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="1"  COMMENT="1=show intro tour on first visit, 0=off"/>
         <FIELD NAME="timecreated"        TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="timemodified"       TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
       </FIELDS>
@@ -67,6 +68,8 @@
         <FIELD NAME="currentindex"    TYPE="int"  LENGTH="4"  NOTNULL="true"  DEFAULT="0"/>
         <FIELD NAME="questionsasked"  TYPE="int"  LENGTH="4"  NOTNULL="true"  DEFAULT="0"/>
         <FIELD NAME="questionscorrect" TYPE="int" LENGTH="4"  NOTNULL="true"  DEFAULT="0"/>
+        <FIELD NAME="currentstreak"   TYPE="int"  LENGTH="4"  NOTNULL="true"  DEFAULT="0" COMMENT="Current consecutive correct answers (for gamified mode)"/>
+        <FIELD NAME="beststreak"      TYPE="int"  LENGTH="4"  NOTNULL="true"  DEFAULT="0" COMMENT="Best streak in this session"/>
         <FIELD NAME="status"          TYPE="int"  LENGTH="1"  NOTNULL="true"  DEFAULT="0" COMMENT="0=active, 1=completed"/>
         <FIELD NAME="timecreated"     TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0"/>
         <FIELD NAME="timecompleted"   TYPE="int"  LENGTH="10" NOTNULL="false"/>

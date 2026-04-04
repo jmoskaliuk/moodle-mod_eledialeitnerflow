@@ -166,6 +166,57 @@
     transition: all 0.3s ease;
 }
 
+/* ---- Gamified feedback animations ---- */
+@keyframes lf-float-up {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-30px); opacity: 0.2; }
+}
+
+.lf-points-float {
+    font-size: 1.5rem;
+    font-weight: 800;
+    display: inline-block;
+}
+
+.lf-points-float.lf-points-animate {
+    animation: lf-float-up 1.5s ease-out forwards;
+}
+
+.lf-streak-badge {
+    display: inline-block;
+    margin-top: 0.25rem;
+}
+
+.lf-streak-broken {
+    font-style: italic;
+}
+
+.lf-milestone {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.lf-gamified-feedback {
+    padding: 0.5rem 0;
+}
+
+/* ---- Feedback banner fade-in ---- */
+@keyframes lf-fade-in {
+    0% { opacity: 0; transform: translateY(-8px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.lf-feedback-banner {
+    animation: lf-fade-in 0.3s ease-out;
+}
+
+/* ---- Suppress user tour when disabled in activity settings ---- */
+.leitnerflow-notour .flexitour-backdrop,
+.leitnerflow-notour .flexitour-step,
+.leitnerflow-notour [data-flexitour="container"] {
+    display: none !important;
+}
+
 /* Hide plugin's duplicate check button — Moodle's behaviour button is used */
 .leitnerflow-question-form > .d-grid {
     display: none !important;

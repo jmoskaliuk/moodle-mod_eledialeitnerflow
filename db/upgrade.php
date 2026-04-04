@@ -184,5 +184,37 @@ function xmldb_leitnerflow_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024120118, 'leitnerflow');
     }
 
+    // Extend feedbackstyle to 5 modes (0-4) and add streak fields for gamified mode.
+    if ($oldversion < 2024120119) {
+        $table = new xmldb_table('leitnerflow_sessions');
+
+        $field1 = new xmldb_field('currentstreak', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '0', 'questionscorrect');
+        if (!$dbman->field_exists($table, $field1)) {
+            $dbman->add_field($table, $field1);
+        }
+
+        $field2 = new xmldb_field('beststreak', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '0', 'currentstreak');
+        if (!$dbman->field_exists($table, $field2)) {
+            $dbman->add_field($table, $field2);
+        }
+
+        // Migrate old feedbackstyle values: 2 (encouraging) → 2 (animated).
+        // No actual change needed since the mapping stays the same.
+
+        upgrade_mod_savepoint(true, 2024120119, 'leitnerflow');
+    }
+
+    // Add showtour field (default: on).
+    if ($oldversion < 2024120120) {
+        $table = new xmldb_table('leitnerflow');
+        $field = new xmldb_field('showtour', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'feedbackstyle');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2024120120, 'leitnerflow');
+    }
+
     return true;
 }

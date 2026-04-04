@@ -58,10 +58,30 @@ $string['grademethod_percent']     = 'Prozentsatz der gelernten Karten';
 $string['gradingsettings']         = 'Bewertungseinstellungen';
 $string['displaysettings']         = 'Anzeige';
 $string['feedbackstyle']           = 'Feedback-Stil';
-$string['feedbackstyle_help']      = '<b>Minimal</b>: Kurze sachliche Meldung („Karte → Box 3").<br><b>Ermutigend</b>: Zufällige motivierende Texte, die jedes Mal variieren.<br><b>Aus</b>: Kein Text-Feedback, nur die Box-Animation.';
+$string['feedbackstyle_help']      = 'Steuert, wie Lernende nach einer Antwort Feedback erhalten.<br><b>Aus</b>: Kein Feedback, direkt zur nächsten Frage.<br><b>Minimal</b>: Kurze sachliche Meldung („Karte → Box 3"), blendet nach 2 Sekunden aus.<br><b>Animiert</b>: Motivierende Texte, die jedes Mal variieren, plus Glow-Effekt auf der Ziel-Box.<br><b>Detailliert</b>: Zeigt die richtige Antwort und den Boxenwechsel (von → nach). Bleibt sichtbar bis „Nächste Frage" geklickt wird.<br><b>Gamifiziert</b>: Punkte, Streak-Zähler und Feiern bei Meilensteinen. Ideal für jüngere Lernende.';
 $string['feedbackstyle_off']       = 'Aus';
 $string['feedbackstyle_minimal']   = 'Minimal';
-$string['feedbackstyle_encouraging'] = 'Ermutigend';
+$string['feedbackstyle_animated']  = 'Animiert';
+$string['feedbackstyle_detailed']  = 'Detailliert';
+$string['feedbackstyle_gamified']  = 'Gamifiziert';
+
+// Detailliertes Feedback.
+$string['detailed_correct']        = 'Richtig! Die Karte wandert von Box {$a->from} nach Box {$a->to}.';
+$string['detailed_correct_stay']   = 'Richtig! Die Karte bleibt in Box {$a}.';
+$string['detailed_learned']        = 'Richtig! Diese Karte ist jetzt vollständig gelernt!';
+$string['detailed_wrong_back']     = 'Leider falsch. Die Karte geht von Box {$a->from} zurück auf Box {$a->to}.';
+$string['detailed_wrong_stay']     = 'Leider falsch. Die Karte bleibt in Box {$a}.';
+$string['nextquestionbtn']         = 'Nächste Frage';
+
+// Gamifiziertes Feedback.
+$string['points']                  = '{$a} Punkte';
+$string['streakcounter']           = '{$a}x Serie!';
+$string['streakbroken']            = 'Serie beendet';
+$string['milestone_5learned']      = '5 Karten gelernt!';
+$string['milestone_10learned']     = '10 Karten gelernt!';
+$string['milestone_streak3']       = '3 richtig in Folge!';
+$string['milestone_streak5']       = '5 richtig in Folge! Läuft!';
+$string['milestone_streak10']      = '10 richtig in Folge! Nicht zu stoppen!';
 
 // Ermutigendes Feedback — richtig + weiter ({$a} = Ziel-Box).
 $string['encourage_correct_1']     = 'Sehr gut! Schieben wir weiter nach Box {$a}.';
@@ -86,6 +106,8 @@ $string['encourage_wrong_stay_1']  = 'Knapp daneben — die Karte bleibt in Box 
 $string['encourage_wrong_stay_2']  = 'Noch üben — die Karte bleibt wo sie ist.';
 $string['showanimation']           = 'Kartenanimation';
 $string['showanimation_help']      = 'Wenn aktiviert, wird nach jeder Frage eine kurze Animation gezeigt, die anzeigt, in welche Leitner-Box die Karte gewandert ist. Wenn deaktiviert, erscheint sofort die nächste Frage.';
+$string['showtour']                = 'Einführungstour anzeigen';
+$string['showtour_help']           = 'Wenn aktiviert, sehen Studierende bei ihrem ersten Besuch eine geführte Tour, die die LeitnerFlow-Oberfläche erklärt. Die Tour wird über Moodles User-Tours-System verwaltet und pro Nutzer/in nur einmal angezeigt (seitenübergreifend, nicht pro Kurs). Deaktivieren, wenn die Aktivität lieber selbst vorgestellt werden soll.';
 $string['leitnersettings']         = 'Leitner-System';
 $string['sessionsettings']         = 'Sitzungseinstellungen';
 

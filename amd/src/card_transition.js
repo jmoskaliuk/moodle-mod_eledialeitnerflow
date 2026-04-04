@@ -16,9 +16,8 @@
 /**
  * AMD module: card transition animation between Leitner boxes.
  *
- * Shows a brief animation on the current question page after answering,
- * highlighting which box the card moved to. After 1 second, redirects
- * to the next question.
+ * Shows feedback on the current question page after answering,
+ * highlights which box the card moved to, then redirects to next question.
  *
  * @module     mod_leitnerflow/card_transition
  * @package    mod_leitnerflow
@@ -33,13 +32,20 @@ define([], function() {
         /**
          * Animate the box-flow pills, show feedback, then redirect.
          *
-         * @param {number} fromBox - The box the card was in before.
-         * @param {number} toBox - The box the card moved to.
-         * @param {number} correct - 1 if the answer was correct, 0 if not.
-         * @param {number} learned - 1 if the card is now learned, 0 if not.
-         * @param {string} nextUrl - URL to redirect to after animation.
+         * @param {number} fromBox       - The box the card was in before.
+         * @param {number} toBox         - The box the card moved to.
+         * @param {number} correct       - 1 if the answer was correct, 0 if not.
+         * @param {number} learned       - 1 if the card is now learned, 0 if not.
+         * @param {string} nextUrl       - URL to redirect to (empty = no auto-redirect).
+         * @param {number} feedbackstyle - 1=minimal, 2=animated, 3=detailed, 4=gamified.
+         * @param {number} delay         - Milliseconds before redirect.
          */
-        init: function(fromBox, toBox, correct, learned, nextUrl) {
+        init: function(fromBox, toBox, correct, learned, nextUrl, feedbackstyle, delay) {
+            // Default delay if not provided.
+            if (!delay) {
+                delay = 1000;
+            }
+
             // Find the pill for the target box and briefly highlight it.
             var pills = document.querySelectorAll('[data-box]');
 
@@ -59,11 +65,19 @@ define([], function() {
                 }
             });
 
-            // Redirect to next question after 1 second.
+            // Animate gamified points float-up.
+            if (feedbackstyle === 4) {
+                var pointsEl = document.querySelector('.lf-points-float');
+                if (pointsEl) {
+                    pointsEl.classList.add('lf-points-animate');
+                }
+            }
+
+            // Auto-redirect after delay (not for detailed mode — button handles it).
             if (nextUrl) {
                 setTimeout(function() {
                     window.location.href = nextUrl;
-                }, 1000);
+                }, delay);
             }
         }
     };

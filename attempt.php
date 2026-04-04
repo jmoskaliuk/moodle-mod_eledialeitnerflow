@@ -159,12 +159,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newbox = (int) $state->currentbox;
     $islearned = ((int) $state->status === 2); // Status 2 = learned.
 
-    // Update session progress.
+    // Update session progress + streak tracking.
     $session->questionsasked++;
+    $currentstreak = (int)($session->currentstreak ?? 0);
+    $beststreak    = (int)($session->beststreak ?? 0);
     if ($correct) {
         $session->questionscorrect++;
+        $currentstreak++;
+        if ($currentstreak > $beststreak) {
+            $beststreak = $currentstreak;
+        }
+    } else {
+        $currentstreak = 0;
     }
-    $session->currentindex = $currentindex + 1;
+    $session->currentstreak = $currentstreak;
+    $session->beststreak    = $beststreak;
+    $session->currentindex  = $currentindex + 1;
 
     if ($session->currentindex >= $totalquestions) {
         _leitnerflow_finish_session($session, $leitnerflow, $cm, $course);
@@ -173,19 +183,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $DB->update_record('leitnerflow_sessions', $session);
 
-    // If animation is enabled, re-render the CURRENT question with feedback overlay,
-    // then auto-redirect to the next question after 1 second via JavaScript.
-    if (!empty($leitnerflow->showanimation)) {
-        $nexturl = new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
-        _leitnerflow_render_with_animation(
-            $leitnerflow, $cm, $course, $session, $quba, $slot, $currentindex, $totalquestions,
-            $oldbox, $newbox, $correct, $islearned, $nexturl
-        );
-        exit;
+    // Determine feedback mode.
+    $feedbackstyle = (int)($leitnerflow->feedbackstyle ?? 2);
+
+    // Mode 0 (off): redirect immediately.
+    if ($feedbackstyle === 0) {
+        redirect(new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]));
     }
 
-    // No animation — redirect immediately to next question.
-    redirect(new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]));
+    // Modes 1-4: render current question with feedback overlay.
+    $nexturl = new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
+
+    // Count total learned cards (for gamified milestones).
+    $totallearned = 0;
+    if ($feedbackstyle === 4) {
+        $totallearned = $DB->count_records('leitnerflow_card_state', [
+            'leitnerflowid' => $leitnerflow->id,
+            'userid' => $USER->id,
+            'status' => 2,
+        ]);
+    }
+
+    _leitnerflow_render_with_feedback(
+        $leitnerflow, $cm, $course, $session, $quba, $slot, $currentindex, $totalquestions,
+        $oldbox, $newbox, $correct, $islearned, $nexturl, $feedbackstyle,
+        $currentstreak, $totallearned
+    );
+    exit;
 }
 
 // ---- Render the current question -------------------------------------------
@@ -279,13 +303,14 @@ echo html_writer::end_div(); // leitnerflow-attempt-container
 
 echo $OUTPUT->footer();
 
-// ---- Helper: render current question with animation overlay, then redirect --
-function _leitnerflow_render_with_animation(
+// ---- Helper: render current question with feedback overlay ------------------
+function _leitnerflow_render_with_feedback(
     stdClass $leitnerflow, stdClass $cm, stdClass $course, stdClass $session,
     question_usage_by_activity $quba, int $slot, int $answeredindex, int $totalquestions,
-    int $frombox, int $tobox, bool $correct, bool $islearned, moodle_url $nexturl
+    int $frombox, int $tobox, bool $correct, bool $islearned, moodle_url $nexturl,
+    int $feedbackstyle, int $currentstreak = 0, int $totallearned = 0
 ): void {
-    global $OUTPUT, $PAGE, $USER;
+    global $OUTPUT, $PAGE;
 
     $cmid = $cm->id;
     $PAGE->set_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $session->id]);
@@ -295,12 +320,13 @@ function _leitnerflow_render_with_animation(
     $PAGE->add_body_class('mod-leitnerflow-attempt');
     $PAGE->activityheader->set_description('');
 
-    // Display the answered question in readonly/feedback mode.
+    // Show correct answer for detailed + gamified modes.
+    $showdetail = ($feedbackstyle >= 3);
     $displayoptions = new question_display_options();
     $displayoptions->marks           = question_display_options::MAX_ONLY;
-    $displayoptions->feedback        = question_display_options::VISIBLE;
+    $displayoptions->feedback        = $showdetail ? question_display_options::VISIBLE : question_display_options::HIDDEN;
     $displayoptions->generalfeedback = question_display_options::HIDDEN;
-    $displayoptions->rightanswer     = question_display_options::VISIBLE;
+    $displayoptions->rightanswer     = $showdetail ? question_display_options::VISIBLE : question_display_options::HIDDEN;
     $displayoptions->history         = question_display_options::HIDDEN;
     $displayoptions->correctness     = question_display_options::VISIBLE;
     $displayoptions->readonly        = true;
@@ -308,17 +334,40 @@ function _leitnerflow_render_with_animation(
     echo $OUTPUT->header();
     echo html_writer::start_div('leitnerflow-attempt-container');
 
-    // Box-flow pills — highlight the TARGET box after answer.
+    // ---- Feedback banner ABOVE the box pills ----
+    $alertclass = $correct ? 'alert alert-success' : 'alert alert-warning';
+
+    if ($feedbackstyle === 1) {
+        // MINIMAL: short factual text.
+        $msg = _leitnerflow_get_feedback_text(1, $correct, $islearned, $frombox, $tobox);
+        echo html_writer::div($msg, $alertclass . ' text-center lf-feedback-banner mb-2 py-2',
+            ['style' => 'font-size: 0.9rem;']);
+
+    } else if ($feedbackstyle === 2) {
+        // ANIMATED: encouraging random text.
+        $msg = _leitnerflow_get_feedback_text(2, $correct, $islearned, $frombox, $tobox);
+        echo html_writer::div($msg, $alertclass . ' text-center lf-feedback-banner mb-2 py-2',
+            ['style' => 'font-size: 0.9rem;']);
+
+    } else if ($feedbackstyle === 3) {
+        // DETAILED: full feedback block with box change info.
+        $msg = _leitnerflow_get_detailed_text($correct, $islearned, $frombox, $tobox);
+        echo html_writer::div($msg, $alertclass . ' text-center mb-2 py-2',
+            ['style' => 'font-size: 1rem;']);
+
+    } else if ($feedbackstyle === 4) {
+        // GAMIFIED: points + streak + milestones.
+        _leitnerflow_render_gamified_feedback($correct, $islearned, $frombox, $tobox,
+            $currentstreak, $totallearned);
+    }
+
+    // ---- Box-flow pills (highlight target box) ----
     $boxcount = (int) $leitnerflow->boxcount;
     echo html_writer::start_div('text-center my-3');
     echo html_writer::start_div('d-inline-flex align-items-center gap-2');
     for ($b = 1; $b <= $boxcount; $b++) {
         $pillclass = 'badge rounded-pill px-3 py-2 ';
-        if ($b === $tobox) {
-            $pillclass .= 'bg-primary fs-6';
-        } else {
-            $pillclass .= 'bg-light text-dark border';
-        }
+        $pillclass .= ($b === $tobox) ? 'bg-primary fs-6' : 'bg-light text-dark border';
         echo html_writer::span(
             get_string('box_n', 'mod_leitnerflow', $b),
             $pillclass,
@@ -331,24 +380,22 @@ function _leitnerflow_render_with_animation(
     echo html_writer::end_div();
     echo html_writer::end_div();
 
-    // Render the answered question (readonly, with correctness shown).
+    // ---- Render the answered question (readonly) ----
     echo $quba->render_question($slot, $displayoptions, ($answeredindex + 1) . '');
 
-    // Feedback banner (respects feedbackstyle setting).
-    $feedbackstyle = (int)($leitnerflow->feedbackstyle ?? 1);
-    if ($feedbackstyle > 0) {
-        $feedbackmsg = _leitnerflow_get_feedback_text($feedbackstyle, $correct, $islearned, $frombox, $tobox);
-        $feedbackclass = $correct ? 'alert alert-success' : 'alert alert-warning';
-        echo html_writer::div(
-            $feedbackmsg,
-            $feedbackclass . ' text-center lf-feedback-banner mt-2 py-2',
-            ['style' => 'font-size: 0.9rem;']
-        );
+    // ---- Bottom area ----
+    if ($feedbackstyle === 3) {
+        // DETAILED: "Next question" button instead of auto-redirect.
+        echo html_writer::start_div('text-center mt-3 mb-3');
+        echo html_writer::link($nexturl->out(false),
+            get_string('nextquestionbtn', 'mod_leitnerflow'),
+            ['class' => 'btn btn-primary']);
+        echo html_writer::end_div();
     }
 
     // Question counter.
     echo html_writer::start_div('d-flex justify-content-between align-items-center mt-3 mb-3');
-    echo html_writer::tag('span', ''); // empty left side.
+    echo html_writer::tag('span', '');
     echo html_writer::span(
         get_string('question') . ' ' . ($answeredindex + 1) . ' / ' . $totalquestions
         . ' &middot; '
@@ -360,9 +407,16 @@ function _leitnerflow_render_with_animation(
 
     echo html_writer::end_div(); // leitnerflow-attempt-container
 
-    // Load JS: animate pill glow + redirect after 1 second.
+    // ---- JavaScript: mode-specific behaviour ----
+    // Detailed mode: no auto-redirect (button handles it).
+    // All other modes: auto-redirect after delay.
+    $autoredirect = ($feedbackstyle !== 3);
+    $delay = ($feedbackstyle === 1) ? 2000 : 1000; // Minimal fades slower.
+
     $PAGE->requires->js_call_amd('mod_leitnerflow/card_transition', 'init', [
-        $frombox, $tobox, (int)$correct, (int)$islearned, $nexturl->out(false),
+        $frombox, $tobox, (int)$correct, (int)$islearned,
+        $autoredirect ? $nexturl->out(false) : '',
+        $feedbackstyle, $delay,
     ]);
 
     echo $OUTPUT->footer();
@@ -403,6 +457,92 @@ function _leitnerflow_get_feedback_text(int $style, bool $correct, bool $islearn
     $pool = ['encourage_wrong_stay_1', 'encourage_wrong_stay_2'];
     $key = $pool[array_rand($pool)];
     return get_string($key, 'mod_leitnerflow', $tobox);
+}
+
+// ---- Helper: detailed feedback text (mode 3) --------------------------------
+function _leitnerflow_get_detailed_text(bool $correct, bool $islearned, int $frombox, int $tobox): string {
+    if ($correct && $islearned) {
+        return get_string('detailed_learned', 'mod_leitnerflow');
+    }
+    if ($correct && $frombox !== $tobox) {
+        return get_string('detailed_correct', 'mod_leitnerflow', (object)['from' => $frombox, 'to' => $tobox]);
+    }
+    if ($correct) {
+        return get_string('detailed_correct_stay', 'mod_leitnerflow', $tobox);
+    }
+    if ($frombox !== $tobox) {
+        return get_string('detailed_wrong_back', 'mod_leitnerflow', (object)['from' => $frombox, 'to' => $tobox]);
+    }
+    return get_string('detailed_wrong_stay', 'mod_leitnerflow', $tobox);
+}
+
+// ---- Helper: gamified feedback (mode 4) ------------------------------------
+function _leitnerflow_render_gamified_feedback(
+    bool $correct, bool $islearned, int $frombox, int $tobox,
+    int $currentstreak, int $totallearned
+): void {
+    // Points: correct = 10, correct + advance = 15, learned = 25.
+    $points = 0;
+    if ($correct) {
+        $points = 10;
+        if ($frombox !== $tobox) {
+            $points = 15;
+        }
+        if ($islearned) {
+            $points = 25;
+        }
+    }
+
+    echo html_writer::start_div('lf-gamified-feedback text-center mb-2');
+
+    // Points display (animated via CSS).
+    if ($points > 0) {
+        echo html_writer::div(
+            '+' . get_string('points', 'mod_leitnerflow', $points),
+            'lf-points-float ' . ($correct ? 'text-success' : 'text-warning')
+        );
+    }
+
+    // Streak counter.
+    if ($correct && $currentstreak >= 2) {
+        echo html_writer::div(
+            get_string('streakcounter', 'mod_leitnerflow', $currentstreak),
+            'lf-streak-badge badge bg-warning text-dark px-3 py-2 fs-6'
+        );
+    } else if (!$correct && $currentstreak === 0) {
+        // Streak was just broken (it was reset to 0 in POST handler).
+        echo html_writer::div(
+            get_string('streakbroken', 'mod_leitnerflow'),
+            'lf-streak-broken text-muted small'
+        );
+    }
+
+    // Milestone celebrations.
+    $milestone = '';
+    if ($currentstreak === 3) {
+        $milestone = get_string('milestone_streak3', 'mod_leitnerflow');
+    } else if ($currentstreak === 5) {
+        $milestone = get_string('milestone_streak5', 'mod_leitnerflow');
+    } else if ($currentstreak === 10) {
+        $milestone = get_string('milestone_streak10', 'mod_leitnerflow');
+    }
+    if ($islearned && $totallearned === 5) {
+        $milestone = get_string('milestone_5learned', 'mod_leitnerflow');
+    } else if ($islearned && $totallearned === 10) {
+        $milestone = get_string('milestone_10learned', 'mod_leitnerflow');
+    }
+
+    if ($milestone) {
+        echo html_writer::div($milestone, 'lf-milestone alert alert-info text-center py-2 mt-1');
+    }
+
+    // Regular feedback text (encouraging style).
+    $msg = _leitnerflow_get_feedback_text(2, $correct, $islearned, $frombox, $tobox);
+    $alertclass = $correct ? 'alert alert-success' : 'alert alert-warning';
+    echo html_writer::div($msg, $alertclass . ' text-center py-2 mt-1',
+        ['style' => 'font-size: 0.9rem;']);
+
+    echo html_writer::end_div(); // lf-gamified-feedback
 }
 
 // ---- Helper: finish session ------------------------------------------------
