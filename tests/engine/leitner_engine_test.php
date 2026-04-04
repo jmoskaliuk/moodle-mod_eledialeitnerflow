@@ -28,14 +28,16 @@
 namespace mod_eledialeitnerflow\tests\engine;
 
 use mod_eledialeitnerflow\engine\leitner_engine;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Unit tests for the Leitner engine.
  *
  * @package    mod_eledialeitnerflow
  * @category   test
- * @covers     \mod_eledialeitnerflow\engine\leitner_engine
  */
+#[CoversClass(leitner_engine::class)]
 final class leitner_engine_test extends \advanced_testcase {
     // Shared helpers.
 
@@ -77,9 +79,8 @@ final class leitner_engine_test extends \advanced_testcase {
 
     /**
      * Test calculate_box method with various correct-count and box-count combinations.
-     *
-     * @dataProvider box_calculation_cases
      */
+    #[DataProvider('box_calculation_cases')]
     public function test_calculate_box(
         int $correctcount,
         int $correcttolearn,
