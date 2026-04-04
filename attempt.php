@@ -195,9 +195,6 @@ $currentbox = $cardstate ? (int)$cardstate->currentbox : 1;
 
 echo $OUTPUT->header();
 
-// ---- Back to overview button ----
-echo $OUTPUT->single_button($viewurl, get_string('backtooverview', 'mod_leitnerflow'), 'get');
-
 // ---- Centered question container (like Moodle Quiz) ----
 echo html_writer::start_div('leitnerflow-attempt-container');
 
@@ -247,7 +244,10 @@ $cancelurl = new moodle_url('/mod/leitnerflow/view.php', [
     'sesskey' => sesskey(),
 ]);
 echo html_writer::start_div('d-flex justify-content-between align-items-center mt-3 mb-3');
+echo html_writer::start_div('d-flex gap-2 align-items-center');
+echo $OUTPUT->single_button($viewurl, get_string('backtooverview', 'mod_leitnerflow'), 'get');
 echo $OUTPUT->single_button($cancelurl, get_string('endsession', 'mod_leitnerflow'), 'get');
+echo html_writer::end_div();
 echo html_writer::span(
     get_string('question') . ' ' . ($currentindex + 1) . ' / ' . $totalquestions
     . ' &middot; '
