@@ -1,9 +1,9 @@
 <?php
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname']         = 'Leitner-Quiz';
-$string['modulename']         = 'Leitner-Quiz';
-$string['modulenameplural']   = 'Leitner-Quizze';
+$string['pluginname']         = 'LeitnerFlow Activity';
+$string['modulename']         = 'LeitnerFlow Activity';
+$string['modulenameplural']   = 'LeitnerFlow Activities';
 $string['modulename_help']    = 'Das Leitner-Quiz nutzt das Karteikartensystem nach Sebastian Leitner (Spaced Repetition), um Schüler beim effizienten Lernen zu unterstützen. Karten wandern je nach Antwort durch Boxen und werden so lange wiederholt, bis sie sicher beherrscht werden.';
 
 $string['questioncategory']        = 'Fragenkategorie';
