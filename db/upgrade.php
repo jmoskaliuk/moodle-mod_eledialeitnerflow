@@ -282,5 +282,23 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024120123, 'eledialeitnerflow');
     }
 
+    // Clean up orphaned grade_items left over from the old 'leitnerflow' plugin name.
+    // These cause coding_exception 'Invalid component used in plugin/component_callback():
+    // mod_leitnerflow' whenever a course containing them is regraded.
+    if ($oldversion < 2024120124) {
+        $stale = $DB->get_records('grade_items', ['itemmodule' => 'leitnerflow']);
+        foreach ($stale as $gi) {
+            if ($DB->record_exists('eledialeitnerflow', ['id' => $gi->iteminstance])) {
+                // Matching instance still exists — migrate the grade item to the new component.
+                $DB->set_field('grade_items', 'itemmodule', 'eledialeitnerflow', ['id' => $gi->id]);
+            } else {
+                // True orphan — drop the grade item and its grades.
+                $DB->delete_records('grade_grades', ['itemid' => $gi->id]);
+                $DB->delete_records('grade_items', ['id' => $gi->id]);
+            }
+        }
+        upgrade_mod_savepoint(true, 2024120124, 'eledialeitnerflow');
+    }
+
     return true;
 }
