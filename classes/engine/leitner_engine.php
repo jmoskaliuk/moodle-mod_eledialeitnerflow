@@ -414,10 +414,8 @@ class leitner_engine {
 
             $entry = new \stdClass();
             $entry->userid       = $student->id;
+            $entry->user         = $student; // Full user object for user_picture().
             $entry->fullname     = fullname($student);
-            $entry->picture      = $student->picture;
-            $entry->imagealt     = $student->imagealt ?? '';
-            $entry->email        = $student->email;
             $entry->stats        = $stats;
             $entry->sessions     = (int) $sessions;
             $entry->lastsession  = $lastsession ?: null;

@@ -166,12 +166,8 @@ foreach ($students as $student) {
     }
 
     echo html_writer::start_tag('tr');
-    // Student name + picture
-    $userpic = $OUTPUT->user_picture(
-        (object)['id' => $student->userid, 'picture' => $student->picture,
-                  'imagealt' => $student->imagealt, 'email' => $student->email],
-        ['size' => 24]
-    );
+    // Student name + picture (pass full user object to avoid missing property warnings).
+    $userpic = $OUTPUT->user_picture($student->user, ['size' => 24]);
     $profileurl = new moodle_url('/user/view.php', ['id' => $student->userid, 'course' => $course->id]);
     echo html_writer::tag('td',
         $userpic . ' ' . html_writer::link($profileurl, $student->fullname));
