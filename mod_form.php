@@ -114,7 +114,7 @@ class mod_leitnerflow_mod_form extends moodleform_mod {
         $mform->addElement('header', 'leitnersettingsheader',
             get_string('leitnersettings', 'mod_leitnerflow'));
 
-        $boxoptions = [3 => '3', 4 => '4', 5 => '5'];
+        $boxoptions = [1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5'];
         $mform->addElement('select', 'boxcount',
             get_string('boxcount', 'mod_leitnerflow'), $boxoptions);
         $mform->addHelpButton('boxcount', 'boxcount', 'mod_leitnerflow');

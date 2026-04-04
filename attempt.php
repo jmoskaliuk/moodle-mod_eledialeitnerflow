@@ -47,22 +47,23 @@ $viewurl = new moodle_url('/mod/leitnerflow/view.php', ['id' => $cm->id]);
 
 // ---- Start a new session ---------------------------------------------------
 if ($start) {
-    // Cancel any stale active session.
+    // Complete any stale active session (save partial results rather than deleting).
     $stale = $DB->get_records('leitnerflow_sessions', [
         'leitnerflowid' => $leitnerflow->id,
         'userid'        => $USER->id,
         'status'        => 0,
     ]);
     foreach ($stale as $s) {
+        $s->status        = 1; // Mark as completed.
+        $s->timecompleted = time();
+        $DB->update_record('leitnerflow_sessions', $s);
+        // Clean up quba to free resources.
         if (!empty($s->qubaid)) {
             question_engine::delete_questions_usage_by_activity($s->qubaid);
+            $s->qubaid = null;
+            $DB->set_field('leitnerflow_sessions', 'qubaid', null, ['id' => $s->id]);
         }
     }
-    $DB->delete_records('leitnerflow_sessions', [
-        'leitnerflowid' => $leitnerflow->id,
-        'userid'        => $USER->id,
-        'status'        => 0,
-    ]);
 
     // Select questions for this session.
     $questionids = leitner_engine::select_session_questions($leitnerflow, $USER->id);
@@ -274,8 +275,14 @@ echo html_writer::end_div();
 
 echo html_writer::end_tag('form');
 
-// ---- Bottom bar: cancel session link ----
+// ---- Bottom bar: view progress + cancel session buttons ----
 echo html_writer::start_div('d-flex justify-content-between align-items-center mt-2');
+
+// Left: action buttons.
+echo html_writer::start_div('d-flex gap-2');
+echo html_writer::link($viewurl,
+    get_string('yourprogress', 'mod_leitnerflow'),
+    ['class' => 'btn btn-outline-secondary btn-sm']);
 $cancelurl = new moodle_url('/mod/leitnerflow/view.php', [
     'id' => $cm->id,
     'cancelsession' => 1,
@@ -283,7 +290,10 @@ $cancelurl = new moodle_url('/mod/leitnerflow/view.php', [
 ]);
 echo html_writer::link($cancelurl,
     get_string('cancelsession', 'mod_leitnerflow'),
-    ['class' => 'btn btn-link btn-sm text-muted']);
+    ['class' => 'btn btn-outline-danger btn-sm']);
+echo html_writer::end_div();
+
+// Right: hint text.
 echo html_writer::span(
     get_string('nextaftercheck', 'mod_leitnerflow'),
     'text-muted small'

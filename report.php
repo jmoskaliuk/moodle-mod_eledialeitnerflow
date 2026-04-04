@@ -97,9 +97,11 @@ $avgpct = count($students) > 0
 
 echo html_writer::start_div('row mb-4');
 $summaries = [
-    [get_string('student', 'mod_leitnerflow') . 's', count($students), 'bg-primary'],
-    [get_string('learned', 'mod_leitnerflow'), $totallearned . ' / ' . $totalcards, 'bg-success'],
-    ['Ø ' . get_string('learned', 'mod_leitnerflow'), $avgpct . ' %', 'bg-info'],
+    [get_string('participants'), count($students), 'bg-primary'],
+    [get_string('learned', 'mod_leitnerflow') . ' (Ø ' . get_string('participants') . ')',
+        round($totallearned / max(1, count($students))) . ' / '
+        . round($totalcards / max(1, count($students))), 'bg-success'],
+    ['Ø % ' . get_string('learned', 'mod_leitnerflow'), $avgpct . ' %', 'bg-info'],
 ];
 foreach ($summaries as $sum) {
     echo html_writer::start_div('col-md-4 mb-2');
@@ -118,12 +120,12 @@ echo html_writer::start_tag('table', ['class' => 'table table-striped table-hove
 echo html_writer::start_tag('thead');
 echo html_writer::start_tag('tr');
 $headers = [
-    get_string('student',     'mod_leitnerflow'),
+    get_string('participants'),
     get_string('learned',     'mod_leitnerflow'),
     get_string('open',        'mod_leitnerflow'),
     get_string('witherrors',  'mod_leitnerflow'),
-    get_string('progress',    'mod_leitnerflow'),
-    get_string('sessions',    'mod_leitnerflow'),
+    get_string('progress'),
+    get_string('sessionhistory', 'mod_leitnerflow'),
     get_string('lastsession', 'mod_leitnerflow'),
     '',
 ];
