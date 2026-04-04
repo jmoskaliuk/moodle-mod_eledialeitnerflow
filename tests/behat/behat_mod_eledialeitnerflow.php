@@ -15,17 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version file for mod_eledialeitnerflow.
+ * Behat step definitions for mod_eledialeitnerflow.
  *
  * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+// NOTE: no MOODLE_INTERNAL check in Behat context files.
 
-$plugin->component = 'mod_eledialeitnerflow';
-$plugin->version   = 2024120122;
-$plugin->requires  = 2024042200; // Moodle 4.4+
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '2.2.0';
+require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
+
+use Behat\Mink\Exception\ExpectationException;
+
+/**
+ * Custom Behat steps for LeitnerFlow.
+ */
+class behat_mod_eledialeitnerflow extends behat_base {
+
+    /**
+     * Opens the activity chooser on the current course page.
+     *
+     * @Given /^I open the activity chooser$/
+     */
+    public function i_open_the_activity_chooser(): void {
+        $this->execute('behat_course::i_click_on_add_activity_or_resource');
+    }
+}

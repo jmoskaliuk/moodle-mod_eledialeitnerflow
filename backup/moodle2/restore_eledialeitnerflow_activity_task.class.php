@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/eledialeitnerflow/backup/moodle2/restore_leitnerflow_stepslib.php');
+require_once($CFG->dirroot . '/mod/eledialeitnerflow/backup/moodle2/restore_eledialeitnerflow_stepslib.php');
 
 class restore_eledialeitnerflow_activity_task extends restore_activity_task {
 
@@ -38,7 +38,7 @@ class restore_eledialeitnerflow_activity_task extends restore_activity_task {
 
     public static function define_decode_contents(): array {
         $contents = [];
-        $contents[] = new restore_decode_content('eledialeitnerflow', ['intro'], 'leitnerflow');
+        $contents[] = new restore_decode_content('eledialeitnerflow', ['intro'], 'eledialeitnerflow');
         return $contents;
     }
 

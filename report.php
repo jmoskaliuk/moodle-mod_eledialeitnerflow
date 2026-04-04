@@ -17,7 +17,8 @@
 /**
  * Teacher report page for mod_eledialeitnerflow.
  *
- * Overview of all enrolled students' Leitner progress.
+ * Overview of all enrolled students' Leitner progress with pagination,
+ * search, and sortable columns — suitable for courses with 100+ participants.
  *
  * @package    mod_eledialeitnerflow
  * @copyright  2024 eLeDia GmbH
@@ -31,6 +32,20 @@ use mod_eledialeitnerflow\engine\leitner_engine;
 
 $cmid      = required_param('id', PARAM_INT);
 $resetuid  = optional_param('resetuserid', 0, PARAM_INT);
+$page      = optional_param('page', 0, PARAM_INT);
+$perpage   = optional_param('perpage', 25, PARAM_INT);
+$tsort     = optional_param('tsort', 'fullname', PARAM_ALPHA);
+$tdir      = optional_param('tdir', 'ASC', PARAM_ALPHA);
+$search    = optional_param('search', '', PARAM_TEXT);
+
+// Sanitise sort direction.
+$tdir = (strtoupper($tdir) === 'DESC') ? 'DESC' : 'ASC';
+
+// Allowed sort columns.
+$allowedsorts = ['fullname', 'learned', 'progress', 'sessions', 'lastsession'];
+if (!in_array($tsort, $allowedsorts)) {
+    $tsort = 'fullname';
+}
 
 $cm          = get_coursemodule_from_id('eledialeitnerflow', $cmid, 0, false, MUST_EXIST);
 $course      = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
@@ -46,7 +61,6 @@ if ($resetuid > 0) {
     require_capability('mod/eledialeitnerflow:resetprogress', $context);
     leitner_engine::delete_user_data($leitnerflow->id, $resetuid);
 
-    // Fire progress_reset event.
     $event = \mod_eledialeitnerflow\event\progress_reset::create([
         'objectid'      => $leitnerflow->id,
         'context'       => $context,
@@ -63,11 +77,14 @@ if ($resetuid > 0) {
 }
 
 // ---- Page setup ------------------------------------------------------------
+$baseurl = new moodle_url('/mod/eledialeitnerflow/report.php', [
+    'id' => $cmid, 'tsort' => $tsort, 'tdir' => $tdir, 'perpage' => $perpage, 'search' => $search,
+]);
+
 $PAGE->set_url('/mod/eledialeitnerflow/report.php', ['id' => $cmid]);
 $PAGE->set_title(format_string($leitnerflow->name) . ': ' . get_string('report', 'mod_eledialeitnerflow'));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-// Hide the automatic activity description box — the report needs no intro text.
 $PAGE->activityheader->set_description('');
 
 $viewurl = new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cmid]);
@@ -85,23 +102,58 @@ if (empty($students)) {
     exit;
 }
 
-// ---- Summary cards (course-wide) -------------------------------------------
+// ---- Filter by search term -------------------------------------------------
+if ($search !== '') {
+    $searchlower = core_text::strtolower($search);
+    $students = array_filter($students, function($s) use ($searchlower) {
+        return str_contains(core_text::strtolower($s->fullname), $searchlower);
+    });
+}
+
+// ---- Sort ------------------------------------------------------------------
+usort($students, function($a, $b) use ($tsort, $tdir) {
+    switch ($tsort) {
+        case 'learned':
+            $cmp = $a->stats->learned <=> $b->stats->learned;
+            break;
+        case 'progress':
+            $cmp = $a->stats->percent_learned <=> $b->stats->percent_learned;
+            break;
+        case 'sessions':
+            $cmp = $a->sessions <=> $b->sessions;
+            break;
+        case 'lastsession':
+            $cmp = ($a->lastsession ?? 0) <=> ($b->lastsession ?? 0);
+            break;
+        default: // fullname.
+            $cmp = core_text::strcmp(
+                core_text::strtolower($a->fullname),
+                core_text::strtolower($b->fullname)
+            );
+    }
+    return ($tdir === 'DESC') ? -$cmp : $cmp;
+});
+
+$totalcount    = count($students);
+$allstudents   = $students; // Keep full set for summary cards.
+$students      = array_slice($students, $page * $perpage, $perpage);
+
+// ---- Summary cards (course-wide, computed from all students) ----------------
 $totallearned = 0;
 $totalcards   = 0;
-foreach ($students as $s) {
+foreach ($allstudents as $s) {
     $totallearned += $s->stats->learned;
     $totalcards   += $s->stats->total;
 }
-$avgpct = count($students) > 0
-    ? round(array_sum(array_map(fn($s) => $s->stats->percent_learned, $students)) / count($students))
+$avgpct = $totalcount > 0
+    ? round(array_sum(array_map(fn($s) => $s->stats->percent_learned, $allstudents)) / $totalcount)
     : 0;
 
-// Total questions in pool (same for all students).
-$questioncount = !empty($students) ? reset($students)->stats->total : 0;
+$questioncount = !empty($allstudents) ? reset($allstudents)->stats->total : 0;
 
 echo html_writer::start_div('row mb-4');
 $summaries = [
-    [get_string('participants'), count($students), 'bg-primary'],
+    [get_string('participants'), $totalcount, 'bg-primary'],
     [get_string('questionsinpool', 'mod_eledialeitnerflow'), $questioncount, 'lf-bg-darkblue'],
     [get_string('avglearnedpercent', 'mod_eledialeitnerflow'), $avgpct . ' %', 'bg-success'],
 ];
@@ -117,22 +169,101 @@ foreach ($summaries as $sum) {
 }
 echo html_writer::end_div();
 
+// ---- Search bar + per-page selector ----------------------------------------
+$searchurl = new moodle_url('/mod/eledialeitnerflow/report.php', [
+    'id' => $cmid, 'tsort' => $tsort, 'tdir' => $tdir, 'perpage' => $perpage,
+]);
+echo html_writer::start_tag('form', [
+    'method' => 'get',
+    'action' => $searchurl->out_omit_querystring(),
+    'class'  => 'd-flex gap-2 mb-3 align-items-center flex-wrap',
+]);
+echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'id', 'value' => $cmid]);
+echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'tsort', 'value' => $tsort]);
+echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'tdir', 'value' => $tdir]);
+echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'perpage', 'value' => $perpage]);
+echo html_writer::empty_tag('input', [
+    'type'        => 'text',
+    'name'        => 'search',
+    'value'       => $search,
+    'placeholder' => get_string('search'),
+    'class'       => 'form-control',
+    'style'       => 'max-width: 300px;',
+    'aria-label'  => get_string('search'),
+]);
+echo html_writer::tag('button', get_string('search'), [
+    'type' => 'submit', 'class' => 'btn btn-outline-secondary',
+]);
+if ($search !== '') {
+    $clearurl = new moodle_url('/mod/eledialeitnerflow/report.php', [
+        'id' => $cmid, 'tsort' => $tsort, 'tdir' => $tdir, 'perpage' => $perpage,
+    ]);
+    echo html_writer::link($clearurl, get_string('clear'), ['class' => 'btn btn-link']);
+}
+
+// Per-page selector.
+echo html_writer::start_div('ms-auto d-flex align-items-center gap-2');
+echo html_writer::tag('label', get_string('perpage', 'moodle', ''), [
+    'for' => 'report-perpage', 'class' => 'small text-muted mb-0',
+]);
+$perpageoptions = [10 => '10', 25 => '25', 50 => '50', 100 => '100'];
+echo html_writer::select($perpageoptions, 'perpage', $perpage, false, [
+    'id'       => 'report-perpage',
+    'class'    => 'form-select form-select-sm',
+    'style'    => 'width: auto;',
+    'onchange' => 'this.form.submit();',
+]);
+echo html_writer::end_div();
+
+echo html_writer::end_tag('form');
+
+// ---- Sortable column headers -----------------------------------------------
+/**
+ * Build a sort link for a table header.
+ *
+ * @param string $column   Column key.
+ * @param string $label    Display label.
+ * @param string $tsort    Current sort column.
+ * @param string $tdir     Current sort direction.
+ * @param int    $cmid     Course module id.
+ * @param int    $perpage  Items per page.
+ * @param string $search   Current search term.
+ * @return string HTML link.
+ */
+function _eledialeitnerflow_sort_link(string $column, string $label, string $tsort,
+        string $tdir, int $cmid, int $perpage, string $search): string {
+    $newdir = ($tsort === $column && $tdir === 'ASC') ? 'DESC' : 'ASC';
+    $url = new moodle_url('/mod/eledialeitnerflow/report.php', [
+        'id' => $cmid, 'tsort' => $column, 'tdir' => $newdir, 'perpage' => $perpage, 'search' => $search,
+    ]);
+    $arrow = '';
+    if ($tsort === $column) {
+        $arrow = ($tdir === 'ASC') ? ' &#9650;' : ' &#9660;';
+    }
+    return html_writer::link($url, $label . $arrow, ['class' => 'text-nowrap']);
+}
+
 // ---- Student table ---------------------------------------------------------
 echo html_writer::start_tag('table', ['class' => 'table table-striped table-hover generaltable']);
 echo html_writer::start_tag('thead');
 echo html_writer::start_tag('tr');
 $headers = [
-    get_string('participants'),
-    get_string('learned',     'mod_eledialeitnerflow'),
-    get_string('open',        'mod_eledialeitnerflow'),
-    get_string('witherrors',  'mod_eledialeitnerflow'),
-    get_string('progress'),
-    get_string('sessionhistory', 'mod_eledialeitnerflow'),
-    get_string('lastsession', 'mod_eledialeitnerflow'),
-    '',
+    ['key' => 'fullname',    'label' => get_string('participants')],
+    ['key' => 'learned',     'label' => get_string('learned', 'mod_eledialeitnerflow')],
+    ['key' => '',            'label' => get_string('open', 'mod_eledialeitnerflow')],
+    ['key' => '',            'label' => get_string('witherrors', 'mod_eledialeitnerflow')],
+    ['key' => 'progress',    'label' => get_string('progress')],
+    ['key' => 'sessions',    'label' => get_string('sessionhistory', 'mod_eledialeitnerflow')],
+    ['key' => 'lastsession', 'label' => get_string('lastsession', 'mod_eledialeitnerflow')],
+    ['key' => '',            'label' => ''],
 ];
 foreach ($headers as $h) {
-    echo html_writer::tag('th', $h);
+    if (!empty($h['key'])) {
+        echo html_writer::tag('th',
+            _eledialeitnerflow_sort_link($h['key'], $h['label'], $tsort, $tdir, $cmid, $perpage, $search));
+    } else {
+        echo html_writer::tag('th', $h['label']);
+    }
 }
 echo html_writer::end_tag('tr');
 echo html_writer::end_tag('thead');
@@ -170,7 +301,6 @@ foreach ($students as $student) {
     }
 
     echo html_writer::start_tag('tr');
-    // Student name + picture (pass full user object to avoid missing property warnings).
     $userpic = $OUTPUT->user_picture($student->user, ['size' => 24]);
     $profileurl = new moodle_url('/user/view.php', ['id' => $student->userid, 'course' => $course->id]);
     echo html_writer::tag('td',
@@ -188,13 +318,16 @@ foreach ($students as $student) {
 echo html_writer::end_tag('tbody');
 echo html_writer::end_tag('table');
 
+// ---- Pagination bar --------------------------------------------------------
+echo $OUTPUT->paging_bar($totalcount, $page, $perpage, $baseurl);
+
 // ---- Back button -----------------------------------------------------------
 echo html_writer::div(
     $OUTPUT->single_button($viewurl, get_string('back'), 'get'),
     'mt-3'
 );
 
-// Confirm-dialog JS for reset buttons (proper AMD module, no inline JS).
+// Confirm-dialog JS for reset buttons.
 $PAGE->requires->js_call_amd('mod_eledialeitnerflow/confirm_reset', 'init');
 
 echo $OUTPUT->footer();

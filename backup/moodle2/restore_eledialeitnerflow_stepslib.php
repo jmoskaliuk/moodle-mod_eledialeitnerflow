@@ -30,7 +30,7 @@ class restore_eledialeitnerflow_activity_structure_step extends restore_activity
         $paths   = [];
         $userinfo = $this->get_setting_value('userinfo');
 
-        $paths[] = new restore_path_element('eledialeitnerflow', '/activity/leitnerflow');
+        $paths[] = new restore_path_element('eledialeitnerflow', '/activity/eledialeitnerflow');
 
         if ($userinfo) {
             $paths[] = new restore_path_element(
@@ -66,7 +66,7 @@ class restore_eledialeitnerflow_activity_structure_step extends restore_activity
         global $DB;
 
         $data = (object)$data;
-        $data->eledialeitnerflowid = $this->get_new_parentid('leitnerflow');
+        $data->eledialeitnerflowid = $this->get_new_parentid('eledialeitnerflow');
         $data->userid        = $this->get_mappingid('user', $data->userid);
         $data->questionid    = $this->get_mappingid('question', $data->questionid);
         $data->timecreated   = $this->apply_date_offset($data->timecreated);
@@ -81,7 +81,7 @@ class restore_eledialeitnerflow_activity_structure_step extends restore_activity
         global $DB;
 
         $data = (object)$data;
-        $data->eledialeitnerflowid  = $this->get_new_parentid('leitnerflow');
+        $data->eledialeitnerflowid  = $this->get_new_parentid('eledialeitnerflow');
         $data->userid         = $this->get_mappingid('user', $data->userid);
         $data->timecreated    = $this->apply_date_offset($data->timecreated);
         $data->timecompleted  = !empty($data->timecompleted)

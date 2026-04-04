@@ -6,9 +6,8 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// @package    mod_eledialeitnerflow
-// @copyright  2024 eLeDia GmbH
-// @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * CLI script to generate test data for LeitnerFlow development.
@@ -18,6 +17,10 @@
  *
  * Usage: php mod/eledialeitnerflow/cli/generate_testdata.php [--clean]
  *   --clean  Remove previously generated test data before creating new data
+ *
+ * @package    mod_eledialeitnerflow
+ * @copyright  2024 eLeDia GmbH
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 define('CLI_SCRIPT', true);

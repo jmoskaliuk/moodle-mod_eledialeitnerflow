@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/eledialeitnerflow/backup/moodle2/backup_leitnerflow_stepslib.php');
+require_once($CFG->dirroot . '/mod/eledialeitnerflow/backup/moodle2/backup_eledialeitnerflow_stepslib.php');
 
 class backup_eledialeitnerflow_activity_task extends backup_activity_task {
 
