@@ -183,11 +183,38 @@ $displayoptions->history         = question_display_options::HIDDEN;
 $displayoptions->correctness     = question_display_options::HIDDEN;
 
 $questionid = $questionids[$currentindex];
+$cardstate  = leitner_engine::get_card_state($leitnerflow->id, $USER->id, $questionid);
+$currentbox = $cardstate ? (int)$cardstate->currentbox : 1;
 
 echo $OUTPUT->header();
 
-// ---- Back button (like Moodle Quiz) ----
-echo $OUTPUT->single_button($viewurl, get_string('back'), 'get');
+// ---- Back to overview button ----
+echo $OUTPUT->single_button($viewurl, get_string('backtooverview', 'mod_leitnerflow'), 'get');
+
+// ---- Box-flow pills (compact, centered) ----
+$boxcount = (int) $leitnerflow->boxcount;
+echo html_writer::start_div('d-flex align-items-center justify-content-center gap-1 my-2 small');
+for ($b = 1; $b <= $boxcount; $b++) {
+    $pillclass = 'badge rounded-pill ';
+    if ($b === $currentbox) {
+        $pillclass .= 'bg-primary';
+    } else {
+        $pillclass .= 'bg-light text-dark border';
+    }
+    echo html_writer::span(
+        get_string('box_n', 'mod_leitnerflow', $b),
+        $pillclass
+    );
+    if ($b < $boxcount) {
+        echo html_writer::span('&#10140;', 'text-muted', ['aria-hidden' => 'true']);
+    }
+}
+echo html_writer::span('&#10140;', 'text-muted', ['aria-hidden' => 'true']);
+echo html_writer::span(
+    '&#10003; ' . get_string('learned', 'mod_leitnerflow'),
+    'badge rounded-pill bg-success'
+);
+echo html_writer::end_div();
 
 // ---- Question form ----
 $actionurl = new moodle_url('/mod/leitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);

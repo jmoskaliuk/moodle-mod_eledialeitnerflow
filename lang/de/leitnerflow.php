@@ -94,6 +94,7 @@ $string['activesessioninfo']  = 'Aktive Session: {$a->answered} von {$a->total} 
 $string['resetandrestart']    = 'Zurücksetzen und neu beginnen';
 $string['current']            = 'aktuell';
 $string['nextaftercheck']     = 'Nächste Frage nach Prüfen';
+$string['backtooverview']     = 'Zurück zur Übersicht';
 
 $string['question']                = 'Frage';
 $string['of']                      = 'von';

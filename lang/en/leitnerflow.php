@@ -118,6 +118,7 @@ $string['cardlearned']        = 'Card marked as learned!';
 $string['cardreset']          = 'Card reset to box 1.';
 $string['cardbackone']        = 'Card moved back one box.';
 $string['nextaftercheck']     = 'Next question after Check';
+$string['backtooverview']     = 'Back to overview';
 
 // Report page.
 $string['report']        = 'Student overview';
