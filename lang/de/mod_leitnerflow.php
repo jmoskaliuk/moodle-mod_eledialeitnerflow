@@ -1,0 +1,105 @@
+<?php
+defined('MOODLE_INTERNAL') || die();
+
+$string['pluginname']         = 'Leitner-Quiz';
+$string['modulename']         = 'Leitner-Quiz';
+$string['modulenameplural']   = 'Leitner-Quizze';
+$string['modulename_help']    = 'Das Leitner-Quiz nutzt das Karteikartensystem nach Sebastian Leitner (Spaced Repetition), um Schüler beim effizienten Lernen zu unterstützen. Karten wandern je nach Antwort durch Boxen und werden so lange wiederholt, bis sie sicher beherrscht werden.';
+
+$string['questioncategory']        = 'Fragenkategorie';
+$string['questioncategory_help']   = 'Wähle die Kategorie aus der Fragensammlung, aus der Fragen gezogen werden.';
+$string['sessionsize']             = 'Fragen pro Durchgang';
+$string['sessionsize_help']        = 'Wie viele Fragen pro Lernsession gestellt werden.';
+$string['boxcount']                = 'Anzahl Leitner-Boxen';
+$string['boxcount_help']           = 'Die Anzahl der Boxen (Stufen) im Leitner-System. Mehr Boxen = feinere Fortschrittsanzeige.';
+$string['correcttolearn']          = 'Richtige Antworten bis „gelernt"';
+$string['correcttolearn_help']     = 'Wie oft eine Frage insgesamt richtig beantwortet werden muss, bis sie als „gelernt" gilt.';
+$string['wrongbehavior']           = 'Verhalten bei falscher Antwort';
+$string['wrongbehavior_help']      = 'Was passiert mit dem Fortschritt einer Karte, wenn die Antwort falsch ist.';
+$string['wrongbehavior_reset']     = 'Auf Box 1 zurücksetzen (voller Reset)';
+$string['wrongbehavior_back1']     = 'Eine Box zurück';
+$string['wrongbehavior_nochange']  = 'Kein Abzug (nur kein Fortschritt)';
+$string['questionrotation']        = 'Fragenrotation';
+$string['questionrotation_help']   = 'Dynamisch: Fragen werden immer frisch aus der Fragensammlung geholt. Fest: Der Pool wird beim ersten Start gesperrt.';
+$string['questionrotation_dynamic'] = 'Dynamisch (immer aus der Bank)';
+$string['questionrotation_fixed']   = 'Fester Pool (beim ersten Start gesperrt)';
+$string['prioritystrategy']        = 'Kartenauswahlstrategie';
+$string['prioritystrategy_help']   = 'Priorisiert: Fragen aus niederen Boxen werden zuerst gestellt. Gemischt: Zufällige Auswahl aus allen Boxen.';
+$string['prioritystrategy_prio']   = 'Niedere Boxen bevorzugen';
+$string['prioritystrategy_mixed']  = 'Gemischte Zufallsauswahl';
+$string['grademethod']             = 'Bewertungsmethode';
+$string['grademethod_none']        = 'Keine Bewertung';
+$string['grademethod_percent']     = 'Prozentsatz der gelernten Karten';
+$string['gradingsettings']         = 'Bewertungseinstellungen';
+$string['leitnersettings']         = 'Leitner-System-Einstellungen';
+$string['sessionsettings']         = 'Sitzungseinstellungen';
+
+$string['startsession']            = 'Lernsession starten';
+$string['continuesession']         = 'Session fortsetzen';
+$string['sessioninprogress']       = 'Session läuft';
+$string['nosessionactive']         = 'Keine aktive Session';
+$string['yourprogress']            = 'Dein Fortschritt';
+$string['totalcards']              = 'Karten gesamt';
+$string['learned']                 = 'Gelernt';
+$string['open']                    = 'Offen';
+$string['witherrors']              = 'Mit Fehlern';
+$string['viewreport']              = 'Vollständigen Bericht anzeigen';
+$string['sessioncomplete']         = 'Session abgeschlossen!';
+$string['sessionresult']           = 'Du hast {$a->correct} von {$a->total} Fragen richtig beantwortet.';
+$string['alllearned']              = 'Alle Karten gelernt! Hervorragend.';
+$string['nocardsinpool']           = 'Keine Fragen in der gewählten Kategorie gefunden. Bitte füge zuerst Fragen zur Fragensammlung hinzu.';
+$string['nounlearnedcards']        = 'Alle Karten sind bereits gelernt! Du kannst deinen Fortschritt zurücksetzen, um neu zu beginnen.';
+
+$string['question']                = 'Frage';
+$string['of']                      = 'von';
+$string['cardstatus_box']          = 'Box {$a}';
+$string['cardstatus_learned']      = 'Gelernt';
+$string['correct']                 = 'Richtig!';
+$string['incorrect']               = 'Falsch.';
+$string['nextquestion']            = 'Nächste Frage';
+$string['finishsession']           = 'Session beenden';
+$string['check']                   = 'Antwort prüfen';
+$string['correctanswer']           = 'Richtige Antwort';
+$string['movedtobox']              = 'Karte in Box {$a} verschoben';
+$string['cardlearned']             = 'Karte als gelernt markiert!';
+$string['cardreset']               = 'Karte auf Box 1 zurückgesetzt.';
+$string['cardbackone']             = 'Karte eine Box zurück verschoben.';
+
+$string['report']                  = 'Schülerübersicht';
+$string['student']                 = 'Schüler/in';
+$string['progress']                = 'Fortschritt';
+$string['sessions']                = 'Sessions';
+$string['lastsession']             = 'Letzte Session';
+$string['nostudents']              = 'Noch kein Schüler hat diese Aktivität gestartet.';
+$string['resetprogress']           = 'Fortschritt zurücksetzen';
+$string['resetconfirm']            = 'Soll der gesamte Fortschritt von {$a} wirklich zurückgesetzt werden? Das kann nicht rückgängig gemacht werden.';
+$string['progressreset']           = 'Fortschritt wurde zurückgesetzt.';
+
+$string['privacy:metadata']                              = 'Das Leitner-Quiz speichert individuelle Kartenzustände und Sessiondaten pro Schüler.';
+$string['privacy:metadata:leitnerflow_card_state']       = 'Verfolgt den Fortschritt jedes Schülers pro Frage.';
+$string['privacy:metadata:leitnerflow_card_state:userid']       = 'ID des Schülers.';
+$string['privacy:metadata:leitnerflow_card_state:questionid']   = 'ID der Frage.';
+$string['privacy:metadata:leitnerflow_card_state:currentbox']   = 'Aktuelle Leitner-Box der Karte.';
+$string['privacy:metadata:leitnerflow_card_state:correctcount'] = 'Anzahl richtig beantworteter Versuche.';
+$string['privacy:metadata:leitnerflow_card_state:attemptcount'] = 'Gesamtanzahl der Versuche.';
+$string['privacy:metadata:leitnerflow_card_state:status']       = 'Kartenstatus: offen, gelernt oder mit Fehlern.';
+$string['privacy:metadata:leitnerflow_sessions']                = 'Speichert jede abgeschlossene Lernsession.';
+$string['privacy:metadata:leitnerflow_sessions:userid']         = 'ID des Schülers.';
+$string['privacy:metadata:leitnerflow_sessions:timecreated']    = 'Startzeitpunkt der Session.';
+$string['privacy:metadata:leitnerflow_sessions:timecompleted']  = 'Endzeitpunkt der Session.';
+$string['privacy:metadata:leitnerflow_sessions:questionsasked'] = 'Anzahl gestellter Fragen.';
+$string['privacy:metadata:leitnerflow_sessions:questionscorrect'] = 'Anzahl richtig beantworteter Fragen.';
+
+$string['leitnerflow:view']          = 'Leitner-Quiz ansehen';
+$string['leitnerflow:attempt']       = 'Leitner-Quiz durchführen';
+$string['leitnerflow:viewreport']    = 'Schülerbericht anzeigen';
+$string['leitnerflow:manage']        = 'Leitner-Quiz-Einstellungen verwalten';
+$string['leitnerflow:resetprogress'] = 'Schülerfortschritt zurücksetzen';
+
+$string['box_n']  = 'Box {$a}';
+$string['box_1']  = 'Box 1 – Neu / Fehler';
+$string['box_learned'] = 'Gelernt';
+
+$string['invalidsession']   = 'Ungültige oder abgelaufene Session.';
+$string['nocategory']       = 'Keine Fragenkategorie konfiguriert. Bitte Aktivitätseinstellungen bearbeiten.';
+$string['error_noattempt']  = 'Du hast keine Berechtigung, dieses Quiz durchzuführen.';
