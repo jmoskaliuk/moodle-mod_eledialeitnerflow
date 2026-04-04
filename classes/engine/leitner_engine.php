@@ -67,9 +67,9 @@ class leitner_engine {
         if ($correctcount >= $correcttolearn) {
             return $boxcount; // Will be marked learned separately.
         }
-        // Spread correctcount 1..($correcttolearn-1) across boxes 1..$boxcount.
-        $step = ($correcttolearn > 1) ? ($correcttolearn - 1) / $boxcount : 1;
-        $box  = (int) ceil($correctcount / $step);
+        // Spread correctcount 1..($correcttolearn-1) linearly across boxes 1..$boxcount.
+        // Formula: floor(correctcount * boxcount / correcttolearn), clamped to [1, boxcount].
+        $box = (int) floor(($correctcount * $boxcount) / $correcttolearn);
         return max(1, min($box, $boxcount));
     }
 

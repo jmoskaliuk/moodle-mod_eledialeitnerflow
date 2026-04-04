@@ -68,10 +68,11 @@ final class leitner_engine_test extends \advanced_testcase {
     private function create_lq(array $overrides = []): \stdClass {
         $course = $this->getDataGenerator()->create_course();
         $gen    = $this->getDataGenerator()->get_plugin_generator('mod_eledialeitnerflow');
-        $cm     = $gen->create_instance(array_merge(['course' => $course->id], $overrides));
+        // create_instance() returns the activity record directly; its PK is `id`.
+        $lq     = $gen->create_instance(array_merge(['course' => $course->id], $overrides));
 
         global $DB;
-        return $DB->get_record('eledialeitnerflow', ['id' => $cm->instance], '*', MUST_EXIST);
+        return $DB->get_record('eledialeitnerflow', ['id' => $lq->id], '*', MUST_EXIST);
     }
 
     // -----------------------------------------------------------------------
