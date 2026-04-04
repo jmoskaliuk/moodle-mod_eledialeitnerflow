@@ -93,7 +93,7 @@ function eledialeitnerflow_delete_instance(int $id): bool {
     return true;
 }
 
-function eledialeitnerflow_supports(string $feature): ?bool {
+function eledialeitnerflow_supports(string $feature): bool|string|null {
     return match ($feature) {
         FEATURE_MOD_INTRO              => true,
         FEATURE_SHOW_DESCRIPTION       => true,
