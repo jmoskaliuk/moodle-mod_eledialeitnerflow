@@ -76,15 +76,21 @@ check_phpcs() {
         record phpcs SKIP "vendor/bin/phpcs not installed — run 'composer install' inside container"
         return
     fi
-    # Locate moodle-cs ruleset (can be in different vendor paths depending on where composer ran).
-    local ruleset
-    ruleset=$(run_in_container "find ${MOODLE_ROOT_IN_CONTAINER} -type d -path '*/moodlehq/moodle-cs/moodle' -not -path '*/node_modules/*' 2>/dev/null | head -1")
-    if [[ -z "${ruleset}" ]]; then
-        record phpcs SKIP "moodle-cs ruleset not found — run 'composer require --dev moodlehq/moodle-cs' in ${MOODLE_ROOT_IN_CONTAINER}"
+    # Locate moodle-cs ruleset and its sniff dependencies (phpcsextra, slevomat). These live
+    # as siblings under the same vendor dir. phpcs needs all of them on its installed_paths,
+    # otherwise referenced sniffs like "Universal.*" fail with "sniff does not exist".
+    local vendor_dir
+    vendor_dir=$(run_in_container "find ${MOODLE_ROOT_IN_CONTAINER} -type d -path '*/moodlehq/moodle-cs' -not -path '*/node_modules/*' 2>/dev/null | head -1 | xargs -I{} dirname {} | xargs -I{} dirname {}")
+    if [[ -z "${vendor_dir}" ]]; then
+        record phpcs SKIP "moodle-cs not found — run 'composer require --dev moodlehq/moodle-cs' in ${MOODLE_ROOT_IN_CONTAINER}"
         return
     fi
+    local ruleset="${vendor_dir}/moodlehq/moodle-cs/moodle"
+    # Build comma-separated installed_paths for all sniff providers that moodle-cs uses.
+    local installed_paths
+    installed_paths=$(run_in_container "ls -d ${vendor_dir}/moodlehq/moodle-cs ${vendor_dir}/phpcsstandards/phpcsextra ${vendor_dir}/slevomat/coding-standard 2>/dev/null | paste -sd, -")
     local out rc
-    out=$(run_in_container "vendor/bin/phpcs --standard=${ruleset} --extensions=php,inc --report=full ${PLUGIN_REL}" 2>&1)
+    out=$(run_in_container "vendor/bin/phpcs --config-set installed_paths ${installed_paths} >/dev/null 2>&1; vendor/bin/phpcs --standard=${ruleset} --extensions=php,inc --report=full ${PLUGIN_REL}" 2>&1)
     rc=$?
     if [[ ${rc} -eq 0 ]]; then
         record phpcs PASS "0 errors, 0 warnings"

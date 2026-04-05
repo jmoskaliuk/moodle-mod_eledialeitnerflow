@@ -16,7 +16,7 @@
     --lf-aqua: #3aadaa;
     --lf-dark-aqua: #267372;
     --lf-pale-aqua: #d1eceb;
-    --lf-green: #669933;
+    --lf-green: #693;
     --lf-dark-green: #334d1a;
     --lf-pale-green: #d1e0c1;
     --lf-light-gray: #e9e9e9;
@@ -120,13 +120,34 @@
     align-self: center;
 }
 
-/* ---- Per-box progress bar segment colors ---- */
-.path-mod-eledialeitnerflow .lf-seg-box1 { background-color: var(--lf-orange) !important; }
-.path-mod-eledialeitnerflow .lf-seg-box2 { background-color: var(--lf-middle-orange) !important; }
-.path-mod-eledialeitnerflow .lf-seg-box3 { background-color: var(--lf-aqua) !important; }
-.path-mod-eledialeitnerflow .lf-seg-box4 { background-color: var(--lf-light-blue) !important; }
-.path-mod-eledialeitnerflow .lf-seg-box5 { background-color: var(--lf-dark-blue) !important; }
-.path-mod-eledialeitnerflow .lf-seg-learned { background-color: var(--lf-green) !important; }
+/* ---- Per-box progress bar segment colors ----
+ * !important required to override Bootstrap's .bg-* utility classes used by Moodle's
+ * core_progress bar template. Higher specificity alone won't beat those utilities. */
+/* stylelint-disable declaration-no-important */
+.path-mod-eledialeitnerflow .lf-seg-box1 {
+    background-color: var(--lf-orange) !important;
+}
+
+.path-mod-eledialeitnerflow .lf-seg-box2 {
+    background-color: var(--lf-middle-orange) !important;
+}
+
+.path-mod-eledialeitnerflow .lf-seg-box3 {
+    background-color: var(--lf-aqua) !important;
+}
+
+.path-mod-eledialeitnerflow .lf-seg-box4 {
+    background-color: var(--lf-light-blue) !important;
+}
+
+.path-mod-eledialeitnerflow .lf-seg-box5 {
+    background-color: var(--lf-dark-blue) !important;
+}
+
+.path-mod-eledialeitnerflow .lf-seg-learned {
+    background-color: var(--lf-green) !important;
+}
+/* stylelint-enable declaration-no-important */
 
 /* ---- View page: align notifications with card content ---- */
 .mod-eledialeitnerflow #user-notifications .alert {
