@@ -1,78 +1,48 @@
-# 📘 LeitnerFlow Dokumentation
-
-Willkommen zur offiziellen Dokumentation von **LeitnerFlow** – der Spaced-Repetition-Aktivität für Moodle.
-
+---
+layout: page
+title: LeitnerFlow
 ---
 
-## 🚀 Was ist LeitnerFlow?
+# LeitnerFlow
 
-LeitnerFlow basiert auf dem **Leitner-Prinzip**:
+**Spaced Repetition für Moodle – einfach, effektiv, nachhaltig.**
 
-- Fragen werden zu Lernkarten  
-- Karten bewegen sich zwischen Boxen  
-- Schwierige Inhalte erscheinen häufiger  
-- Ziel: nachhaltiges Lernen statt einmaliges Abfragen  
+<div class="card-grid">
+  <div class="card">
+    <h3>👩‍🏫 Für Lehrende</h3>
+    <p>LeitnerFlow im Kurs didaktisch sinnvoll einsetzen.</p>
+    <a class="button-link" href="teacher-guide.md">Lehrenden-Guide</a>
+  </div>
+  <div class="card">
+    <h3>🛠️ Für Admins</h3>
+    <p>Installation, Betrieb und technische Voraussetzungen.</p>
+    <a class="button-link" href="admin-guide.md">Admin-Guide</a>
+  </div>
+  <div class="card">
+    <h3>🎓 Für Lernende</h3>
+    <p>So funktioniert LeitnerFlow im Lernalltag.</p>
+    <a class="button-link" href="student-guide.md">Student-Guide</a>
+  </div>
+</div>
 
----
+## Was macht LeitnerFlow besonders?
 
-## 🎯 Für wen ist diese Dokumentation?
+- Wiederholung statt einmaligem Lernen
+- Fokus auf schwierige Inhalte
+- Sichtbarer Lernfortschritt
+- Kurze, effektive Sessions
 
-### 👩‍🏫 Lehrende
-→ [LeitnerFlow im Kurs einsetzen](teacher-guide.md)
+## Einsatzszenarien
 
-### 🛠️ Administrator:innen
-→ [Installation & Betrieb](admin-guide.md)
+- Prüfungsvorbereitung
+- Wissenssicherung
+- Vokabeltraining
+- Microlearning
 
-### 🎓 Lernende
-→ [Wie funktioniert LeitnerFlow?](student-guide.md)
+## Weiterführend
 
----
-
-## ⚙️ Konfiguration
-
-→ [Einstellungen im Detail](configuration.md)
-
----
-
-## ❗ Hilfe & Support
-
-→ [Probleme lösen (Troubleshooting)](troubleshooting.md)  
-→ [Häufige Fragen (FAQ)](faq.md)
-
----
-
-## 💡 Best Practices
-
-LeitnerFlow funktioniert am besten:
-
-- in kurzen, regelmäßigen Sessions  
-- mit klar formulierten Fragen  
-- über längere Zeiträume hinweg  
-- kombiniert mit Feedback und Reflexion  
-
----
-
-## 📊 Didaktischer Mehrwert
-
-LeitnerFlow unterstützt:
-
-- nachhaltiges Lernen durch Wiederholung  
-- Fokus auf schwierige Inhalte  
-- selbstgesteuertes Lernen  
-- transparente Fortschrittsentwicklung  
-
----
-
-## 🔧 Technischer Kontext
-
-- basiert auf der Moodle Question Engine  
-- nutzt Fragen aus der Fragensammlung  
-- vollständig integrierbar in Kurse  
-
----
-
-## 🧠 Kurz gesagt
-
-👉 LeitnerFlow macht aus Moodle-Fragen ein intelligentes Lernsystem.
+- [Konfiguration](configuration.md)
+- [Troubleshooting](troubleshooting.md)
+- [FAQ](faq.md)
 
 <!-- trigger -->
