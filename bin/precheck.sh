@@ -76,8 +76,15 @@ check_phpcs() {
         record phpcs SKIP "vendor/bin/phpcs not installed — run 'composer install' inside container"
         return
     fi
+    # Locate moodle-cs ruleset (can be in different vendor paths depending on where composer ran).
+    local ruleset
+    ruleset=$(run_in_container "find ${MOODLE_ROOT_IN_CONTAINER} -type d -path '*/moodlehq/moodle-cs/moodle' -not -path '*/node_modules/*' 2>/dev/null | head -1")
+    if [[ -z "${ruleset}" ]]; then
+        record phpcs SKIP "moodle-cs ruleset not found — run 'composer require --dev moodlehq/moodle-cs' in ${MOODLE_ROOT_IN_CONTAINER}"
+        return
+    fi
     local out rc
-    out=$(run_in_container "vendor/bin/phpcs --standard=${MOODLE_ROOT_IN_CONTAINER}/vendor/moodlehq/moodle-cs/moodle --extensions=php,inc --report=full ${PLUGIN_REL}" 2>&1)
+    out=$(run_in_container "vendor/bin/phpcs --standard=${ruleset} --extensions=php,inc --report=full ${PLUGIN_REL}" 2>&1)
     rc=$?
     if [[ ${rc} -eq 0 ]]; then
         record phpcs PASS "0 errors, 0 warnings"
@@ -197,13 +204,18 @@ check_grunt_amd() {
         return
     fi
     local out rc
-    out=$(run_in_container "npx grunt amd --root=${PLUGIN_REL}") 2>&1
+    # --force: ignore Gruntfile 'ignorefiles' task warnings about optional local/codechecker paths.
+    out=$(run_in_container "npx grunt amd --root=${PLUGIN_REL} --force" 2>&1)
     rc=$?
-    if [[ ${rc} -eq 0 ]]; then
-        record grunt PASS "AMD build clean"
-    else
+    # With --force grunt returns 0 on warnings; detect real build failures via output scan.
+    if echo "${out}" | grep -Eq "error  |Fatal error:|not okay|uglify.*failed|babel.*failed"; then
         echo "${out}" | tail -40
         record grunt FAIL "see output above"
+    elif [[ ${rc} -ne 0 ]]; then
+        echo "${out}" | tail -40
+        record grunt FAIL "grunt exit ${rc}"
+    else
+        record grunt PASS "AMD build clean"
     fi
 }
 

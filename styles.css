@@ -143,15 +143,32 @@
 
 /* ---- Card transition animations ---- */
 @keyframes lf-pulse-out {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.15); opacity: 0.8; }
-    100% { transform: scale(0.95); opacity: 0.5; }
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0.95);
+        opacity: 0.5;
+    }
 }
 
 @keyframes lf-pulse-in {
-    0% { transform: scale(0.8); opacity: 0.3; }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(0.8);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .path-mod-eledialeitnerflow .lf-anim-pulse-out {
@@ -168,8 +185,14 @@
 
 /* ---- Gamified feedback animations ---- */
 @keyframes lf-float-up {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-30px); opacity: 0.2; }
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-30px);
+        opacity: 0.2;
+    }
 }
 
 .path-mod-eledialeitnerflow .lf-points-float {
@@ -202,8 +225,14 @@
 
 /* ---- Feedback banner fade-in ---- */
 @keyframes lf-fade-in {
-    0% { opacity: 0; transform: translateY(-8px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .path-mod-eledialeitnerflow .lf-feedback-banner {
@@ -214,16 +243,20 @@
 .eledialeitnerflow-notour .flexitour-backdrop,
 .eledialeitnerflow-notour .flexitour-step,
 .eledialeitnerflow-notour [data-flexitour="container"] {
+    /* stylelint-disable-next-line declaration-no-important -- Flexitour uses inline styles, !important is required to override. */
     display: none !important;
 }
 
 /* ---- Report page: accessible summary card ---- */
 .path-mod-eledialeitnerflow .lf-bg-darkblue {
+    /* stylelint-disable declaration-no-important -- Overrides Bootstrap utility classes with inline color values. */
     background-color: var(--lf-dark-blue) !important;
     color: #fff !important;
+    /* stylelint-enable declaration-no-important */
 }
 
 /* Hide plugin's duplicate check button — Moodle's behaviour button is used */
 .eledialeitnerflow-question-form > .d-grid {
+    /* stylelint-disable-next-line declaration-no-important -- Inline Bootstrap display class needs override. */
     display: none !important;
 }
