@@ -77,7 +77,7 @@ check_phpcs() {
         return
     fi
     local out rc
-    out=$(run_in_container "vendor/bin/phpcs --standard=vendor/moodlehq/moodle-cs/moodle --extensions=php,inc --report=full ${PLUGIN_REL}" 2>&1)
+    out=$(run_in_container "vendor/bin/phpcs --standard=${MOODLE_ROOT_IN_CONTAINER}/vendor/moodlehq/moodle-cs/moodle --extensions=php,inc --report=full ${PLUGIN_REL}" 2>&1)
     rc=$?
     if [[ ${rc} -eq 0 ]]; then
         record phpcs PASS "0 errors, 0 warnings"
@@ -128,7 +128,7 @@ check_js() {
         return
     fi
     local out rc
-    out=$(run_in_container "cd ${DIRROOT_IN_CONTAINER} && npx grunt eslint --root=${PLUGIN_ABS_IN_CONTAINER}" 2>&1)
+    out=$(run_in_container "npx grunt eslint --root=${PLUGIN_REL}" 2>&1)
     rc=$?
     if [[ ${rc} -eq 0 ]]; then
         record js PASS "eslint clean"
@@ -158,7 +158,7 @@ check_css() {
     # stylelint via grunt (if present).
     if run_in_container "test -d ${MOODLE_ROOT_IN_CONTAINER}/node_modules/.bin" 2>/dev/null; then
         local out rc
-        out=$(run_in_container "cd ${DIRROOT_IN_CONTAINER} && npx grunt stylelint:css --root=${PLUGIN_REL#public/}" 2>&1)
+        out=$(run_in_container "npx grunt stylelint:css --root=${PLUGIN_REL}" 2>&1)
         rc=$?
         if [[ ${rc} -eq 0 ]]; then
             record css-stylelint PASS "stylelint clean"
@@ -197,7 +197,7 @@ check_grunt_amd() {
         return
     fi
     local out rc
-    out=$(run_in_container "cd ${DIRROOT_IN_CONTAINER} && npx grunt amd --root=${PLUGIN_REL#public/}") 2>&1
+    out=$(run_in_container "npx grunt amd --root=${PLUGIN_REL}") 2>&1
     rc=$?
     if [[ ${rc} -eq 0 ]]; then
         record grunt PASS "AMD build clean"
