@@ -1,0 +1,12 @@
+title: LeitnerFlow Dokumentation
+description: Spaced Repetition Activity für Moodle
+theme: minima
+lang: de
+
+header_pages:
+  - teacher-guide.md
+  - admin-guide.md
+  - student-guide.md
+  - configuration.md
+  - troubleshooting.md
+  - faq.md
