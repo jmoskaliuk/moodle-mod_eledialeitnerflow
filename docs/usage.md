@@ -1,15 +1,16 @@
-# Benutzung
+---
+layout: page
+title: Nutzung
+description: Verweis auf die aktuelle Nutzungsdokumentation.
+nav_exclude: true
+---
 
-## Für Lernende
+# Nutzung
 
-Sitzung starten über die Aktivität und Fragen beantworten.
+Die Nutzungshinweise sind jetzt nach Zielgruppen getrennt dokumentiert, damit Einfuehrung und Alltagssupport klarer werden:
 
-Karten bewegen sich je nach Antwort zwischen den Boxen.
+- [Guide fuer Lehrende](teacher-guide.html) fuer Kursdesign, Konfiguration und Begleitung
+- [Guide fuer Lernende](student-guide.html) fuer Sessions, Fortschritt und Lernrhythmus
+- [FAQ](faq.html) fuer schnelle Antworten auf wiederkehrende Fragen
 
-## Für Lehrende
-
-Einstellungen konfigurieren und Fortschritt auswerten.
-
-## Tipps
-
-Regelmäßige kurze Sitzungen verbessern den Lernerfolg.
+So bleibt die oeffentliche Dokumentation konsistent, ohne bestehende Direktlinks unnoetig zu brechen.

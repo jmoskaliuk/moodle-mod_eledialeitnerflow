@@ -1,27 +1,16 @@
+---
+layout: page
+title: Installation
+description: Verweis auf die aktuelle Installationsdokumentation.
+nav_exclude: true
+---
+
 # Installation
 
-## Voraussetzungen
+Die Installations- und Betriebsinformationen wurden in den [Guide fuer Administrator:innen](admin-guide.html) ueberfuehrt, damit technische Einfuehrung, Upgrade-Hinweise und Rollout-Empfehlungen an einer Stelle gebuendelt bleiben.
 
-- Moodle 4.4 oder höher
-- Zugriff auf das Dateisystem der Moodle-Installation
+Wenn Sie LeitnerFlow neu in Moodle bereitstellen, nutzen Sie bitte diese Reihenfolge:
 
-## Installation aus GitHub
-
-Repository klonen und in den Moodle-Ordner mod kopieren.
-
-Zielpfad:
-/moodle/mod/eledialeitnerflow
-
-## Installation abschließen
-
-1. Öffne Moodle im Browser
-2. Gehe zu: Website-Administration → Mitteilungen
-3. Moodle erkennt das neue Plugin und führt die Installation durch
-
-## Überprüfung
-
-- Kurs erstellen
-- Aktivität hinzufügen
-- LeitnerFlow auswählen
-
-Wenn sichtbar, ist die Installation erfolgreich.
+1. [Guide fuer Administrator:innen](admin-guide.html)
+2. [Konfiguration](configuration.html)
+3. [Troubleshooting](troubleshooting.html) fuer den Fall, dass nach dem Rollout Fragen offen bleiben
