@@ -1,157 +1,227 @@
 ---
 layout: page
 title: LeitnerFlow
+permalink: /
+description: Produkt- und Dokumentationsseite fuer das Moodle-Plugin LeitnerFlow.
 ---
 
-<div class="hero">
+<section class="hero hero-home">
+  <div class="hero-copy">
+    <span class="eyebrow">eLeDia | Moodle-Plugin | Adaptives Wiederholen</span>
+    <h1>LeitnerFlow bringt intelligentes Wiederholen direkt in Moodle.</h1>
+    <p class="lead">
+      LeitnerFlow verwandelt Fragen aus der Moodle-Fragensammlung in virtuelle Lernkarten, die sich nach dem Leitner-Prinzip durch mehrere Boxen bewegen. Unsichere Inhalte tauchen frueher wieder auf, sichere Inhalte spaeter. So entsteht aus vorhandenen Fragen ein ruhiger, nachhaltiger Lernprozess statt einer einmaligen Abfrage.
+    </p>
+    <div class="button-row">
+      <a class="button-primary" href="teacher-guide.html">Didaktisch einsetzen</a>
+      <a class="button-secondary" href="admin-guide.html">Installation und Betrieb</a>
+    </div>
+  </div>
+  <div class="hero-panel">
+    <p class="panel-label">Produktversprechen</p>
+    <h2>Lernfortschritt wird sichtbar, Wiederholung planbar und die Moodle-Fragensammlung didaktisch wertvoller.</h2>
+    <p>
+      LeitnerFlow eignet sich fuer Kurse, in denen Faktenwissen, Begriffe, Regeln oder prufungsrelevante Inhalte nicht nur praesentiert, sondern verlaesslich gefestigt werden sollen.
+    </p>
+  </div>
+</section>
 
-<span class="eyebrow">eLeDia · Moodle Plugin · Adaptives Lernen</span>
-
-# LeitnerFlow — intelligentes Lernen mit dem Leitner-System
-
-<p class="lead">
-LeitnerFlow verbindet die Moodle-Fragensammlung mit einem strukturierten Wiederholungsprinzip. Aus einzelnen Fragen werden virtuelle Lernkarten, die sich abhängig vom Lernerfolg durch mehrere Boxen bewegen. Schwierige Inhalte erscheinen häufiger, bereits sichere Inhalte seltener. So entsteht ein Lernprozess, der nicht nur prüft, sondern Wissen systematisch festigt.
-</p>
-
-<div class="button-row">
-  <a class="button-primary" href="teacher-guide.md">LeitnerFlow didaktisch einsetzen</a>
-  <a class="button-secondary" href="admin-guide.md">Installation & Betrieb</a>
-</div>
-
-</div>
-
-<div class="metrics">
+<section class="metric-band">
   <div class="metric">
-    <strong>1–5</strong>
-    <span>konfigurierbare Leitner-Boxen</span>
+    <strong>1-5</strong>
+    <span>konfigurierbare Leitner-Boxen fuer unterschiedliche Anspruchsniveaus</span>
+  </div>
+  <div class="metric">
+    <strong>Moodle 4.4+</strong>
+    <span>nahtlose Einbindung in aktuelle Moodle-Umgebungen</span>
+  </div>
+  <div class="metric">
+    <strong>Question Bank</strong>
+    <span>direkte Nutzung bestehender Fragenkategorien statt doppelter Inhaltspflege</span>
   </div>
   <div class="metric">
     <strong>DE / EN</strong>
-    <span>mehrsprachig einsetzbar</span>
+    <span>mehrsprachig einsetzbar fuer Lehrende, Admins und Lernende</span>
   </div>
-  <div class="metric">
-    <strong>Moodle</strong>
-    <span>direkte Nutzung der Fragensammlung</span>
-  </div>
-  <div class="metric">
-    <strong>Flexibel</strong>
-    <span>für Schule, Hochschule und Training</span>
-  </div>
-</div>
+</section>
 
 ## Warum LeitnerFlow?
 
-Digitale Lernangebote scheitern oft nicht an fehlenden Inhalten, sondern an fehlender Wiederholung. Genau hier setzt LeitnerFlow an. Statt Lernende durch große Fragesammlungen ohne Struktur zu schicken, schafft das Plugin einen klaren Rhythmus: Inhalte mit Unsicherheit werden priorisiert, sichere Inhalte treten in den Hintergrund.
+Viele digitale Lernangebote liefern gute Inhalte, aber keinen belastbaren Wiederholungsrhythmus. LeitnerFlow schliesst genau diese Luecke. Das Plugin verbindet die vertraute Moodle-Fragensammlung mit einem adaptiven Lernprinzip, das Lernende systematisch durch sichere und unsichere Inhalte fuehrt. Wiederholung wird damit nicht dem Zufall ueberlassen, sondern Teil eines nachvollziehbaren Lernwegs.
 
-<div class="highlight-box">
-<p><strong>Der Kernnutzen:</strong> LeitnerFlow macht aus Moodle-Fragen kein statisches Quiz, sondern ein wiederholungsorientiertes Lernsystem mit sichtbarem Fortschritt und klarer didaktischer Logik.</p>
+<div class="info-grid">
+  <div class="card">
+    <h3>Didaktisch klar</h3>
+    <p>Das Leitner-System ist leicht zu erklaeren und im Lernalltag sofort nachvollziehbar. Richtig beantwortete Karten steigen auf, schwierige Karten bleiben praesent.</p>
+  </div>
+  <div class="card">
+    <h3>Organisatorisch effizient</h3>
+    <p>Lehrende arbeiten mit vorhandenen Fragenkategorien weiter. Es entsteht kein paralleles Kartensystem ausserhalb von Moodle.</p>
+  </div>
+  <div class="card">
+    <h3>Motivierend fuer Lernende</h3>
+    <p>Fortschritt ist sichtbar, Sessions bleiben ueberschaubar und Lernende erleben den Unterschied zwischen Wiederholen und bloss erneut testen.</p>
+  </div>
 </div>
 
-## Für wen ist LeitnerFlow gedacht?
+<div class="highlight-box">
+  <p><strong>Im Kern ist LeitnerFlow kein Quiz mit anderer Optik.</strong> Es ist eine Lernaktivitaet fuer wiederholungsorientiertes Ueben, bei der die Fragefrequenz aus dem bisherigen Lernerfolg entsteht.</p>
+</div>
+
+## Fuer welche Zielgruppen ist die Seite gedacht?
+
+Die Dokumentation ist bewusst nicht nur technisch aufgebaut. Sie soll sowohl den Produktcharakter von LeitnerFlow vermitteln als auch die konkrete Einfuehrung im Moodle-Alltag unterstuetzen.
 
 <div class="card-grid">
   <div class="card">
-    <h3>👩‍🏫 Für Lehrende</h3>
-    <p>LeitnerFlow hilft dabei, Wiederholung als festen Bestandteil des Kursdesigns zu etablieren. Statt nur Wissen bereitzustellen, entsteht ein Prozess, der regelmäßiges Üben unterstützt und sichtbar macht.</p>
-    <a href="teacher-guide.md">Guide für Lehrende →</a>
+    <h3>Lehrende</h3>
+    <p>Finden Hinweise fuer Kursdesign, geeignete Fragentypen, sinnvolle Konfigurationen und die Begleitung von Lernenden im laufenden Semester.</p>
+    <a href="teacher-guide.html">Zum Guide fuer Lehrende</a>
   </div>
   <div class="card">
-    <h3>🛠️ Für Administrator:innen</h3>
-    <p>Die Aktivität lässt sich in Moodle sauber integrieren und in bestehende Kursstrukturen einbetten. Für den Betrieb sind vor allem Version, Plugin-Pfad und Konfiguration relevant.</p>
-    <a href="admin-guide.md">Administrationsdoku →</a>
+    <h3>Administrator:innen</h3>
+    <p>Erhalten eine kompakte Uebersicht zu Installation, Versionen, Betriebsfragen, Rollout und typischen Pruefpunkten fuer eine stabile Einfuehrung.</p>
+    <a href="admin-guide.html">Zur Admin-Dokumentation</a>
   </div>
   <div class="card">
-    <h3>🎓 Für Lernende</h3>
-    <p>Lernende arbeiten in fokussierten Sessions, erhalten direktes Feedback und sehen unmittelbar, welche Inhalte bereits gefestigt sind und wo weitere Wiederholung sinnvoll ist.</p>
-    <a href="student-guide.md">Lernendenansicht →</a>
+    <h3>Lernende</h3>
+    <p>Verstehen, wie Sitzungen ablaufen, warum Karten unterschiedlich oft erscheinen und wie sich ein regelmaessiger Lernrhythmus sinnvoll aufbauen laesst.</p>
+    <a href="student-guide.html">Zur Lernendenansicht</a>
   </div>
 </div>
 
-## Das Prinzip hinter dem Plugin
+## So funktioniert das Leitner-Prinzip in LeitnerFlow
 
-LeitnerFlow basiert auf einem einfachen, sehr wirkungsvollen Ablauf:
+LeitnerFlow nutzt die Moodle Question Engine, setzt den Schwerpunkt aber auf Wiederholung statt auf Pruefungslogik. Aus einer oder mehreren Fragenkategorien wird ein Kartenpool erzeugt. Jede Frage startet in einer unteren Box. Erfolgreiche Antworten bewegen die Karte weiter nach oben. Fehlerhafte Antworten fuehren - je nach Konfiguration - zu einem Rueckschritt oder zu einem Reset.
 
-1. Eine Lehrkraft wählt Fragenkategorien aus der Moodle-Fragensammlung.
-2. Jede Frage wird als Lernkarte behandelt.
-3. Eine richtige Antwort bewegt die Karte in eine höhere Box.
-4. Eine falsche Antwort setzt die Karte je nach Konfiguration zurück oder stuft sie herab.
-5. Karten aus unteren Boxen erscheinen häufiger erneut.
-6. Nach ausreichend vielen richtigen Antworten gilt eine Karte als gelernt.
+<div class="step-grid">
+  <div class="step-card">
+    <span>1</span>
+    <h3>Fragen auswaehlen</h3>
+    <p>Eine Lehrkraft bindet passende Kategorien aus der Moodle-Fragensammlung in eine Aktivitaet ein.</p>
+  </div>
+  <div class="step-card">
+    <span>2</span>
+    <h3>Karten erzeugen</h3>
+    <p>Jede Frage wird als virtuelle Lernkarte behandelt und in den Wiederholungsprozess aufgenommen.</p>
+  </div>
+  <div class="step-card">
+    <span>3</span>
+    <h3>In Sessions ueben</h3>
+    <p>Lernende bearbeiten kurze, fokussierte Durchgaenge mit einer konfigurierbaren Zahl an Fragen.</p>
+  </div>
+  <div class="step-card">
+    <span>4</span>
+    <h3>Fortschritt steuern</h3>
+    <p>Richtige Antworten verschieben Karten nach oben, unsichere Inhalte tauchen schneller wieder auf.</p>
+  </div>
+  <div class="step-card">
+    <span>5</span>
+    <h3>Lernstand sichtbar machen</h3>
+    <p>Dashboard, Boxenverteilung und Verlauf zeigen, welche Inhalte bereits gefestigt sind und wo weiterer Bedarf besteht.</p>
+  </div>
+  <div class="step-card">
+    <span>6</span>
+    <h3>Langfristig sichern</h3>
+    <p>Die Wiederholung folgt einer klaren Logik und unterstuetzt gerade bei prufungsrelevanten Inhalten den nachhaltigen Wissensaufbau.</p>
+  </div>
+</div>
 
 <div class="soft-panel">
-<p><strong>Didaktischer Effekt:</strong> Wiederholung wird nicht dem Zufall überlassen. Lernende investieren ihre Zeit stärker in unsichere Inhalte und erleben Fortschritt nicht nur als Punktzahl, sondern als Weg durch einen nachvollziehbaren Lernprozess.</p>
+  <p><strong>Didaktischer Mehrwert:</strong> Lernzeit wird dort investiert, wo sie den groessten Effekt hat. Schwierige Inhalte bleiben im Fokus, waehrend bereits sichere Karten seltener erscheinen. Das reduziert Redundanz und macht Ueben effizienter.</p>
 </div>
 
 ## Typische Einsatzszenarien
 
-LeitnerFlow eignet sich überall dort, wo Wissen schrittweise aufgebaut und langfristig gesichert werden soll.
+LeitnerFlow spielt seine Staerken ueberall dort aus, wo regelmaessiges Wiederholen wichtiger ist als ein einmaliger Testmoment. Besonders wirksam ist das Plugin in Formaten mit vielen Begriffen, Fakten, Zuordnungen oder standardisierten Entscheidungsregeln.
 
-<ul class="check-list">
-  <li>Prüfungsvorbereitung über mehrere Wochen hinweg</li>
-  <li>Vokabel- und Begriffstraining</li>
-  <li>Faktenwissen in naturwissenschaftlichen oder medizinischen Kontexten</li>
-  <li>Begleitende Wiederholung in Blended-Learning-Szenarien</li>
-  <li>Microlearning und kurze, regelmäßige Selbstlernphasen</li>
-</ul>
-
-## Was macht LeitnerFlow im Alltag stark?
-
-Im praktischen Einsatz überzeugt LeitnerFlow vor allem durch die Verbindung von didaktischer Klarheit und technischer Einfachheit. Lehrende müssen keine zweite Inhaltswelt pflegen, weil direkt mit der vorhandenen Moodle-Fragensammlung gearbeitet wird. Lernende wiederum erhalten ein Format, das übersichtlich bleibt und dennoch einen echten Wiederholungseffekt erzeugt.
-
-<div class="dark-panel">
-
-## Funktionsschwerpunkte
-
-### Für Lernende
-- sichtbarer Lernfortschritt
-- kurze und fokussierte Sessions
-- Priorisierung unsicherer Inhalte
-- klare Orientierung bis zum Status „gelernt“
-
-### Für Lehrende
-- flexible Auswahl mehrerer Fragenkategorien
-- konfigurierbare Session-Größe und Boxenzahl
-- unterschiedliche Strategien bei falschen Antworten
-- auswertbare Berichte zum Lernstand
-
-### Für Organisation und Betrieb
-- Nutzung der Moodle Question Engine
-- direkte Einbindung in bestehende Kurse
-- saubere Struktur für technische Einführung und Dokumentation
-- professionelle Darstellung für Produkt- und Kundenseiten
-
+<div class="card-grid">
+  <div class="card">
+    <h3>Pruefungsvorbereitung</h3>
+    <p>Begleitendes Wiederholen ueber mehrere Wochen statt kurzfristigem Pauk-Modus kurz vor dem Termin.</p>
+  </div>
+  <div class="card">
+    <h3>Blended Learning</h3>
+    <p>Praesenz- und Selbstlernphasen lassen sich mit kurzen LeitnerFlow-Sessions eng miteinander verzahnen.</p>
+  </div>
+  <div class="card">
+    <h3>Vokabeln und Begriffe</h3>
+    <p>Ideal fuer Sprachlernen, Fachterminologie oder Definitionen, die wiederholt verfuegbar sein muessen.</p>
+  </div>
+  <div class="card">
+    <h3>Berufliche Qualifizierung</h3>
+    <p>Gut geeignet fuer Schulungen, Zertifizierungsvorbereitung und standardisierte Wissensbausteine im Training.</p>
+  </div>
 </div>
 
-## Weiterführende Dokumentation
+## Was LeitnerFlow im Alltag stark macht
+
+Im produktiven Einsatz ueberzeugt LeitnerFlow durch eine unaufgeregte Kombination aus didaktischer Stringenz und technischer Naehe zu Moodle. Lehrende muessen keine neue Inhaltswelt aufbauen, Admins bleiben in einer vertrauten Betriebsumgebung und Lernende erhalten ein Format, das klein genug fuer den Alltag und dennoch wirksam genug fuer langfristiges Lernen ist.
+
+<div class="dark-panel">
+  <h2>Starke Eigenschaften auf einen Blick</h2>
+  <div class="feature-columns">
+    <div>
+      <h3>Fuer Lernende</h3>
+      <ul class="check-list">
+        <li>sichtbarer Fortschritt auf Karten- und Session-Ebene</li>
+        <li>kurze, fokussierte Uebungseinheiten</li>
+        <li>klare Priorisierung unsicherer Inhalte</li>
+        <li>mehrsprachige Nutzung im Moodle-Kontext</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Fuer Lehrende und Organisation</h3>
+      <ul class="check-list">
+        <li>direkte Nutzung der Moodle-Fragensammlung</li>
+        <li>konfigurierbare Session-Groesse, Boxenzahl und Fehlerlogik</li>
+        <li>Berichte und Fortschrittsansichten fuer die Begleitung</li>
+        <li>kompatibel mit GitHub Pages als oeffentliche Produktdokumentation</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+## Orientierung fuer den Einstieg
+
+Fuer viele Moodle-Kurse ist eine bewusst einfache Startkonfiguration sinnvoll. Ein klarer, ueberschaubarer Einstieg erleichtert die Kommunikation gegenueber Lernenden und macht den Nutzen des Leitner-Prinzips schnell erfahrbar.
+
+| Einstellung | Empfehlung fuer den Start | Warum das sinnvoll ist |
+|---|---|---|
+| Anzahl Boxen | 3 | Gut verstaendlich und ohne unnoetige Komplexitaet erklaerbar |
+| Fragen pro Session | 10-20 | Kurz genug fuer den Alltag, lang genug fuer einen sichtbaren Effekt |
+| Verhalten bei Fehlern | Reset auf Box 1 | Macht das Prinzip klar und betont Wiederholung unsicherer Inhalte |
+| Auswahlstrategie | Niedrige Boxen priorisieren | Unterstuetzt fokussiertes Ueben statt breiter Streuung |
+| Einsatzform | Mehrere kurze Sessions pro Woche | Foerdert nachhaltiges Lernen besser als seltene Langsessions |
+
+## Weiterfuehrende Bereiche
 
 <div class="card-grid">
   <div class="card">
     <h3>Konfiguration</h3>
-    <p>Alle Einstellungen der Aktivität im Überblick – mit Empfehlungen für einen klaren und didaktisch sinnvollen Einstieg.</p>
-    <a href="configuration.md">Konfiguration lesen →</a>
+    <p>Alle relevanten Einstellungen mit didaktischer Einordnung, empfohlenen Profilen und Hinweisen fuer einen stabilen Start.</p>
+    <a href="configuration.html">Konfiguration ansehen</a>
   </div>
   <div class="card">
     <h3>Troubleshooting</h3>
-    <p>Wenn Fragen nicht erscheinen, die Aktivität nicht sichtbar ist oder der Fortschritt unplausibel wirkt, findest du hier die typischen Ursachen.</p>
-    <a href="troubleshooting.md">Probleme lösen →</a>
+    <p>Typische Fehlerbilder, schnelle Pruefschritte und Hinweise fuer Support, Betrieb und Einfuehrung.</p>
+    <a href="troubleshooting.html">Probleme systematisch loesen</a>
   </div>
   <div class="card">
     <h3>FAQ</h3>
-    <p>Kurze Antworten auf häufige Fragen zu Nutzung, Didaktik, Fragenpools und typischen Szenarien in Moodle-Kursen.</p>
-    <a href="faq.md">Zur FAQ →</a>
+    <p>Kurze Antworten auf wiederkehrende Fragen zu Didaktik, Betrieb, Fragepools, Bewertung und Lernpraxis.</p>
+    <a href="faq.html">Zur FAQ</a>
   </div>
 </div>
 
-## Empfehlung für den Einstieg
-
-Für die meisten Kurse ist ein einfacher Start sinnvoll. Ein überschaubarer Rahmen hilft sowohl Lehrenden als auch Lernenden, das Prinzip schnell zu verstehen und im Alltag konsequent zu nutzen.
-
-| Einstellung | Empfehlung |
-|---|---|
-| Anzahl Boxen | 3 |
-| Fragen pro Session | 10–20 |
-| Verhalten bei Fehlern | Reset auf Box 1 |
-| Auswahlstrategie | Niedrige Boxen priorisieren |
-| Einsatzform | kurze, regelmäßige Sessions |
-
-Mit dieser Konfiguration entsteht ein klarer, verständlicher Einstieg, der die Stärke des Leitner-Prinzips sichtbar macht, ohne unnötig komplex zu wirken.
+<section class="cta-strip">
+  <div>
+    <p class="panel-label">Naechster Schritt</p>
+    <h2>Mit der passenden Perspektive einsteigen</h2>
+    <p>Wenn Sie LeitnerFlow einrichten, starten Sie mit dem Admin-Guide. Wenn Sie die Aktivitaet in einem Kurs einsetzen moechten, ist der Guide fuer Lehrende der beste Einstieg.</p>
+  </div>
+  <div class="button-row">
+    <a class="button-primary" href="teacher-guide.html">Guide fuer Lehrende</a>
+    <a class="button-secondary" href="admin-guide.html">Guide fuer Admins</a>
+  </div>
+</section>
