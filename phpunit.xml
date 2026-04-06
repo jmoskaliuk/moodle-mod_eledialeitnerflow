@@ -21,14 +21,4 @@
         </testsuite>
     </testsuites>
 
-    <coverage>
-        <include>
-            <directory suffix=".php">classes</directory>
-            <file>lib.php</file>
-        </include>
-        <report>
-            <html outputDirectory="tests/coverage"/>
-            <text outputFile="php://stdout" showUncoveredFiles="false"/>
-        </report>
-    </coverage>
 </phpunit>

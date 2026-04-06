@@ -21,7 +21,7 @@ Feature: Create and configure a LeitnerFlow activity
   Scenario: Teacher creates a LeitnerFlow activity with default settings
     Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    When I add a "LeitnerFlow" activity to course "Course 1" section "1"
+    When I add a "eledialeitnerflow" activity to course "Course 1" section "1"
     And I set the following fields to these values:
       | Activity name | Test LeitnerFlow |
     And I press "Save and return to course"
@@ -31,7 +31,7 @@ Feature: Create and configure a LeitnerFlow activity
   Scenario: Teacher configures Leitner system settings
     Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    When I add a "LeitnerFlow" activity to course "Course 1" section "1"
+    When I add a "eledialeitnerflow" activity to course "Course 1" section "1"
     And I set the following fields to these values:
       | Activity name            | Leitner Custom    |
       | Number of boxes          | 5                 |
@@ -46,7 +46,7 @@ Feature: Create and configure a LeitnerFlow activity
   Scenario: Teacher configures display and feedback settings
     Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    When I add a "LeitnerFlow" activity to course "Course 1" section "1"
+    When I add a "eledialeitnerflow" activity to course "Course 1" section "1"
     And I set the following fields to these values:
       | Activity name   | Leitner Display |
       | Feedback style  | Detailed        |
@@ -60,7 +60,7 @@ Feature: Create and configure a LeitnerFlow activity
   Scenario: Teacher configures grading
     Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    When I add a "LeitnerFlow" activity to course "Course 1" section "1"
+    When I add a "eledialeitnerflow" activity to course "Course 1" section "1"
     And I set the following fields to these values:
       | Activity name | Leitner Graded      |
       | Grading       | % of cards learned  |
