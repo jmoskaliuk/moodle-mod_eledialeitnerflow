@@ -1,4 +1,4 @@
-{
+{"tour": {
   "name": "<span class=\"multilang\" lang=\"en\">LeitnerFlow — Teacher Guide</span><span class=\"multilang\" lang=\"de\">LeitnerFlow — Lehrkräfte-Führung</span>",
   "description": "Introduces teachers to the LeitnerFlow report page and management features.",
   "pathmatch": "/mod/eledialeitnerflow/report.php%",
@@ -33,11 +33,11 @@
     },
     {
       "title": "<span class=\"multilang\" lang=\"en\">Reset Progress</span><span class=\"multilang\" lang=\"de\">Fortschritt zurücksetzen</span>",
-      "content": "<span class=\"multilang\" lang=\"en\">The \"Reset progress\" button in each row lets you reset a specific student's data. This removes all card states and session history for that student, allowing them to start fresh. Use with care — this action cannot be undone!</span><span class=\"multilang\" lang=\"de\">Die Schaltfläche „Fortschritt zurücksetzen" in jeder Zeile ermöglicht es, die Daten einzelner Studierender zurückzusetzen. Dabei werden alle Kartenzustände und die Session-Historie gelöscht, sodass der/die Studierende von vorn beginnen kann. Bitte vorsichtig verwenden — diese Aktion kann nicht rückgängig gemacht werden!</span>",
+      "content": "<span class=\"multilang\" lang=\"en\">The \"Reset progress\" button in each row lets you reset a specific student's data. This removes all card states and session history for that student, allowing them to start fresh. Use with care — this action cannot be undone!</span><span class=\"multilang\" lang=\"de\">Die Schaltfläche „Fortschritt zurücksetzen\" in jeder Zeile ermöglicht es, die Daten einzelner Studierender zurückzusetzen. Dabei werden alle Kartenzustände und die Session-Historie gelöscht, sodass der/die Studierende von vorn beginnen kann. Bitte vorsichtig verwenden — diese Aktion kann nicht rückgängig gemacht werden!</span>",
       "targettype": 0,
       "targetvalue": ".btn-outline-danger",
       "sortorder": 3,
       "configdata": "{\"placement\":\"left\",\"orphan\":false,\"backdrop\":true,\"reflex\":false,\"delay\":0}"
     }
   ]
-}
+}}

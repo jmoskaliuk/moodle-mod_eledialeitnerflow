@@ -1,4 +1,4 @@
-{
+{"tour": {
   "name": "<span class=\"multilang\" lang=\"en\">LeitnerFlow — Getting started</span><span class=\"multilang\" lang=\"de\">LeitnerFlow — So funktioniert es</span>",
   "description": "Introduces students to the LeitnerFlow spaced repetition activity on their first visit.",
   "pathmatch": "/mod/eledialeitnerflow/view.php%",
@@ -48,4 +48,4 @@
       "configdata": "{\"placement\":\"top\",\"orphan\":false,\"backdrop\":true,\"reflex\":false,\"delay\":0}"
     }
   ]
-}
+}}

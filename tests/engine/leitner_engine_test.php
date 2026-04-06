@@ -90,6 +90,7 @@ final class leitner_engine_test extends \advanced_testcase {
      * @param int $boxcount Total number of boxes.
      * @param int $expectedbox Expected box number (1-based).
      * @param string $description Human-readable scenario description.
+     * @dataProvider box_calculation_cases
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('box_calculation_cases')]
     public function test_calculate_box(
