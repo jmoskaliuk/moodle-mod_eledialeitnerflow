@@ -68,6 +68,18 @@ class mod_eledialeitnerflow_generator extends testing_module_generator {
             }
         }
 
+        // Allow Behat feature files to pass a category name instead of a numeric ID.
+        if (!empty($record->questioncategoryid) && !is_numeric($record->questioncategoryid)) {
+            global $DB;
+            $catid = $DB->get_field('question_categories', 'id', ['name' => $record->questioncategoryid]);
+            if ($catid === false) {
+                throw new \coding_exception(
+                    "Question category '{$record->questioncategoryid}' not found in the database."
+                );
+            }
+            $record->questioncategoryid = (int) $catid;
+        }
+
         return parent::create_instance($record, $options);
     }
 

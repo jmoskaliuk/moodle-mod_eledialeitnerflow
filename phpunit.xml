@@ -2,33 +2,32 @@
 <!--
   PHPUnit configuration for mod_eledialeitnerflow.
 
-  Place this file in the Moodle root alongside the existing phpunit.xml,
-  or add the testsuite block below into the existing phpunit.xml.
-
-  Initialise: php admin/tool/phpunit/cli/init.php
-  Run suite:  vendor/bin/phpunit mod_eledialeitnerflow_testsuite
+  Paths are relative to the plugin directory (as required by moodle-plugin-ci).
+  To run manually from the Moodle root use:
+    php admin/tool/phpunit/cli/init.php
+    vendor/bin/phpunit mod_eledialeitnerflow_testsuite
 -->
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="lib/phpunit/phpunit.xsd"
-    bootstrap="lib/phpunit/bootstrap.php"
+    xsi:noNamespaceSchemaLocation="../../lib/phpunit/phpunit.xsd"
+    bootstrap="../../lib/phpunit/bootstrap.php"
     colors="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
     beStrictAboutOutputDuringTests="true"
 >
     <testsuites>
         <testsuite name="mod_eledialeitnerflow_testsuite">
-            <directory suffix="_test.php">mod/eledialeitnerflow/tests</directory>
+            <directory suffix="_test.php">tests</directory>
         </testsuite>
     </testsuites>
 
     <coverage>
         <include>
-            <directory suffix=".php">mod/eledialeitnerflow/classes</directory>
-            <file>mod/eledialeitnerflow/lib.php</file>
+            <directory suffix=".php">classes</directory>
+            <file>lib.php</file>
         </include>
         <report>
-            <html outputDirectory="mod/eledialeitnerflow/tests/coverage"/>
+            <html outputDirectory="tests/coverage"/>
             <text outputFile="php://stdout" showUncoveredFiles="false"/>
         </report>
     </coverage>

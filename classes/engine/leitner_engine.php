@@ -76,7 +76,7 @@ class leitner_engine {
     /**
      * Process a student's answer and return the updated card state.
      *
-     * @param \stdClass $state  The current eledialeitnerflow_card_state record (or null if new)
+     * @param \stdClass|null $state  The current eledialeitnerflow_card_state record (or null if new)
      * @param bool      $correct Whether the answer was correct
      * @param \stdClass $leitnerflow  The leitnerflow instance settings
      * @param int       $questionid  The ID of the question being answered.
