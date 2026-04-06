@@ -1,13 +1,16 @@
-# Files excluded from `git archive` (i.e., from release ZIPs built for the
-# Moodle Plugins Directory). Non-English language packs must not ship in the
-# release per the approval checklist; they live in lang.moodle.org after
-# approval. Tests and dev tooling are also excluded to keep the upload lean.
+# Files excluded from `git archive` (i.e., from release ZIPs).
+# Non-English language packs must not ship in the release — community
+# translations go through AMOS (lang.moodle.org) after approval.
 
 lang/de/          export-ignore
 lang/de_du/       export-ignore
 lang/de_formal/   export-ignore
 
 # Development-only scaffolding.
-bin/precheck.sh   export-ignore
+bin/              export-ignore
+cli/              export-ignore
+docs/             export-ignore
+tests/            export-ignore
+phpunit.xml       export-ignore
 .github/          export-ignore
 .gitattributes    export-ignore
