@@ -42,7 +42,7 @@ Feature: Create and configure a LeitnerFlow activity
       | Card selection            | Mixed random      |
       | Questions per session    | 15                |
     And I press "Save and display"
-    Then I should see "My learning progress"
+    Then I should see "All participants overview"
 
   @javascript
   Scenario: Teacher configures display and feedback settings

@@ -34,8 +34,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['activityname']       = 'LeitnerFlow';
 $string['activesessioninfo']  = 'Active session: {$a->answered} of {$a->total} answered, {$a->correct} correct';
+$string['activityname']       = 'LeitnerFlow';
 $string['alllearned']         = 'All questions learned!';
 $string['animationdelay']            = 'Animation delay';
 $string['animationdelay_help']       = 'How long the feedback message and box animation are shown before the next question loads automatically. Only applies to feedback styles other than "Detailed" (which waits for a button click). Shorter delays speed up sessions; longer delays give students more time to read the feedback.';
@@ -163,7 +163,7 @@ $string['questionrotation_fixed']    = 'Fixed pool';
 $string['questionrotation_help']     = '<b>Dynamic</b>: questions are always fetched fresh from the Question Bank — new questions appear automatically, deleted ones disappear.<br><b>Fixed</b>: the question pool is locked when the student first starts. Later changes to the bank are not reflected.';
 $string['questionsasked']            = 'Questions asked';
 $string['questionsinpool']    = 'Questions in pool';
-$string['report']        = 'Teacher overview';
+$string['report']        = 'All participants overview';
 $string['resetandrestart']    = 'Reset and start over';
 $string['resetconfirm']  = 'Are you sure you want to reset all progress for {$a}? This cannot be undone.';
 $string['resetprogress'] = 'Reset progress';
@@ -187,7 +187,7 @@ $string['streakbroken']              = 'Streak ended';
 $string['streakcounter']             = '{$a}x streak!';
 $string['totalsessions']      = '{$a} sessions completed';
 $string['trend_recent']       = 'Last 3 sessions: {$a->recent}% correct (average: {$a->avg}%)';
-$string['viewreport']         = 'Teacher overview';
+$string['viewreport']         = 'All participants overview';
 $string['witherrors']         = 'With errors';
 $string['wrongbehavior']             = 'On wrong answer';
 $string['wrongbehavior_back1']       = 'Back one box';
