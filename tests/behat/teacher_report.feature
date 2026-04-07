@@ -31,7 +31,8 @@ Feature: Teacher views the participant report
 
   @javascript
   Scenario: Teacher can access the report from the activity view
-    Given I log in as "teacher1"
+    Given a LeitnerFlow session exists for "student1" in "Test Leitner"
+    And I log in as "teacher1"
     And I am on "Course 1" course homepage
     When I follow "Test Leitner"
     Then I should see "All participants overview"

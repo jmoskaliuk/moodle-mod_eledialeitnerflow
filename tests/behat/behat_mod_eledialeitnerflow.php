@@ -44,4 +44,42 @@ class behat_mod_eledialeitnerflow extends behat_base {
     public function the_eledialeitnerflow_bundled_tours_are_installed(): void {
         \mod_eledialeitnerflow\local\tour_installer::install_bundled_tours();
     }
+
+    /**
+     * Creates a completed LeitnerFlow session for a user in a named activity.
+     *
+     * Use this in scenarios that need at least one started session so that
+     * report.php renders the participant table rather than the "nobody has
+     * started" notice.
+     *
+     * @Given a LeitnerFlow session exists for :username in :activityname
+     *
+     * @param string $username    Moodle username (e.g. "student1")
+     * @param string $activityname  Display name of the eledialeitnerflow activity
+     */
+    public function a_leitnerflow_session_exists_for_in(string $username, string $activityname): void {
+        global $DB;
+
+        $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
+
+        $sql = "SELECT cm.instance
+                  FROM {course_modules} cm
+                  JOIN {modules} m ON m.id = cm.module
+                  JOIN {eledialeitnerflow} lf ON lf.id = cm.instance
+                 WHERE m.name = 'eledialeitnerflow' AND lf.name = :name";
+        $cm = $DB->get_record_sql($sql, ['name' => $activityname], MUST_EXIST);
+
+        $DB->insert_record('eledialeitnerflow_sessions', (object)[
+            'eledialeitnerflowid' => $cm->instance,
+            'userid'              => $user->id,
+            'qubaid'              => null,
+            'questionids'         => json_encode([]),
+            'currentindex'        => 0,
+            'questionsasked'      => 5,
+            'questionscorrect'    => 3,
+            'status'              => 1,
+            'timecreated'         => time() - 3600,
+            'timecompleted'       => time(),
+        ]);
+    }
 }
