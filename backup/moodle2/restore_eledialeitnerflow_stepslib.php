@@ -69,9 +69,15 @@ class restore_eledialeitnerflow_activity_structure_step extends restore_activity
         $data->timecreated  = $this->apply_date_offset($data->timecreated);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
 
-        // Note: questioncategoryid mapping is handled by annotate_ids in backup.
-        // For simplicity in restore we keep the original (same-site restore).
-        // Cross-site restores would need a category mapping step.
+        $categoryids = $this->remap_question_category_ids($data->questioncategoryids ?? '');
+        if (!empty($categoryids)) {
+            $data->questioncategoryids = implode(',', $categoryids);
+            $data->questioncategoryid = reset($categoryids);
+        } else {
+            $mappedcategoryid = $this->remap_question_category_id((int)($data->questioncategoryid ?? 0));
+            $data->questioncategoryid = $mappedcategoryid;
+            $data->questioncategoryids = $mappedcategoryid > 0 ? (string)$mappedcategoryid : null;
+        }
 
         $newid = $DB->insert_record('eledialeitnerflow', $data);
         $this->apply_activity_instance($newid);
@@ -116,11 +122,54 @@ class restore_eledialeitnerflow_activity_structure_step extends restore_activity
         // Qubaid is not restored (question_usages are not portable).
         $data->qubaid = null;
         // Mark as completed so no stale active sessions.
-        $data->status = 1;
+        $data->status = \mod_eledialeitnerflow\engine\leitner_engine::SESSION_STATUS_COMPLETED;
 
         if ($data->userid) {
             $DB->insert_record('eledialeitnerflow_sessions', $data);
         }
+    }
+
+    /**
+     * Remap a comma-separated list of question category IDs.
+     *
+     * @param string|null $categoryids Original category IDs.
+     * @return array New category IDs.
+     */
+    private function remap_question_category_ids(?string $categoryids): array {
+        $ids = array_filter(array_map('intval', explode(',', (string)$categoryids)));
+        $mappedids = [];
+        foreach ($ids as $id) {
+            $mappedid = $this->remap_question_category_id($id);
+            if ($mappedid > 0) {
+                $mappedids[] = $mappedid;
+            }
+        }
+        return array_values(array_unique($mappedids));
+    }
+
+    /**
+     * Remap one question category ID, preserving same-site IDs only as fallback.
+     *
+     * @param int $categoryid Original category ID.
+     * @return int New category ID, or 0 if unavailable.
+     */
+    private function remap_question_category_id(int $categoryid): int {
+        global $DB;
+
+        if ($categoryid <= 0) {
+            return 0;
+        }
+
+        $mappedid = $this->get_mappingid('question_category', $categoryid);
+        if ($mappedid) {
+            return (int)$mappedid;
+        }
+
+        if ($this->get_task()->is_samesite() && $DB->record_exists('question_categories', ['id' => $categoryid])) {
+            return $categoryid;
+        }
+
+        return 0;
     }
 
     /**

@@ -52,10 +52,10 @@ if ($start) {
     $stale = $DB->get_records('eledialeitnerflow_sessions', [
         'eledialeitnerflowid' => $leitnerflow->id,
         'userid'        => $USER->id,
-        'status'        => 0,
+        'status'        => leitner_engine::SESSION_STATUS_ACTIVE,
     ]);
     foreach ($stale as $s) {
-        $s->status        = 1; // Mark as completed.
+        $s->status        = leitner_engine::SESSION_STATUS_COMPLETED;
         $s->timecompleted = time();
         $DB->update_record('eledialeitnerflow_sessions', $s);
         // Clean up quba to free resources.
@@ -100,7 +100,7 @@ if ($start) {
     $session->currentindex   = 0;
     $session->questionsasked = 0;
     $session->questionscorrect = 0;
-    $session->status         = 0;
+    $session->status         = leitner_engine::SESSION_STATUS_ACTIVE;
     $session->timecreated    = time();
     $session->id = $DB->insert_record('eledialeitnerflow_sessions', $session);
 
@@ -121,7 +121,7 @@ if (!$sessid) {
 }
 $session = $DB->get_record('eledialeitnerflow_sessions', ['id' => $sessid, 'userid' => $USER->id], '*', MUST_EXIST);
 
-if ((int)$session->status === 1) {
+if ((int)$session->status === leitner_engine::SESSION_STATUS_COMPLETED) {
     redirect($viewurl);
 }
 
@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $state = leitner_engine::process_answer($oldstate, $correct, $leitnerflow, $questionid, $USER->id);
     leitner_engine::save_card_state($state);
     $newbox = (int) $state->currentbox;
-    $islearned = ((int) $state->status === 2); // Status 2 = learned.
+    $islearned = ((int) $state->status === leitner_engine::STATUS_LEARNED);
 
     // Update session progress + streak tracking.
     $session->questionsasked++;
@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $totallearned = $DB->count_records('eledialeitnerflow_card_state', [
             'eledialeitnerflowid' => $leitnerflow->id,
             'userid' => $USER->id,
-            'status' => 2,
+            'status' => leitner_engine::STATUS_LEARNED,
         ]);
     }
 
@@ -650,7 +650,7 @@ function _eledialeitnerflow_render_gamified_feedback(
 function _eledialeitnerflow_finish_session(stdClass $session, stdClass $leitnerflow, stdClass $cm, stdClass $course): void {
     global $DB, $OUTPUT, $PAGE, $USER;
 
-    $session->status        = 1;
+    $session->status        = leitner_engine::SESSION_STATUS_COMPLETED;
     $session->timecompleted = time();
     $DB->update_record('eledialeitnerflow_sessions', $session);
 

@@ -63,7 +63,14 @@ class backup_eledialeitnerflow_activity_structure_step extends backup_activity_s
             'timecreated', 'timecompleted',
         ]);
 
+        // Question category references make Moodle include and map the selected
+        // question bank categories during cross-site restores.
+        $questioncategoryrefs = new backup_nested_element('question_category_refs');
+        $questioncategoryref = new backup_nested_element('question_category_ref', null, ['questioncategoryid']);
+
         // Build tree.
+        $leitnerflow->add_child($questioncategoryrefs);
+        $questioncategoryrefs->add_child($questioncategoryref);
         $leitnerflow->add_child($cardstates);
         $cardstates->add_child($cardstate);
         $leitnerflow->add_child($sessions);
@@ -71,6 +78,19 @@ class backup_eledialeitnerflow_activity_structure_step extends backup_activity_s
 
         // Data sources.
         $leitnerflow->set_source_table('eledialeitnerflow', ['id' => backup::VAR_ACTIVITYID]);
+
+        global $DB;
+        $selectedids = $DB->sql_concat("','", 'elf.questioncategoryids', "','");
+        $categoryidpattern = $DB->sql_concat("'%,'", $DB->sql_cast_to_char('qc.id'), "',%'");
+        $questioncategoryref->set_source_sql(
+            "SELECT DISTINCT qc.id AS questioncategoryid
+               FROM {question_categories} qc
+               JOIN {eledialeitnerflow} elf ON elf.id = ?
+              WHERE qc.id = elf.questioncategoryid
+                 OR $selectedids LIKE $categoryidpattern",
+            [backup::VAR_PARENTID]
+        );
+        $questioncategoryref->annotate_ids('question_categoryref', 'questioncategoryid');
 
         if ($userinfo) {
             $cardstate->set_source_table(

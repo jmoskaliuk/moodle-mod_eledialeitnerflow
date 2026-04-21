@@ -86,7 +86,6 @@ eledialeitnerflow/
 │   ├── engine/               Leitner spaced repetition algorithm
 │   ├── event/                Session & progress events
 │   └── privacy/              GDPR provider
-├── cli/                  CLI tools (test data generation)
 ├── db/
 │   ├── access.php            Capabilities
 │   ├── install.php           Post-install tasks (User Tour, multilang filter)

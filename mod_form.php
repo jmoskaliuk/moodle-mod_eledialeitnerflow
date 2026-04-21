@@ -56,18 +56,22 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
         // Question bank settings.
         $mform->addElement('header', 'questionbanksettings', get_string('questioncategory', 'mod_eledialeitnerflow'));
 
-        // Load ALL question categories (simplest possible query).
+        // Load question categories from the current course context only.
         $categories = [];
         $debuginfo = '';
         try {
-            $allcats = $DB->get_records('question_categories', [], 'name ASC', 'id, name, contextid, parent');
-            $debuginfo .= 'Found ' . count($allcats) . ' total categories. ';
-            foreach ($allcats as $cat) {
-                if ($cat->name === 'top') {
-                    continue;
-                }
-                $qcount = $DB->count_records('question_bank_entries', ['questioncategoryid' => $cat->id]);
-                $categories[$cat->id] = $cat->name . " ({$qcount} questions)";
+            $coursecontext = \core\context\course::instance($COURSE->id);
+            $sql = "SELECT qc.id, qc.name, COUNT(qbe.id) AS qcount
+                      FROM {question_categories} qc
+                 LEFT JOIN {question_bank_entries} qbe ON qbe.questioncategoryid = qc.id
+                     WHERE qc.contextid = :contextid
+                       AND qc.parent <> 0
+                  GROUP BY qc.id, qc.name
+                  ORDER BY qc.name ASC";
+            $coursecats = $DB->get_records_sql($sql, ['contextid' => $coursecontext->id]);
+            $debuginfo .= 'Found ' . count($coursecats) . ' course categories. ';
+            foreach ($coursecats as $cat) {
+                $categories[$cat->id] = $cat->name . " ({$cat->qcount} questions)";
             }
             $debuginfo .= count($categories) . ' shown in dropdown.';
         } catch (\Exception $e) {

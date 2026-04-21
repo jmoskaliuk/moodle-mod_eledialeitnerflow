@@ -45,6 +45,11 @@ class leitner_engine {
     /** @var int Card triggered an error. */
     const STATUS_ERROR   = 2;
 
+    /** Session status constants */
+    const SESSION_STATUS_ACTIVE = 0;
+    /** @var int Session has been completed. */
+    const SESSION_STATUS_COMPLETED = 1;
+
     /** Wrong-answer behavior constants */
     const WRONG_RESET   = 0;
     /** @var int Subtract one step from correctcount. */
@@ -324,7 +329,7 @@ class leitner_engine {
      *   1. Never-attempted questions (treated as box 1)
      *   2. Box 1 cards (most errors / least known)
      *   3. Box 2, 3 … N-1 cards
-     *   Skip: learned (status=1) cards
+     *   Skip: learned cards
      *
      * @param \stdClass $leitnerflow
      * @param int       $userid
@@ -486,12 +491,12 @@ class leitner_engine {
             $sessions = $DB->count_records('eledialeitnerflow_sessions', [
                 'eledialeitnerflowid' => $leitnerflow->id,
                 'userid'        => $student->id,
-                'status'        => 1,
+                'status'        => self::SESSION_STATUS_COMPLETED,
             ]);
             $lastsession = $DB->get_field_sql(
                 "SELECT MAX(timecompleted) FROM {eledialeitnerflow_sessions}
-                  WHERE eledialeitnerflowid = ? AND userid = ? AND status = 1",
-                [$leitnerflow->id, $student->id]
+                  WHERE eledialeitnerflowid = ? AND userid = ? AND status = ?",
+                [$leitnerflow->id, $student->id, self::SESSION_STATUS_COMPLETED]
             );
 
             $entry = new \stdClass();
@@ -520,13 +525,17 @@ class leitner_engine {
         global $DB;
 
         $sql = "SELECT id, questionsasked, questionscorrect, timecreated, timecompleted
-                  FROM {eledialeitnerflow_sessions}
+                 FROM {eledialeitnerflow_sessions}
                  WHERE eledialeitnerflowid = :lfid
                    AND userid = :uid
-                   AND status = 1
+                   AND status = :status
               ORDER BY timecompleted DESC";
 
-        $params = ['lfid' => $eledialeitnerflowid, 'uid' => $userid];
+        $params = [
+            'lfid' => $eledialeitnerflowid,
+            'uid' => $userid,
+            'status' => self::SESSION_STATUS_COMPLETED,
+        ];
 
         if ($limit > 0) {
             return array_values($DB->get_records_sql($sql, $params, 0, $limit));
@@ -547,12 +556,16 @@ class leitner_engine {
         $sql = "SELECT COUNT(*) AS sessioncount,
                        COALESCE(SUM(questionsasked), 0) AS totalasked,
                        COALESCE(SUM(questionscorrect), 0) AS totalcorrect
-                  FROM {eledialeitnerflow_sessions}
+                 FROM {eledialeitnerflow_sessions}
                  WHERE eledialeitnerflowid = :lfid
                    AND userid = :uid
-                   AND status = 1";
+                   AND status = :status";
 
-        $row = $DB->get_record_sql($sql, ['lfid' => $eledialeitnerflowid, 'uid' => $userid]);
+        $row = $DB->get_record_sql($sql, [
+            'lfid' => $eledialeitnerflowid,
+            'uid' => $userid,
+            'status' => self::SESSION_STATUS_COMPLETED,
+        ]);
 
         $stats = new \stdClass();
         $stats->sessioncount = (int) $row->sessioncount;
