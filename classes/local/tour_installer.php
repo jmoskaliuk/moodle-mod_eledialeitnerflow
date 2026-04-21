@@ -32,12 +32,24 @@ class tour_installer {
     /**
      * Imports every JSON tour from db/usertours/ via tool_usertours.
      *
+     * Idempotent: if a LeitnerFlow tour already exists with the same
+     * pathmatch as a bundled JSON file, that file is skipped. Without
+     * this guard, every view.php render would stack up duplicate tours
+     * (see issue: tool_usertours/usertours init payload >1024 chars).
+     *
      * Skipped silently if tool_usertours is disabled or unavailable
      * (e.g. in minimal test environments or during phpunit init when
      * the tool_usertours tables don't yet exist).
      */
     public static function install_bundled_tours(): void {
         global $CFG, $DB;
+
+        // Run at most once per request; subsequent callers are a no-op.
+        static $ran = false;
+        if ($ran) {
+            return;
+        }
+        $ran = true;
 
         if (!class_exists('\\tool_usertours\\manager')) {
             return;
@@ -70,6 +82,16 @@ class tour_installer {
                 if ($json === false) {
                     continue;
                 }
+                $decoded = json_decode($json);
+                if (!is_object($decoded) || empty($decoded->pathmatch)) {
+                    continue;
+                }
+
+                // Skip if a LeitnerFlow tour already exists for this pathmatch.
+                if (self::tour_exists_for_path((string) $decoded->pathmatch)) {
+                    continue;
+                }
+
                 \tool_usertours\manager::import_tour_from_json($json);
             } catch (\Throwable $e) {
                 debugging(
@@ -79,6 +101,30 @@ class tour_installer {
                 );
             }
         }
+    }
+
+    /**
+     * Checks whether a LeitnerFlow tour already exists for the given pathmatch.
+     *
+     * The name filter ('leitner' substring) keeps this scoped to this plugin's
+     * tours and avoids false positives from unrelated tours sharing a pathmatch
+     * (e.g. future course-level tours).
+     */
+    private static function tour_exists_for_path(string $pathmatch): bool {
+        global $DB;
+
+        $records = $DB->get_records(
+            'tool_usertours_tours',
+            ['pathmatch' => $pathmatch],
+            '',
+            'id, name'
+        );
+        foreach ($records as $record) {
+            if (stripos((string) $record->name, 'leitner') !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

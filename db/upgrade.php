@@ -300,5 +300,13 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024120124, 'eledialeitnerflow');
     }
 
+    // De-duplicate LeitnerFlow user tours accumulated by the non-idempotent
+    // view.php import path. Wipe all LeitnerFlow-matching tours and reimport
+    // once from the bundled JSON — install_bundled_tours() is now idempotent.
+    if ($oldversion < 2026042101) {
+        \mod_eledialeitnerflow\local\tour_installer::reimport_bundled_tours();
+        upgrade_mod_savepoint(true, 2026042101, 'eledialeitnerflow');
+    }
+
     return true;
 }
