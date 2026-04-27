@@ -158,7 +158,7 @@ function eledialeitnerflow_grade_item_update(stdClass $leitnerflow, $grades = nu
         $grades = null;
     }
 
-    return grade_update(
+    $result = grade_update(
         'mod/eledialeitnerflow',
         $leitnerflow->course,
         'mod',
@@ -168,6 +168,25 @@ function eledialeitnerflow_grade_item_update(stdClass $leitnerflow, $grades = nu
         $grades,
         $params
     );
+
+    $gradepass = (!isset($leitnerflow->gradepass) || $leitnerflow->gradepass === '' || $leitnerflow->gradepass === null)
+        ? 0
+        : (float)$leitnerflow->gradepass;
+
+    $gradeitem = grade_item::fetch([
+        'itemtype' => 'mod',
+        'itemmodule' => 'eledialeitnerflow',
+        'iteminstance' => $leitnerflow->id,
+        'itemnumber' => 0,
+        'courseid' => $leitnerflow->course,
+    ]);
+
+    if ($gradeitem && (float)$gradeitem->gradepass !== $gradepass) {
+        $gradeitem->gradepass = $gradepass;
+        $gradeitem->update();
+    }
+
+    return $result;
 }
 
 /**
