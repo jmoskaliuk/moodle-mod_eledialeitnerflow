@@ -4,6 +4,9 @@
 # Submission scratch — drafts for the Directory form.
 .submission-draft.md
 
+# Generated documentation exports — edit Markdown sources instead.
+docs/user-doc.html
+
 # Editor / OS droppings.
 .DS_Store
 .idea/

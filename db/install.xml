@@ -1,90 +1,123 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/eledialeitnerflow/db" VERSION="20241201" COMMENT="XMLDB file for mod_eledialeitnerflow">
+<?xml version='1.0' encoding='UTF-8'?>
+<XMLDB PATH="mod/eledialeitnerflow/db" VERSION="2026102402" COMMENT="XMLDB file for mod_eledialeitnerflow">
   <TABLES>
-
     <TABLE NAME="eledialeitnerflow" COMMENT="Leitner Flow activity instances">
       <FIELDS>
-        <FIELD NAME="id"                 TYPE="int"  LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="course"             TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="name"               TYPE="char" LENGTH="255" NOTNULL="true"/>
-        <FIELD NAME="intro"              TYPE="text" NOTNULL="false"/>
-        <FIELD NAME="introformat"        TYPE="int"  LENGTH="4"  NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="questioncategoryid" TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Deprecated — kept for backward compat. Use questioncategoryids."/>
-        <FIELD NAME="questioncategoryids" TYPE="text" NOTNULL="false" COMMENT="Comma-separated question_categories.id values"/>
-        <FIELD NAME="sessionsize"        TYPE="int"  LENGTH="4"  NOTNULL="true" DEFAULT="20" COMMENT="Questions per session"/>
-        <FIELD NAME="boxcount"           TYPE="int"  LENGTH="2"  NOTNULL="true" DEFAULT="3"  COMMENT="Number of Leitner boxes 3-5"/>
-        <FIELD NAME="correcttolearn"     TYPE="int"  LENGTH="2"  NOTNULL="true" DEFAULT="3"  COMMENT="Correct answers needed to mark as learned"/>
-        <FIELD NAME="wrongbehavior"      TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="0"  COMMENT="0=reset to box1, 1=go back one box, 2=no change"/>
-        <FIELD NAME="questionrotation"   TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="1"  COMMENT="1=always fetch fresh from bank, 0=fixed pool"/>
-        <FIELD NAME="prioritystrategy"   TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="0"  COMMENT="0=priority box1 first, 1=mixed random"/>
-        <FIELD NAME="grade"              TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"  COMMENT="Max grade (0 = no grade)"/>
-        <FIELD NAME="grademethod"        TYPE="int"  LENGTH="2"  NOTNULL="true" DEFAULT="0"  COMMENT="0=no grade, 1=percentage learned"/>
-        <FIELD NAME="showanimation"     TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="1"  COMMENT="1=show card-move animation, 0=off"/>
-        <FIELD NAME="feedbackstyle"    TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="2"  COMMENT="0=off, 1=minimal, 2=animated, 3=detailed, 4=gamified"/>
-        <FIELD NAME="animationdelay"  TYPE="int"  LENGTH="5"  NOTNULL="true" DEFAULT="1000" COMMENT="Auto-redirect delay in milliseconds"/>
-        <FIELD NAME="showtour"         TYPE="int"  LENGTH="1"  NOTNULL="true" DEFAULT="1"  COMMENT="1=show intro tour on first visit, 0=off"/>
-        <FIELD NAME="timecreated"        TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="timemodified"       TYPE="int"  LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" />
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" />
+        <FIELD NAME="intro" TYPE="text" NOTNULL="false" />
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" />
+        <FIELD NAME="questioncategoryid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Deprecated — kept for backward compat. Use questioncategoryids." />
+        <FIELD NAME="questioncategoryids" TYPE="text" NOTNULL="false" COMMENT="Comma-separated question_categories.id values" />
+        <FIELD NAME="sessionsize" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="20" COMMENT="Questions per session" />
+        <FIELD NAME="boxcount" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="3" COMMENT="Number of Leitner boxes 3-5" />
+        <FIELD NAME="correcttolearn" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="3" COMMENT="Correct answers needed to mark as learned" />
+        <FIELD NAME="wrongbehavior" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="0=reset to box1, 1=go back one box, 2=no change" />
+        <FIELD NAME="questionrotation" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" COMMENT="1=always fetch fresh from bank, 0=fixed pool" />
+        <FIELD NAME="prioritystrategy" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="0=priority box1 first, 1=mixed random" />
+        <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Max grade (0 = no grade)" />
+        <FIELD NAME="grademethod" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" COMMENT="0=no grade, 1=percentage learned" />
+        <FIELD NAME="showanimation" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" COMMENT="1=show card-move animation, 0=off" />
+        <FIELD NAME="feedbackstyle" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="2" COMMENT="0=off, 1=minimal, 2=animated, 3=detailed, 4=gamified" />
+        <FIELD NAME="animationdelay" TYPE="int" LENGTH="5" NOTNULL="true" DEFAULT="1000" COMMENT="Auto-redirect delay in milliseconds" />
+        <FIELD NAME="showtour" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" COMMENT="1=show intro tour on first visit, 0=off" />
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" />
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" />
+        <FIELD NAME="externalenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" />
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" />
       </KEYS>
       <INDEXES>
-        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+        <INDEX NAME="course" UNIQUE="false" FIELDS="course" />
       </INDEXES>
     </TABLE>
-
     <TABLE NAME="eledialeitnerflow_card_state" COMMENT="Per-user card state for Leitner box tracking">
       <FIELDS>
-        <FIELD NAME="id"            TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="eledialeitnerflowid" TYPE="int" LENGTH="10" NOTNULL="true"/>
-        <FIELD NAME="userid"        TYPE="int" LENGTH="10" NOTNULL="true"/>
-        <FIELD NAME="questionid"    TYPE="int" LENGTH="10" NOTNULL="true"/>
-        <FIELD NAME="currentbox"    TYPE="int" LENGTH="2"  NOTNULL="true" DEFAULT="1" COMMENT="Current Leitner box (1-N)"/>
-        <FIELD NAME="correctcount"  TYPE="int" LENGTH="4"  NOTNULL="true" DEFAULT="0" COMMENT="Cumulative correct answers"/>
-        <FIELD NAME="attemptcount"  TYPE="int" LENGTH="4"  NOTNULL="true" DEFAULT="0" COMMENT="Total attempts"/>
-        <FIELD NAME="status"        TYPE="int" LENGTH="1"  NOTNULL="true" DEFAULT="0" COMMENT="0=open, 1=learned, 2=has_errors"/>
-        <FIELD NAME="timecreated"   TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="timemodified"  TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+        <FIELD NAME="eledialeitnerflowid" TYPE="int" LENGTH="10" NOTNULL="true" />
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" />
+        <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" />
+        <FIELD NAME="currentbox" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" COMMENT="Current Leitner box (1-N)" />
+        <FIELD NAME="correctcount" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" COMMENT="Cumulative correct answers" />
+        <FIELD NAME="attemptcount" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" COMMENT="Total attempts" />
+        <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="0=open, 1=learned, 2=has_errors" />
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" />
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" />
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary"       TYPE="primary"  FIELDS="id"/>
-        <KEY NAME="eledialeitnerflowid" TYPE="foreign"  FIELDS="eledialeitnerflowid" REFTABLE="eledialeitnerflow" REFFIELDS="id"/>
-        <KEY NAME="userid"        TYPE="foreign"  FIELDS="userid"        REFTABLE="user"         REFFIELDS="id"/>
-        <KEY NAME="questionid"    TYPE="foreign"  FIELDS="questionid"    REFTABLE="question"     REFFIELDS="id"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+        <KEY NAME="eledialeitnerflowid" TYPE="foreign" FIELDS="eledialeitnerflowid" REFTABLE="eledialeitnerflow" REFFIELDS="id" />
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" />
+        <KEY NAME="questionid" TYPE="foreign" FIELDS="questionid" REFTABLE="question" REFFIELDS="id" />
       </KEYS>
       <INDEXES>
-        <INDEX NAME="quiz_user"    UNIQUE="false" FIELDS="eledialeitnerflowid,userid"/>
-        <INDEX NAME="unique_state" UNIQUE="true"  FIELDS="eledialeitnerflowid,userid,questionid"/>
+        <INDEX NAME="quiz_user" UNIQUE="false" FIELDS="eledialeitnerflowid,userid" />
+        <INDEX NAME="unique_state" UNIQUE="true" FIELDS="eledialeitnerflowid,userid,questionid" />
       </INDEXES>
     </TABLE>
-
     <TABLE NAME="eledialeitnerflow_sessions" COMMENT="Individual quiz sessions per user">
       <FIELDS>
-        <FIELD NAME="id"              TYPE="int"  LENGTH="10" NOTNULL="true"  SEQUENCE="true"/>
-        <FIELD NAME="eledialeitnerflowid"   TYPE="int"  LENGTH="10" NOTNULL="true"/>
-        <FIELD NAME="userid"          TYPE="int"  LENGTH="10" NOTNULL="true"/>
-        <FIELD NAME="qubaid"          TYPE="int"  LENGTH="10" NOTNULL="false" COMMENT="question_usages.id"/>
-        <FIELD NAME="questionids"     TYPE="text" NOTNULL="false"             COMMENT="JSON array of question IDs for this session in order"/>
-        <FIELD NAME="currentindex"    TYPE="int"  LENGTH="4"  NOTNULL="true"  DEFAULT="0"/>
-        <FIELD NAME="questionsasked"  TYPE="int"  LENGTH="4"  NOTNULL="true"  DEFAULT="0"/>
-        <FIELD NAME="questionscorrect" TYPE="int" LENGTH="4"  NOTNULL="true"  DEFAULT="0"/>
-        <FIELD NAME="currentstreak"   TYPE="int"  LENGTH="4"  NOTNULL="true"  DEFAULT="0" COMMENT="Current consecutive correct answers (for gamified mode)"/>
-        <FIELD NAME="beststreak"      TYPE="int"  LENGTH="4"  NOTNULL="true"  DEFAULT="0" COMMENT="Best streak in this session"/>
-        <FIELD NAME="status"          TYPE="int"  LENGTH="1"  NOTNULL="true"  DEFAULT="0" COMMENT="0=active, 1=completed"/>
-        <FIELD NAME="timecreated"     TYPE="int"  LENGTH="10" NOTNULL="true"  DEFAULT="0"/>
-        <FIELD NAME="timecompleted"   TYPE="int"  LENGTH="10" NOTNULL="false"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+        <FIELD NAME="eledialeitnerflowid" TYPE="int" LENGTH="10" NOTNULL="true" />
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" />
+        <FIELD NAME="qubaid" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="question_usages.id" />
+        <FIELD NAME="questionids" TYPE="text" NOTNULL="false" COMMENT="JSON array of question IDs for this session in order" />
+        <FIELD NAME="currentindex" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" />
+        <FIELD NAME="questionsasked" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" />
+        <FIELD NAME="questionscorrect" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" />
+        <FIELD NAME="currentstreak" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" COMMENT="Current consecutive correct answers (for gamified mode)" />
+        <FIELD NAME="beststreak" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" COMMENT="Best streak in this session" />
+        <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="0=active, 1=completed" />
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" />
+        <FIELD NAME="timecompleted" TYPE="int" LENGTH="10" NOTNULL="false" />
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary"       TYPE="primary" FIELDS="id"/>
-        <KEY NAME="eledialeitnerflowid" TYPE="foreign" FIELDS="eledialeitnerflowid" REFTABLE="eledialeitnerflow" REFFIELDS="id"/>
-        <KEY NAME="userid"        TYPE="foreign" FIELDS="userid"        REFTABLE="user"        REFFIELDS="id"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+        <KEY NAME="eledialeitnerflowid" TYPE="foreign" FIELDS="eledialeitnerflowid" REFTABLE="eledialeitnerflow" REFFIELDS="id" />
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" />
       </KEYS>
       <INDEXES>
-        <INDEX NAME="quiz_user"  UNIQUE="false" FIELDS="eledialeitnerflowid,userid"/>
-        <INDEX NAME="quiz_status" UNIQUE="false" FIELDS="eledialeitnerflowid,userid,status"/>
+        <INDEX NAME="quiz_user" UNIQUE="false" FIELDS="eledialeitnerflowid,userid" />
+        <INDEX NAME="quiz_status" UNIQUE="false" FIELDS="eledialeitnerflowid,userid,status" />
       </INDEXES>
     </TABLE>
-
+    <TABLE NAME="eledialeitnerflow_ext_attempts" COMMENT="Generic external review provenance">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" NOTNULL="true" LENGTH="10" SEQUENCE="true" />
+        <FIELD NAME="eledialeitnerflowid" TYPE="int" NOTNULL="true" LENGTH="10" />
+        <FIELD NAME="userid" TYPE="int" NOTNULL="true" LENGTH="10" />
+        <FIELD NAME="sourcecmid" TYPE="int" NOTNULL="true" LENGTH="10" />
+        <FIELD NAME="sourcecomponent" TYPE="char" NOTNULL="true" LENGTH="100" />
+        <FIELD NAME="attemptuuid" TYPE="char" NOTNULL="true" LENGTH="64" />
+        <FIELD NAME="qubaid" TYPE="int" NOTNULL="true" LENGTH="10" />
+        <FIELD NAME="questions" TYPE="text" NOTNULL="true" />
+        <FIELD NAME="closed" TYPE="int" NOTNULL="true" LENGTH="1" DEFAULT="0" />
+        <FIELD NAME="timecreated" TYPE="int" NOTNULL="true" LENGTH="10" />
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="identity" UNIQUE="true" FIELDS="sourcecmid,attemptuuid" />
+        <INDEX NAME="targetuser" UNIQUE="false" FIELDS="eledialeitnerflowid,userid" />
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="eledialeitnerflow_ext_results" COMMENT="Generic external review provenance">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" NOTNULL="true" LENGTH="10" SEQUENCE="true" />
+        <FIELD NAME="registrationid" TYPE="int" NOTNULL="true" LENGTH="10" />
+        <FIELD NAME="slot" TYPE="int" NOTNULL="true" LENGTH="10" />
+        <FIELD NAME="questionid" TYPE="int" NOTNULL="true" LENGTH="10" />
+        <FIELD NAME="timeapplied" TYPE="int" NOTNULL="true" LENGTH="10" />
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="identity" UNIQUE="true" FIELDS="registrationid,slot" />
+      </INDEXES>
+    </TABLE>
   </TABLES>
 </XMLDB>

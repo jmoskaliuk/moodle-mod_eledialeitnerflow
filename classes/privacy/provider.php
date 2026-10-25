@@ -61,6 +61,7 @@ class provider implements
             'privacy:metadata:eledialeitnerflow_card_state'
         );
 
+        $collection->add_subsystem_link('core_question', [], 'privacy:metadata:questionusage');
         $collection->add_database_table(
             'eledialeitnerflow_sessions',
             [
@@ -73,6 +74,16 @@ class provider implements
             'privacy:metadata:eledialeitnerflow_sessions'
         );
 
+        $collection->add_database_table('eledialeitnerflow_ext_attempts', [
+            'userid' => 'privacy:metadata:externalreview', 'sourcecmid' => 'privacy:metadata:externalreview',
+            'sourcecomponent' => 'privacy:metadata:externalreview', 'attemptuuid' => 'privacy:metadata:externalreview',
+            'qubaid' => 'privacy:metadata:externalreview', 'questions' => 'privacy:metadata:externalreview',
+            'closed' => 'privacy:metadata:externalreview', 'timecreated' => 'privacy:metadata:externalreview',
+        ], 'privacy:metadata:externalreview');
+        $collection->add_database_table('eledialeitnerflow_ext_results', [
+            'registrationid' => 'privacy:metadata:externalreview', 'slot' => 'privacy:metadata:externalreview',
+            'questionid' => 'privacy:metadata:externalreview', 'timeapplied' => 'privacy:metadata:externalreview',
+        ], 'privacy:metadata:externalreview');
         return $collection;
     }
 
@@ -84,12 +95,14 @@ class provider implements
      */
     public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
-        $sql = "SELECT ctx.id
-                  FROM {context} ctx
-                  JOIN {course_modules} cm ON cm.id = ctx.instanceid AND ctx.contextlevel = :ctxmodule
-                  JOIN {eledialeitnerflow} lq    ON lq.id = cm.instance
-                  JOIN {eledialeitnerflow_card_state} cs ON cs.eledialeitnerflowid = lq.id AND cs.userid = :userid";
-        $contextlist->add_from_sql($sql, ['ctxmodule' => CONTEXT_MODULE, 'userid' => $userid]);
+        foreach (['eledialeitnerflow_card_state', 'eledialeitnerflow_sessions', 'eledialeitnerflow_ext_attempts'] as $table) {
+            $sql = "SELECT ctx.id FROM {context} ctx
+                JOIN {course_modules} cm ON cm.id = ctx.instanceid AND ctx.contextlevel = :ctxmodule
+                JOIN {modules} m ON m.id = cm.module AND m.name = :module
+                JOIN {{$table}} data ON data.eledialeitnerflowid = cm.instance AND data.userid = :userid";
+            $contextlist->add_from_sql($sql, ['ctxmodule' => CONTEXT_MODULE,
+                'module' => 'eledialeitnerflow', 'userid' => $userid]);
+        }
         return $contextlist;
     }
 
@@ -104,11 +117,12 @@ class provider implements
         if ($context->contextlevel !== CONTEXT_MODULE) {
             return;
         }
-        $sql = "SELECT cs.userid
-                  FROM {eledialeitnerflow_card_state} cs
-                  JOIN {course_modules} cm ON cm.instance = cs.eledialeitnerflowid
-                 WHERE cm.id = :cmid";
-        $userlist->add_from_sql('userid', $sql, ['cmid' => $context->instanceid]);
+        foreach (['eledialeitnerflow_card_state', 'eledialeitnerflow_sessions', 'eledialeitnerflow_ext_attempts'] as $table) {
+            $sql = "SELECT data.userid FROM {{$table}} data
+                JOIN {course_modules} cm ON cm.instance = data.eledialeitnerflowid
+                JOIN {modules} m ON m.id = cm.module AND m.name = :module WHERE cm.id = :cmid";
+            $userlist->add_from_sql('userid', $sql, ['module' => 'eledialeitnerflow', 'cmid' => $context->instanceid]);
+        }
     }
 
     /**
@@ -118,7 +132,8 @@ class provider implements
      * @return void
      */
     public static function export_user_data(approved_contextlist $contextlist): void {
-        global $DB;
+        global $DB, $CFG;
+        require_once($CFG->dirroot . '/question/engine/lib.php');
 
         foreach ($contextlist->get_contexts() as $context) {
             if ($context->contextlevel !== CONTEXT_MODULE) {
@@ -142,11 +157,33 @@ class provider implements
                 );
             }
 
+            $registrations = $DB->get_records('eledialeitnerflow_ext_attempts', [
+                'eledialeitnerflowid' => $cm->instance, 'userid' => $userid]);
+            foreach ($registrations as $registration) {
+                $registration->results = array_values($DB->get_records(
+                    'eledialeitnerflow_ext_results',
+                    ['registrationid' => $registration->id]
+                ));
+            }
+            writer::with_context($context)->export_data(['externalreviews'], (object)['attempts' => array_values($registrations)]);
+
             // Export sessions.
             $sessions = $DB->get_records('eledialeitnerflow_sessions', [
                 'eledialeitnerflowid' => $cm->instance,
                 'userid'        => $userid,
             ]);
+            foreach ($sessions as $session) {
+                if ($session->qubaid) {
+                    \core_question\privacy\provider::export_question_usage(
+                        $userid,
+                        $context,
+                        ['sessions', (string)$session->id],
+                        $session->qubaid,
+                        new \question_display_options(),
+                        true
+                    );
+                }
+            }
             if ($sessions) {
                 writer::with_context($context)->export_data(
                     [get_string('privacy:metadata:eledialeitnerflow_sessions', 'mod_eledialeitnerflow')],
@@ -174,12 +211,11 @@ class provider implements
 
         $sessions = $DB->get_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $cm->instance]);
         foreach ($sessions as $session) {
-            if (!empty($session->qubaid)) {
-                \question_engine::delete_questions_usage_by_activity($session->qubaid);
-            }
+            \mod_eledialeitnerflow\local\session_lifecycle::delete($session);
         }
         $DB->delete_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $cm->instance]);
         $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $cm->instance]);
+        \mod_eledialeitnerflow\local\external_review_service::delete_provenance($cm->instance);
     }
 
     /**
@@ -201,6 +237,7 @@ class provider implements
                 continue;
             }
             \mod_eledialeitnerflow\engine\leitner_engine::delete_user_data($cm->instance, $userid);
+            \mod_eledialeitnerflow\local\external_review_service::delete_provenance($cm->instance, $userid);
         }
     }
 
@@ -221,6 +258,7 @@ class provider implements
         }
         foreach ($userlist->get_userids() as $userid) {
             \mod_eledialeitnerflow\engine\leitner_engine::delete_user_data($cm->instance, $userid);
+            \mod_eledialeitnerflow\local\external_review_service::delete_provenance($cm->instance, $userid);
         }
     }
 }

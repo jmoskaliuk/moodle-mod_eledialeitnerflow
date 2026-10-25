@@ -46,6 +46,7 @@ require_capability('mod/eledialeitnerflow:attempt', \core\context\module::instan
 $context = \core\context\module::instance($cm->id);
 $viewurl = new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cm->id]);
 
+
 // Start a new session.
 if ($start) {
     // Complete any stale active session (save partial results rather than deleting).
@@ -119,7 +120,8 @@ if ($start) {
 if (!$sessid) {
     redirect($viewurl);
 }
-$session = $DB->get_record('eledialeitnerflow_sessions', ['id' => $sessid, 'userid' => $USER->id], '*', MUST_EXIST);
+$session = $DB->get_record('eledialeitnerflow_sessions', ['id' => $sessid, 'userid' => $USER->id,
+    'eledialeitnerflowid' => $leitnerflow->id], '*', MUST_EXIST);
 
 if ((int)$session->status === leitner_engine::SESSION_STATUS_COMPLETED) {
     redirect($viewurl);
@@ -142,7 +144,22 @@ $slot = $currentindex + 1; // Quba slots are 1-based.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_sesskey();
 
+    $cardlock = \core\lock\lock_config::get_lock_factory('mod_eledialeitnerflow')->get_lock(
+        $leitnerflow->id . ':' . $USER->id,
+        10
+    );
+    if (!$cardlock) {
+        throw new moodle_exception('reviewbusy', 'mod_eledialeitnerflow');
+    }
     $transaction = $DB->start_delegated_transaction();
+    // Reload after obtaining the shared lock. QE sequence checks reject stale submissions.
+    $session = $DB->get_record('eledialeitnerflow_sessions', ['id' => $sessid], '*', MUST_EXIST);
+    $quba = question_engine::load_questions_usage_by_activity($session->qubaid);
+    if ((int)$session->currentindex !== $currentindex || $session->status) {
+        $transaction->allow_commit();
+        $cardlock->release();
+        redirect(new moodle_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]));
+    }
 
     $timenow = time();
     $quba->process_all_actions($timenow);
@@ -181,11 +198,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $DB->update_record('eledialeitnerflow_sessions', $session);
 
     $transaction->allow_commit();
+    $cardlock->release();
 
-    if ($session->currentindex >= $totalquestions) {
-        _eledialeitnerflow_finish_session($session, $leitnerflow, $cm, $course);
-        exit;
-    }
+    // The next request finishes the session after feedback has been read.
 
     // Determine feedback mode.
     $feedbackstyle = (int)($leitnerflow->feedbackstyle ?? 2);
@@ -374,7 +389,7 @@ function _eledialeitnerflow_render_with_feedback(
     $displayoptions = new question_display_options();
     $displayoptions->marks           = question_display_options::MAX_ONLY;
     $displayoptions->feedback        = $showdetail ? question_display_options::VISIBLE : question_display_options::HIDDEN;
-    $displayoptions->generalfeedback = question_display_options::HIDDEN;
+    $displayoptions->generalfeedback = $showdetail ? question_display_options::VISIBLE : question_display_options::HIDDEN;
     $displayoptions->rightanswer     = $showdetail ? question_display_options::VISIBLE : question_display_options::HIDDEN;
     $displayoptions->history         = question_display_options::HIDDEN;
     $displayoptions->correctness     = question_display_options::VISIBLE;
@@ -445,12 +460,13 @@ function _eledialeitnerflow_render_with_feedback(
     echo $quba->render_question($slot, $displayoptions, ($answeredindex + 1) . '');
 
     // Bottom area.
-    if ($feedbackstyle === 3) {
+    $islastquestion = ($answeredindex + 1 >= $totalquestions);
+    if ($feedbackstyle === 3 || $islastquestion) {
         // DETAILED: "Next question" button instead of auto-redirect.
         echo html_writer::start_div('text-center mt-3 mb-3');
         echo html_writer::link(
             $nexturl->out(false),
-            get_string('nextquestionbtn', 'mod_eledialeitnerflow'),
+            $islastquestion ? get_string('continue') : get_string('nextquestionbtn', 'mod_eledialeitnerflow'),
             ['class' => 'btn btn-primary']
         );
         echo html_writer::end_div();
@@ -473,7 +489,7 @@ function _eledialeitnerflow_render_with_feedback(
     // JavaScript: Mode-specific behaviour.
     // Detailed mode: no auto-redirect (button handles it).
     // All other modes: auto-redirect after delay.
-    $autoredirect = ($feedbackstyle !== 3);
+    $autoredirect = ($feedbackstyle !== 3 && !$islastquestion);
     $delay = (int) ($leitnerflow->animationdelay ?? 1000);
 
     $PAGE->requires->js_call_amd('mod_eledialeitnerflow/card_transition', 'init', [

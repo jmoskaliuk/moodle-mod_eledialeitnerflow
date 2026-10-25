@@ -96,12 +96,11 @@ function eledialeitnerflow_delete_instance(int $id): bool {
     // Clean up all sessions (includes question_usages cleanup).
     $sessions = $DB->get_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $id]);
     foreach ($sessions as $session) {
-        if (!empty($session->qubaid)) {
-            question_engine::delete_questions_usage_by_activity($session->qubaid);
-        }
+        \mod_eledialeitnerflow\local\session_lifecycle::delete($session);
     }
     $DB->delete_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $id]);
     $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $id]);
+    \mod_eledialeitnerflow\local\external_review_service::delete_provenance($id);
     $DB->delete_records('eledialeitnerflow', ['id' => $id]);
 
     // Pass the full object with 'course' property to avoid fatal error in grade_update().
@@ -320,12 +319,11 @@ function eledialeitnerflow_reset_userdata(stdClass $data): array {
         foreach ($quizzes as $quiz) {
             $sessions = $DB->get_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $quiz->id]);
             foreach ($sessions as $session) {
-                if (!empty($session->qubaid)) {
-                    question_engine::delete_questions_usage_by_activity($session->qubaid);
-                }
+                \mod_eledialeitnerflow\local\session_lifecycle::delete($session);
             }
             $DB->delete_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $quiz->id]);
             $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $quiz->id]);
+            $DB->set_field('eledialeitnerflow_ext_attempts', 'closed', 1, ['eledialeitnerflowid' => $quiz->id]);
         }
         $status[] = [
             'component' => get_string('modulename', 'mod_eledialeitnerflow'),

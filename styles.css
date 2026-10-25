@@ -87,13 +87,14 @@
 }
 
 .eledialeitnerflow-box-4 .eledialeitnerflow-box-visual {
-    background: rgba(169, 203, 213, 0.35);
+    /* Opaque so the tile stays light behind its dark text in Boost's dark mode. */
+    background: #e5eff2;
     color: var(--lf-very-dark-blue);
     border-top: 3px solid var(--lf-light-blue);
 }
 
 .eledialeitnerflow-box-5 .eledialeitnerflow-box-visual {
-    background: rgba(101, 161, 179, 0.25);
+    background: #d8e8ec;
     color: var(--lf-very-dark-blue);
     border-top: 3px solid var(--lf-dark-blue);
 }
@@ -114,7 +115,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--lf-light-gray);
+    color: var(--bs-secondary-color, #6a737b);
     font-size: 1.1rem;
     padding: 0 0.1rem;
     align-self: center;

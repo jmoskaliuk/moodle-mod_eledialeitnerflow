@@ -40,6 +40,7 @@ $leitnerflow = $DB->get_record('eledialeitnerflow', ['id' => $cm->instance], '*'
 require_login($course, true, $cm);
 $context = \core\context\module::instance($cm->id);
 
+
 // Completion tracking.
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
@@ -82,9 +83,7 @@ if (optional_param('cancelsession', 0, PARAM_INT)) {
         'status'        => 0,
     ]);
     foreach ($stale as $s) {
-        if (!empty($s->qubaid)) {
-            question_engine::delete_questions_usage_by_activity($s->qubaid);
-        }
+        \mod_eledialeitnerflow\local\session_lifecycle::delete($s);
     }
     $DB->delete_records('eledialeitnerflow_sessions', [
         'eledialeitnerflowid' => $leitnerflow->id,
@@ -349,7 +348,7 @@ if ($canattempt) {
         echo html_writer::start_div('d-flex gap-3 align-items-center');
         echo html_writer::span(
             get_string('totalsessions', 'mod_eledialeitnerflow', $sessionstats->sessioncount),
-            'badge bg-secondary'
+            'badge bg-secondary text-dark'
         );
         echo html_writer::span(
             get_string('avgcorrect', 'mod_eledialeitnerflow', $sessionstats->avgpercent),
@@ -378,7 +377,7 @@ if ($canattempt) {
                 $arrow      = '&#8600;'; // Down-right arrow.
                 $diffstr    = $diff . '%';
             } else {
-                $badgeclass = 'badge bg-secondary';
+                $badgeclass = 'badge bg-secondary text-dark';
                 $arrow      = '&#8594;'; // Right arrow.
                 $diffstr    = '±' . abs($diff) . '%';
             }
@@ -494,6 +493,16 @@ if ($isteacher) {
         $OUTPUT->single_button($reporturl, get_string('viewreport', 'mod_eledialeitnerflow'), 'get'),
         'mt-3'
     );
+}
+
+// Keep external provenance distinct from native session history.
+if ($canattempt) {
+    $externalcount = $DB->count_records_sql('SELECT COUNT(r.id)
+        FROM {eledialeitnerflow_ext_results} r JOIN {eledialeitnerflow_ext_attempts} a ON a.id = r.registrationid
+        WHERE a.eledialeitnerflowid = :id AND a.userid = :userid', ['id' => $leitnerflow->id, 'userid' => $USER->id]);
+    if ($externalcount) {
+        echo html_writer::div(get_string('externalreviewcount', 'mod_eledialeitnerflow', $externalcount), 'alert alert-info');
+    }
 }
 
 echo $OUTPUT->footer();

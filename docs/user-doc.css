@@ -1,0 +1,155 @@
+:root {
+    color-scheme: light;
+    --lf-blue: #194866;
+    --lf-green: #669933;
+    --lf-orange: #f98012;
+    --lf-text: #1f2933;
+    --lf-muted: #5f6b76;
+    --lf-border: #d8dee4;
+    --lf-surface: #ffffff;
+    --lf-soft: #f6f8fa;
+}
+
+html {
+    background: var(--lf-soft);
+}
+
+body {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+    background: var(--lf-surface);
+    color: var(--lf-text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+}
+
+header,
+main,
+nav#TOC {
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1,
+h2,
+h3 {
+    color: var(--lf-blue);
+    line-height: 1.25;
+}
+
+h1 {
+    margin-top: 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 4px solid var(--lf-green);
+    font-size: 2.25rem;
+}
+
+h2 {
+    margin-top: 2.25rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--lf-border);
+    font-size: 1.55rem;
+}
+
+h3 {
+    margin-top: 1.75rem;
+    font-size: 1.2rem;
+}
+
+a {
+    color: var(--lf-blue);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 1.5rem;
+}
+
+th,
+td {
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--lf-border);
+    vertical-align: top;
+}
+
+th {
+    background: var(--lf-soft);
+    color: var(--lf-blue);
+    text-align: left;
+}
+
+code {
+    padding: 0.1rem 0.25rem;
+    border-radius: 4px;
+    background: var(--lf-soft);
+}
+
+pre {
+    overflow-x: auto;
+    padding: 1rem;
+    border-radius: 6px;
+    background: #17212b;
+    color: #f6f8fa;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--lf-border);
+    border-radius: 6px;
+}
+
+nav#TOC {
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--lf-border);
+    border-left: 4px solid var(--lf-orange);
+    background: var(--lf-soft);
+}
+
+nav#TOC ul {
+    margin-bottom: 0;
+    padding-left: 1.25rem;
+}
+
+nav#TOC .toc-level-1 {
+    font-weight: 700;
+}
+
+nav#TOC .toc-level-2 {
+    margin-left: 1rem;
+}
+
+nav#TOC .toc-level-3 {
+    margin-left: 2rem;
+    font-size: 0.95rem;
+}
+
+blockquote {
+    margin-left: 0;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid var(--lf-green);
+    background: var(--lf-soft);
+    color: var(--lf-muted);
+}
+
+@media (max-width: 720px) {
+    body {
+        padding: 1.25rem 1rem 2.5rem;
+        font-size: 15px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+}

@@ -29,7 +29,7 @@
  * @copyright  2026 eLeDia GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_eledialeitnerflow_activity_structure_step extends backup_activity_structure_step {
+class backup_eledialeitnerflow_activity_structure_step extends backup_questions_activity_structure_step {
     /**
      * Define the structure for backup.
      *
@@ -44,7 +44,7 @@ class backup_eledialeitnerflow_activity_structure_step extends backup_activity_s
             'questioncategoryid', 'questioncategoryids', 'sessionsize', 'boxcount',
             'correcttolearn', 'wrongbehavior', 'questionrotation',
             'prioritystrategy', 'grade', 'grademethod', 'showanimation', 'feedbackstyle', 'animationdelay', 'showtour',
-            'timecreated', 'timemodified',
+            'timecreated', 'timemodified', 'externalenabled',
         ]);
 
         // Card states per user.
@@ -57,11 +57,13 @@ class backup_eledialeitnerflow_activity_structure_step extends backup_activity_s
         // Sessions per user.
         $sessions = new backup_nested_element('sessions');
         $session  = new backup_nested_element('session', ['id'], [
-            'userid', 'questionids', 'currentindex',
+            'userid', 'qubaid', 'questionids', 'currentindex',
             'questionsasked', 'questionscorrect',
             'currentstreak', 'beststreak', 'status',
             'timecreated', 'timecompleted',
         ]);
+
+        $this->add_question_usages($session, 'qubaid');
 
         // Question category references make Moodle include and map the selected
         // question bank categories during cross-site restores.
@@ -75,6 +77,25 @@ class backup_eledialeitnerflow_activity_structure_step extends backup_activity_s
         $cardstates->add_child($cardstate);
         $leitnerflow->add_child($sessions);
         $sessions->add_child($session);
+
+        $registrations = new backup_nested_element('external_attempts');
+        $registration = new backup_nested_element(
+            'external_attempt',
+            ['id'],
+            ['userid', 'sourcecmid', 'sourcecomponent', 'attemptuuid', 'qubaid', 'questions', 'closed', 'timecreated']
+        );
+        $results = new backup_nested_element('external_results');
+        $result = new backup_nested_element('external_result', ['id'], ['slot', 'questionid', 'timeapplied']);
+        $leitnerflow->add_child($registrations);
+        $registrations->add_child($registration);
+        $registration->add_child($results);
+        $results->add_child($result);
+        if ($userinfo) {
+            $registration->set_source_table('eledialeitnerflow_ext_attempts', ['eledialeitnerflowid' => backup::VAR_PARENTID]);
+            $registration->annotate_ids('user', 'userid');
+            $result->set_source_table('eledialeitnerflow_ext_results', ['registrationid' => backup::VAR_PARENTID]);
+            $result->annotate_ids('question', 'questionid');
+        }
 
         // Data sources.
         $leitnerflow->set_source_table('eledialeitnerflow', ['id' => backup::VAR_ACTIVITYID]);

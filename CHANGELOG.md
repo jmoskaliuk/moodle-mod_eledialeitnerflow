@@ -1,8 +1,28 @@
 # Changelog
 
 All notable changes to **mod_eledialeitnerflow** (LeitnerFlow) are documented in
-this file. Dates use ISO 8601. This project adheres to
-[Semantic Versioning](https://semver.org/).
+this file — it is the single, canonical changelog for the plugin. Dates use
+ISO 8601. This project adheres to [Semantic Versioning](https://semver.org/).
+
+## [1.0.1] – 2026-10-13
+
+Compatibility release for Moodle 5.3.
+
+### Compatibility
+
+- Tested on Moodle 5.3 (PHP 8.3, PostgreSQL 17): PHPUnit and Behat green.
+  No code changes were needed for the 5.2/5.3 API changes.
+
+### Fixed
+
+- Dark colour mode (Boost, Moodle 5.3): the Box 4 and Box 5 tiles used
+  semi-transparent backgrounds, so their dark text sat on the dark page and
+  became unreadable. Both tiles now use opaque colours that look the same in
+  light mode.
+- Grey badges (session count, trend, "Open" column in the report) used white
+  text on a light grey background; they now use dark text in both colour modes.
+- The arrows between the boxes now follow the theme's secondary text colour
+  instead of a fixed light grey that was barely visible in light mode.
 
 ## [1.0.0] – 2026-04-21
 
@@ -56,12 +76,21 @@ reflected here; the full development history is preserved in the git log.
 - Capabilities: `view`, `attempt`, `viewreport`, `manage`, `resetprogress`,
   `addinstance`.
 
+### Compatibility
+
+- Moodle 4.4 (`2024042200`) minimum, tested up to 5.1.
+- PHP 8.1 minimum, tested up to 8.3.
+- MySQL 8 / MariaDB 10.6 / PostgreSQL 13+ (tested on PostgreSQL 18).
+- No external services, no paid dependencies, no Composer required.
+
 ### Code quality
 
 - Moodle coding style: 0 errors, 0 warnings on `phpcs --standard=moodle`.
 - PHPUnit: 37 tests / 81 assertions, all green (Moodle 5.1 + PHP 8.3).
 - Behat acceptance tests covering the student attempt flow and the teacher
   report page.
+- Moodle Plugin Directory prechecks all green: phplint, phpcs, phpdoc,
+  savepoint, js/eslint, css/stylelint, grunt AMD build, thirdparty.
 - CSS scoped under `.path-mod-eledialeitnerflow` and the `lf-` prefix to
   prevent cross-plugin style leakage.
 - User-tour installer is idempotent — re-calling it never produces duplicate

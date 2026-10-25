@@ -82,4 +82,20 @@ class behat_mod_eledialeitnerflow extends behat_base {
             'timecompleted'       => time(),
         ]);
     }
+    /**
+     * Inspect the stored effect rather than a client-side success label.
+     * @Then :count Leitner cards should exist for :username in :activityname
+     * @param int $count Number of cards.
+     * @param string $username Test user.
+     * @param string $activityname Activity name.
+     */
+    public function assert_leitner_card_count(int $count, string $username, string $activityname): void {
+        global $DB;
+        $userid = $DB->get_field('user', 'id', ['username' => $username], MUST_EXIST);
+        $instanceid = $DB->get_field('eledialeitnerflow', 'id', ['name' => $activityname], MUST_EXIST);
+        $actual = $DB->count_records('eledialeitnerflow_card_state', ['userid' => $userid, 'eledialeitnerflowid' => $instanceid]);
+        if ($actual !== $count) {
+            throw new ExpectationException("Expected {$count} stored cards; found {$actual}", $this->getSession());
+        }
+    }
 }

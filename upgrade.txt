@@ -1,3 +1,10 @@
+=== Unreleased: external review API v1 / 2026102402 ===
+* Internal PHP contract: classes/local/external_review_service.php. External sources are disabled by default.
+* Sources must implement <modname>_validate_leitnerflow_review and prove ownership/review eligibility.
+* Source and target must be in the same course, explicitly authorised, and use final Core QE results.
+* Legacy pilot scene data must be migrated before schema cleanup. No card result is replayed.
+* Restored external registrations are closed; no foreign source IDs become active automatically.
+
 This file describes API changes in the LeitnerFlow activity module
 (mod_eledialeitnerflow) relevant to plugin developers and integrators.
 It lists breaking changes and notable refactors per released version, using
@@ -57,3 +64,21 @@ the same format as upgrade.txt files in core Moodle subsystems.
   2024120100 handles the automatic migration of tables and grade_items.
   Third-party integrations must update any hard-coded references to the
   old component name.
+
+=== Unreleased F07 integration (2026102400) ===
+
+The existing activity module now supports an opt-in declarative F07 package.
+Legacy sessions default to review. New guided sessions never update card state;
+a later review is a separate session requiring a completed guided exercise.
+Session mode and phase are internal server-controlled fields. Scene slots pin
+Question Bank entries and versions and record exactly-once finalisation.
+
+Use cli/configure_f07.php with an explicit manifest and bank-entry mapping;
+the standard scene filemanager validates the same manage/question-use rules.
+No uploaded scene JavaScript is executed in the declarative path. Player reset
+clears viewpoint sightings only. Completed answer review expires after 90 days
+through the scheduled scene_cleanup task; card knowledge is independent.
+
+The upgrade is additive. Code downgrade after new attempts requires a reviewed
+data migration or backup restore. Same-site QE backup/restore is tested; a
+cross-site restoration and other Moodle versions need separate release checks.

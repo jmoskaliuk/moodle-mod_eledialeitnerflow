@@ -608,20 +608,36 @@ class leitner_engine {
      * @param int $userid
      */
     public static function delete_user_data(int $eledialeitnerflowid, int $userid): void {
-        global $DB;
+        \mod_eledialeitnerflow\local\external_review_service::locked(
+            $eledialeitnerflowid,
+            $userid,
+            function () use ($eledialeitnerflowid, $userid) {
+                global $DB;
 
-        // Sessions reference question_usages via qubaid — clean those up too.
-        $sessions = $DB->get_records('eledialeitnerflow_sessions', [
-            'eledialeitnerflowid' => $eledialeitnerflowid,
-            'userid'        => $userid,
-        ]);
-        foreach ($sessions as $session) {
-            if (!empty($session->qubaid)) {
-                \question_engine::delete_questions_usage_by_activity($session->qubaid);
+                // Sessions reference question_usages via qubaid — clean those up too.
+                $sessions = $DB->get_records('eledialeitnerflow_sessions', [
+                'eledialeitnerflowid' => $eledialeitnerflowid,
+                'userid'        => $userid,
+                ]);
+                foreach ($sessions as $session) {
+                    \mod_eledialeitnerflow\local\session_lifecycle::delete($session);
+                }
+
+                $DB->delete_records(
+                    'eledialeitnerflow_sessions',
+                    ['eledialeitnerflowid' => $eledialeitnerflowid, 'userid' => $userid]
+                );
+                $DB->set_field(
+                    'eledialeitnerflow_ext_attempts',
+                    'closed',
+                    1,
+                    ['eledialeitnerflowid' => $eledialeitnerflowid, 'userid' => $userid]
+                );
+                $DB->delete_records(
+                    'eledialeitnerflow_card_state',
+                    ['eledialeitnerflowid' => $eledialeitnerflowid, 'userid' => $userid]
+                );
             }
-        }
-
-        $DB->delete_records('eledialeitnerflow_sessions', ['eledialeitnerflowid' => $eledialeitnerflowid, 'userid' => $userid]);
-        $DB->delete_records('eledialeitnerflow_card_state', ['eledialeitnerflowid' => $eledialeitnerflowid, 'userid' => $userid]);
+        );
     }
 }

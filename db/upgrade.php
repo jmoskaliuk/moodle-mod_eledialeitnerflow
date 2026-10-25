@@ -308,5 +308,101 @@ function xmldb_eledialeitnerflow_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026042101, 'eledialeitnerflow');
     }
 
+    // Preserve legacy attempts as review; new scene attempts have an immutable server mode.
+    if ($oldversion < 2026102400) {
+        $table = new xmldb_table('eledialeitnerflow_sessions');
+        $field = new xmldb_field('mode', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, 'review');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('sceneid', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, 'none');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('sceneversion', XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, 'none');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('phase', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, 'question');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('surface', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, 'question');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('scenedata', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('visited', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $table = new xmldb_table('eledialeitnerflow_scene_slots');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('sessionid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('slot', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('questionref', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('bankentryid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('version', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('questionid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('viewpointref', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timechecked', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('leitnerapplied', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('sessionid', XMLDB_KEY_FOREIGN, ['sessionid'], 'eledialeitnerflow_sessions', ['id']);
+        $table->add_index('session_slot', XMLDB_INDEX_UNIQUE, ['sessionid', 'slot']);
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+        upgrade_mod_savepoint(true, 2026102400, 'eledialeitnerflow');
+    }
+
+    if ($oldversion < 2026102401) {
+        $table = new xmldb_table('eledialeitnerflow');
+        $field = new xmldb_field('externalenabled', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $file = new xmldb_file(__DIR__ . '/install.xml');
+        $file->loadXMLStructure();
+        foreach (['eledialeitnerflow_ext_attempts', 'eledialeitnerflow_ext_results'] as $name) {
+            $table = $file->getStructure()->getTable($name);
+            if (!$dbman->table_exists($table)) {
+                $dbman->create_table($table);
+            }
+        }
+        upgrade_mod_savepoint(true, 2026102401, 'eledialeitnerflow');
+    }
+
+    // Retire pilot-only data structures only after external transfer has detached all owners.
+    if ($oldversion < 2026102402) {
+        $table = new xmldb_table('eledialeitnerflow_sessions');
+        if (
+            $dbman->field_exists($table, new xmldb_field('sceneid')) &&
+                $DB->record_exists_select('eledialeitnerflow_sessions', "sceneid <> :none", ['none' => 'none'])
+        ) {
+            throw new moodle_exception('legacymigrationrequired', 'mod_eledialeitnerflow');
+        }
+        $slots = new xmldb_table('eledialeitnerflow_scene_slots');
+        if ($dbman->table_exists($slots)) {
+            if ($DB->count_records('eledialeitnerflow_scene_slots')) {
+                throw new moodle_exception('legacymigrationrequired', 'mod_eledialeitnerflow');
+            }
+            $dbman->drop_table($slots);
+        }
+        if ($DB->record_exists('files', ['component' => 'mod_eledialeitnerflow', 'filearea' => 'scene'])) {
+            throw new moodle_exception('legacymigrationrequired', 'mod_eledialeitnerflow');
+        }
+        foreach (['mode', 'sceneid', 'sceneversion', 'phase', 'surface', 'scenedata', 'visited'] as $name) {
+            $field = new xmldb_field($name);
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2026102402, 'eledialeitnerflow');
+    }
+
     return true;
 }

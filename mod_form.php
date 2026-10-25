@@ -52,6 +52,8 @@ class mod_eledialeitnerflow_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required');
 
         $this->standard_intro_elements();
+        $mform->addElement('selectyesno', 'externalenabled', get_string('externalenabled', 'mod_eledialeitnerflow'));
+        $mform->setDefault('externalenabled', 0);
 
         // Question bank settings.
         $mform->addElement('header', 'questionbanksettings', get_string('questioncategory', 'mod_eledialeitnerflow'));

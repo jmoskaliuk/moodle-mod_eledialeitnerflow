@@ -320,7 +320,7 @@ foreach ($students as $student) {
         $userpic . ' ' . html_writer::link($profileurl, $student->fullname)
     );
     echo html_writer::tag('td', html_writer::span($stats->learned, 'badge bg-success text-white'));
-    echo html_writer::tag('td', html_writer::span($stats->open, 'badge bg-secondary text-white'));
+    echo html_writer::tag('td', html_writer::span($stats->open, 'badge bg-secondary text-dark'));
     echo html_writer::tag('td', html_writer::span($stats->errors, 'badge bg-danger text-white'));
     echo html_writer::tag('td', $progressbar . html_writer::span(" {$pct} %", 'ms-1 small'));
     echo html_writer::tag('td', $student->sessions);

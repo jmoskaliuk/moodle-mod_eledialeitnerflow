@@ -4,8 +4,8 @@
 
 LeitnerFlow bringt das bewährte Leitner-Karteikartensystem nach Moodle. Fragen aus der Fragensammlung werden zu virtuellen Karteikarten, die durch mehrere Boxen wandern. Richtige Antworten befördern eine Karte weiter, falsche schicken sie zurück. Lernende arbeiten in kurzen, fokussierten Sessions und verfolgen ihren Fortschritt über ein visuelles Dashboard.
 
-**Voraussetzung:** Moodle 4.4+
-**Aktuelle Version:** 1.0.0
+**Voraussetzung:** Moodle 4.4+ (getestet bis 5.3)
+**Aktuelle Version:** 1.0.1
 **Lizenz:** [GPL v3+](https://www.gnu.org/copyleft/gpl.html)
 **Entwicklung:** [eLeDia GmbH](https://eledia.de)
 
@@ -72,6 +72,21 @@ Karten in niedrigeren Boxen erscheinen häufiger — so konzentrieren sich Lerne
 | Bewertung | Keine / % gelernter Karten | Keine |
 | Kartenanimation | Ja / Nein | Ja |
 | Feedback-Stil | Aus / Minimal / Ermutigend | Minimal |
+
+## Benutzer-Dokumentation
+
+Die Benutzer-Dokumentation wird nach dem eLeDia.OS_DevFlow-Modell in Markdown
+gepflegt:
+
+- [docs/02-user-doc.md](docs/02-user-doc.md) ist die Quelle der Wahrheit.
+- `docs/user-doc.html` kann fuer Vorschau oder Veroeffentlichung generiert
+  werden.
+
+HTML-Export bauen:
+
+```bash
+bash bin/build-user-doc.sh
+```
 
 ## Dateistruktur
 
