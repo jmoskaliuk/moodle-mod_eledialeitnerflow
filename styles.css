@@ -1,185 +1,213 @@
-/* mod_eledialeitnerflow styles — eLeDia brand colors, WCAG AA accessible.
+/* mod_eledialeitnerflow styles — eLeDia UX system (--lh-* tokens, contract 1.4.0).
  *
- * Only custom CSS for Leitner-specific visuals.
- * Standard elements use Moodle Component Library (Bootstrap).
+ * Only custom CSS for Leitner-specific visuals. Standard elements use Moodle
+ * core components and Bootstrap utilities. Tokens are read with the fallback
+ * from the eLeDia UX token contract, so the plugin also runs without LernHive.
  */
 
-/* ---- eLeDia Brand Color Variables ---- */
-:root {
-    --lf-dark-blue: #194866;
-    --lf-light-blue: #65a1b3;
-    --lf-orange: #f98012;
-    --lf-dark-orange: #b35000;
-    --lf-pale-orange: #ffecdb;
-    --lf-middle-orange: #fcbc82;
-    --lf-very-dark-blue: #0f2b3d;
-    --lf-aqua: #3aadaa;
-    --lf-dark-aqua: #267372;
-    --lf-pale-aqua: #d1eceb;
-    --lf-green: #693;
-    --lf-dark-green: #334d1a;
-    --lf-pale-green: #d1e0c1;
-    --lf-light-gray: #e9e9e9;
+/* ---- Leitner stage colours (plugin-scoped, derived from --lh-*) ----
+ * Warm (early boxes) to cool (advanced boxes); "learned" keeps the shared
+ * success meaning. */
+body.path-mod-eledialeitnerflow {
+    --eledialeitnerflow-stage-early: var(--lh-warning, var(--bs-warning, var(--warning)));
+    --eledialeitnerflow-stage-late: var(--lh-primary, var(--bs-primary, var(--primary)));
+    --eledialeitnerflow-stage-1: var(--eledialeitnerflow-stage-early);
+    --eledialeitnerflow-stage-2: color-mix(in oklch, var(--eledialeitnerflow-stage-early) 70%, var(--eledialeitnerflow-stage-late));
+    --eledialeitnerflow-stage-3: color-mix(in oklch, var(--eledialeitnerflow-stage-early) 45%, var(--eledialeitnerflow-stage-late));
+    --eledialeitnerflow-stage-4: color-mix(in oklch, var(--eledialeitnerflow-stage-early) 20%, var(--eledialeitnerflow-stage-late));
+    --eledialeitnerflow-stage-5: var(--eledialeitnerflow-stage-late);
+    --eledialeitnerflow-stage-learned: var(--lh-success, var(--bs-success, var(--success)));
 }
 
 /* ---- Leitner box visualization (custom — no Moodle equivalent) ---- */
-.eledialeitnerflow-boxes {
+body.path-mod-eledialeitnerflow .eledialeitnerflow-boxes {
     display: flex;
     gap: 0;
     align-items: stretch;
-    margin-bottom: 0.5rem;
-    padding: 0 0.25rem;
+    margin-block-end: var(--lh-spacing-sm, 8px);
+    padding-inline: var(--lh-spacing-xs, 4px);
 }
 
-.eledialeitnerflow-box {
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box {
+    --eledialeitnerflow-stage: var(--eledialeitnerflow-stage-1);
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-width: 0;
+    border-radius: var(--lh-radius-sm, var(--lh-theme-radius, var(--bs-border-radius, 8px)));
 }
 
-.eledialeitnerflow-box-visual {
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box-2 {
+    --eledialeitnerflow-stage: var(--eledialeitnerflow-stage-2);
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box-3 {
+    --eledialeitnerflow-stage: var(--eledialeitnerflow-stage-3);
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box-4 {
+    --eledialeitnerflow-stage: var(--eledialeitnerflow-stage-4);
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box-5 {
+    --eledialeitnerflow-stage: var(--eledialeitnerflow-stage-5);
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box-learned {
+    --eledialeitnerflow-stage: var(--eledialeitnerflow-stage-learned);
+}
+
+/* Tiles stay opaque and light so their dark text stays readable in Boost's dark mode. */
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box-visual {
     width: 100%;
     text-align: center;
-    padding: 1rem 0.5rem 0.75rem;
-    border-radius: 10px;
-    position: relative;
+    padding: var(--lh-spacing-md, 16px) var(--lh-spacing-sm, 8px) 0.75rem;
+    border-radius: var(--lh-radius-sm, var(--lh-theme-radius, var(--bs-border-radius, 8px)));
+    border-block-start: 3px solid var(--eledialeitnerflow-stage);
+    background: color-mix(in srgb, var(--eledialeitnerflow-stage) 16%, var(--lh-bg-white, #ffffff));
+    color: var(--lh-text, #1f2937);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.eledialeitnerflow-box-visual:hover {
+body.path-mod-eledialeitnerflow a.eledialeitnerflow-box:hover .eledialeitnerflow-box-visual {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(25, 72, 102, 0.12);
+    box-shadow: var(--lh-shadow-hover, var(--lh-theme-shadow-hover, 0 4px 16px rgba(60, 64, 67, 0.18)));
 }
 
-.eledialeitnerflow-box-count {
-    font-size: 1.7rem;
-    font-weight: 800;
+body.path-mod-eledialeitnerflow a.eledialeitnerflow-box:focus-visible {
+    outline: 0;
+    box-shadow: var(--lh-focus-ring, 0 0 0 0.25rem var(--bs-focus-ring-color, color-mix(in srgb, var(--bs-primary, var(--primary)) 75%, transparent)));
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box-count {
+    font-size: 1.75rem;
+    font-weight: 700;
     line-height: 1;
 }
 
-.eledialeitnerflow-box-label {
-    font-size: 0.7rem;
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box-label {
+    font-size: 0.75rem;
     font-weight: 600;
-    margin-top: 0.4rem;
+    margin-block-start: 0.4rem;
     text-transform: uppercase;
     letter-spacing: 0.3px;
 }
 
-/* Box color themes — eLeDia warm→cool, text always very-dark-blue */
-.eledialeitnerflow-box-1 .eledialeitnerflow-box-visual {
-    background: #ffd4ad;
-    color: var(--lf-very-dark-blue);
-    border-top: 3px solid var(--lf-orange);
-}
-
-.eledialeitnerflow-box-2 .eledialeitnerflow-box-visual {
-    background: #fce4bf;
-    color: var(--lf-very-dark-blue);
-    border-top: 3px solid var(--lf-middle-orange);
-}
-
-.eledialeitnerflow-box-3 .eledialeitnerflow-box-visual {
-    background: var(--lf-pale-aqua);
-    color: var(--lf-very-dark-blue);
-    border-top: 3px solid var(--lf-aqua);
-}
-
-.eledialeitnerflow-box-4 .eledialeitnerflow-box-visual {
-    /* Opaque so the tile stays light behind its dark text in Boost's dark mode. */
-    background: #e5eff2;
-    color: var(--lf-very-dark-blue);
-    border-top: 3px solid var(--lf-light-blue);
-}
-
-.eledialeitnerflow-box-5 .eledialeitnerflow-box-visual {
-    background: #d8e8ec;
-    color: var(--lf-very-dark-blue);
-    border-top: 3px solid var(--lf-dark-blue);
-}
-
-.eledialeitnerflow-box-learned .eledialeitnerflow-box-visual {
-    background: var(--lf-pale-green);
-    color: var(--lf-dark-green);
-    border-top: 3px solid var(--lf-green);
-}
-
-.eledialeitnerflow-box-highlight .eledialeitnerflow-box-visual {
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box-highlight .eledialeitnerflow-box-visual {
     transform: scale(1.08);
-    box-shadow: 0 4px 16px rgba(102, 153, 51, 0.3);
+    box-shadow: var(--lh-shadow-hover, var(--lh-theme-shadow-hover, 0 4px 16px rgba(60, 64, 67, 0.18)));
 }
 
 /* Arrow connectors */
-.eledialeitnerflow-box-arrow {
+body.path-mod-eledialeitnerflow .eledialeitnerflow-box-arrow {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--bs-secondary-color, #6a737b);
-    font-size: 1.1rem;
-    padding: 0 0.1rem;
     align-self: center;
+    padding-inline: 0.1rem;
+    color: var(--lh-text-secondary, #5f6b77);
 }
 
-/* ---- Per-box progress bar segment colors ----
- * !important required to override Bootstrap's .bg-* utility classes used by Moodle's
- * core_progress bar template. Higher specificity alone won't beat those utilities. */
-/* stylelint-disable declaration-no-important */
-.path-mod-eledialeitnerflow .lf-seg-box1 {
-    background-color: var(--lf-orange) !important;
+[dir="rtl"] body.path-mod-eledialeitnerflow .eledialeitnerflow-box-arrow .fa {
+    transform: scaleX(-1);
 }
 
-.path-mod-eledialeitnerflow .lf-seg-box2 {
-    background-color: var(--lf-middle-orange) !important;
+/* ---- Progress bars (stacked per box, session history, report) ---- */
+body.path-mod-eledialeitnerflow .eledialeitnerflow-progress {
+    height: 12px;
 }
 
-.path-mod-eledialeitnerflow .lf-seg-box3 {
-    background-color: var(--lf-aqua) !important;
+body.path-mod-eledialeitnerflow .eledialeitnerflow-progress--report {
+    height: 14px;
+    min-width: 80px;
 }
 
-.path-mod-eledialeitnerflow .lf-seg-box4 {
-    background-color: var(--lf-light-blue) !important;
+body.path-mod-eledialeitnerflow .progress-bar.eledialeitnerflow-seg-box1 {
+    background-color: var(--eledialeitnerflow-stage-1);
 }
 
-.path-mod-eledialeitnerflow .lf-seg-box5 {
-    background-color: var(--lf-dark-blue) !important;
+body.path-mod-eledialeitnerflow .progress-bar.eledialeitnerflow-seg-box2 {
+    background-color: var(--eledialeitnerflow-stage-2);
 }
 
-.path-mod-eledialeitnerflow .lf-seg-learned {
-    background-color: var(--lf-green) !important;
+body.path-mod-eledialeitnerflow .progress-bar.eledialeitnerflow-seg-box3 {
+    background-color: var(--eledialeitnerflow-stage-3);
 }
-/* stylelint-enable declaration-no-important */
+
+body.path-mod-eledialeitnerflow .progress-bar.eledialeitnerflow-seg-box4 {
+    background-color: var(--eledialeitnerflow-stage-4);
+}
+
+body.path-mod-eledialeitnerflow .progress-bar.eledialeitnerflow-seg-box5 {
+    background-color: var(--eledialeitnerflow-stage-5);
+}
+
+body.path-mod-eledialeitnerflow .progress-bar.eledialeitnerflow-seg-learned {
+    background-color: var(--eledialeitnerflow-stage-learned);
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-col-progress {
+    width: 40%;
+}
 
 /* ---- View page: align notifications with card content ---- */
-.mod-eledialeitnerflow #user-notifications .alert {
+body.path-mod-eledialeitnerflow #user-notifications .alert {
     max-width: none;
-    margin-left: 0;
-    margin-right: 0;
+    margin-inline: 0;
 }
 
 /* ---- Attempt page: centered question container ---- */
-.eledialeitnerflow-attempt-container {
-    max-width: 720px;
-    margin: 0 auto;
+body.path-mod-eledialeitnerflow .eledialeitnerflow-attempt-container {
+    max-width: var(--lh-page-max-reading, var(--lh-theme-page-max-reading, 58rem));
+    margin-inline: auto;
+}
+
+/* Box flow on the attempt page: read-only stage tags. */
+body.path-mod-eledialeitnerflow .eledialeitnerflow-boxflow {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--lh-spacing-sm, 8px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-boxflow-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--lh-spacing-sm, 8px);
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-stagetag {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--lh-border, #dbe7ee);
+    border-radius: var(--lh-radius-pill, var(--bs-border-radius-pill, 9999px));
+    background: var(--lh-bg-white, #ffffff);
+    color: var(--lh-text, #1f2937);
+    font-size: 0.875rem;
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-stagetag--current {
+    border-color: var(--lh-primary, var(--bs-primary, var(--primary)));
+    background: var(--lh-primary, var(--bs-primary, var(--primary)));
+    color: var(--lh-on-primary, #fff);
+    font-weight: 600;
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-stagetag--correct {
+    box-shadow: 0 0 12px color-mix(in srgb, var(--lh-success, var(--bs-success, var(--success))) 60%, transparent);
+}
+
+body.path-mod-eledialeitnerflow .eledialeitnerflow-stagetag--wrong {
+    box-shadow: 0 0 12px color-mix(in srgb, var(--lh-warning, var(--bs-warning, var(--warning))) 60%, transparent);
 }
 
 /* ---- Card transition animations ---- */
-@keyframes lf-pulse-out {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.15);
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(0.95);
-        opacity: 0.5;
-    }
-}
-
-@keyframes lf-pulse-in {
+@keyframes eledialeitnerflow-pulse-in {
     0% {
         transform: scale(0.8);
         opacity: 0.3;
@@ -193,20 +221,12 @@
     }
 }
 
-.path-mod-eledialeitnerflow .lf-anim-pulse-out {
-    animation: lf-pulse-out 0.5s ease-out forwards;
-}
-
-.path-mod-eledialeitnerflow .lf-anim-pulse-in {
-    animation: lf-pulse-in 0.5s ease-out forwards;
-}
-
-.path-mod-eledialeitnerflow .lf-transition-box {
-    transition: all 0.3s ease;
+body.path-mod-eledialeitnerflow .eledialeitnerflow-anim-pulse-in {
+    animation: eledialeitnerflow-pulse-in 0.5s ease-out forwards;
 }
 
 /* ---- Gamified feedback animations ---- */
-@keyframes lf-float-up {
+@keyframes eledialeitnerflow-float-up {
     0% {
         transform: translateY(0);
         opacity: 1;
@@ -217,36 +237,18 @@
     }
 }
 
-.path-mod-eledialeitnerflow .lf-points-float {
+body.path-mod-eledialeitnerflow .eledialeitnerflow-points {
+    display: inline-block;
     font-size: 1.5rem;
-    font-weight: 800;
-    display: inline-block;
+    font-weight: 700;
 }
 
-.path-mod-eledialeitnerflow .lf-points-float.lf-points-animate {
-    animation: lf-float-up 1.5s ease-out forwards;
-}
-
-.path-mod-eledialeitnerflow .lf-streak-badge {
-    display: inline-block;
-    margin-top: 0.25rem;
-}
-
-.path-mod-eledialeitnerflow .lf-streak-broken {
-    font-style: italic;
-}
-
-.path-mod-eledialeitnerflow .lf-milestone {
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-.path-mod-eledialeitnerflow .lf-gamified-feedback {
-    padding: 0.5rem 0;
+body.path-mod-eledialeitnerflow .eledialeitnerflow-points.eledialeitnerflow-points-animate {
+    animation: eledialeitnerflow-float-up 1.5s ease-out forwards;
 }
 
 /* ---- Feedback banner fade-in ---- */
-@keyframes lf-fade-in {
+@keyframes eledialeitnerflow-fade-in {
     0% {
         opacity: 0;
         transform: translateY(-8px);
@@ -257,28 +259,48 @@
     }
 }
 
-.path-mod-eledialeitnerflow .lf-feedback-banner {
-    animation: lf-fade-in 0.3s ease-out;
+body.path-mod-eledialeitnerflow .eledialeitnerflow-feedback-banner {
+    animation: eledialeitnerflow-fade-in 0.3s ease-out;
 }
 
-/* ---- Suppress user tour when disabled in activity settings ---- */
-.eledialeitnerflow-notour .flexitour-backdrop,
-.eledialeitnerflow-notour .flexitour-step,
-.eledialeitnerflow-notour [data-flexitour="container"] {
-    /* stylelint-disable-next-line declaration-no-important -- Flexitour uses inline styles, !important is required to override. */
+@media (prefers-reduced-motion: reduce) {
+    body.path-mod-eledialeitnerflow .eledialeitnerflow-box-visual,
+    body.path-mod-eledialeitnerflow .eledialeitnerflow-anim-pulse-in,
+    body.path-mod-eledialeitnerflow .eledialeitnerflow-points.eledialeitnerflow-points-animate,
+    body.path-mod-eledialeitnerflow .eledialeitnerflow-feedback-banner {
+        animation: none;
+        transition: none;
+    }
+
+    body.path-mod-eledialeitnerflow a.eledialeitnerflow-box:hover .eledialeitnerflow-box-visual,
+    body.path-mod-eledialeitnerflow .eledialeitnerflow-box-highlight .eledialeitnerflow-box-visual {
+        transform: none;
+    }
+}
+
+/* ---- Report page ---- */
+body.path-mod-eledialeitnerflow .eledialeitnerflow-kpi-value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--lh-text, #1f2937);
+}
+
+/* ---- Suppress user tour when disabled in activity settings ----
+ * Flexitour positions its elements with inline styles, so only !important can hide them. */
+body.path-mod-eledialeitnerflow.eledialeitnerflow-notour .flexitour-backdrop,
+body.path-mod-eledialeitnerflow.eledialeitnerflow-notour .flexitour-step,
+body.path-mod-eledialeitnerflow.eledialeitnerflow-notour [data-flexitour="container"] {
+    /* stylelint-disable-next-line declaration-no-important -- Flexitour uses inline styles. */
     display: none !important;
 }
 
-/* ---- Report page: accessible summary card ---- */
-.path-mod-eledialeitnerflow .lf-bg-darkblue {
-    /* stylelint-disable declaration-no-important -- Overrides Bootstrap utility classes with inline color values. */
-    background-color: var(--lf-dark-blue) !important;
-    color: #fff !important;
-    /* stylelint-enable declaration-no-important */
+/* ---- Text emphasis (Bootstrap 4 on Moodle 4.4/4.5 has no fw-semibold/fst-italic) ---- */
+body.path-mod-eledialeitnerflow .eledialeitnerflow-trend,
+body.path-mod-eledialeitnerflow .eledialeitnerflow-milestone {
+    font-weight: 600;
 }
 
-/* Hide plugin's duplicate check button — Moodle's behaviour button is used */
-.eledialeitnerflow-question-form > .d-grid {
-    /* stylelint-disable-next-line declaration-no-important -- Inline Bootstrap display class needs override. */
-    display: none !important;
+body.path-mod-eledialeitnerflow .eledialeitnerflow-streak-broken {
+    font-style: italic;
 }

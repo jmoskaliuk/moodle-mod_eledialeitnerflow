@@ -54,21 +54,17 @@ define([], function() {
                     return;
                 }
                 if (boxNum === toBox && toBox !== fromBox) {
-                    // Highlight target box with glow.
-                    pill.classList.add('lf-anim-pulse-in');
-                    if (correct) {
-                        pill.style.boxShadow = '0 0 12px rgba(102, 153, 51, 0.6)';
-                    } else {
-                        pill.style.boxShadow = '0 0 12px rgba(249, 128, 18, 0.6)';
-                    }
+                    // Highlight target box with glow (colours come from styles.css).
+                    pill.classList.add('eledialeitnerflow-anim-pulse-in');
+                    pill.classList.add(correct ? 'eledialeitnerflow-stagetag--correct' : 'eledialeitnerflow-stagetag--wrong');
                 }
             });
 
             // Animate gamified points float-up.
             if (feedbackstyle === 4) {
-                var pointsEl = document.querySelector('.lf-points-float');
+                var pointsEl = document.querySelector('.eledialeitnerflow-points');
                 if (pointsEl) {
-                    pointsEl.classList.add('lf-points-animate');
+                    pointsEl.classList.add('eledialeitnerflow-points-animate');
                 }
             }
 

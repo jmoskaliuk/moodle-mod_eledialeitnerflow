@@ -121,7 +121,7 @@ if ($canattempt) {
     // Dashboard card (Moodle card component).
     echo html_writer::start_div('card mb-4');
     echo html_writer::start_div('card-body');
-    echo html_writer::tag('h5', get_string('yourprogress', 'mod_eledialeitnerflow'), ['class' => 'card-title']);
+    echo html_writer::tag('h3', get_string('yourprogress', 'mod_eledialeitnerflow'), ['class' => 'h5 card-title']);
 
     // Leitner box visualization (custom — no Moodle equivalent).
     $boxdist = leitner_engine::get_box_distribution(
@@ -136,6 +136,10 @@ if ($canattempt) {
         'role' => 'group',
         'aria-label' => get_string('boxdistribution', 'mod_eledialeitnerflow'),
     ]);
+    $arrow = html_writer::div(
+        html_writer::tag('i', '', ['class' => 'fa fa-arrow-right', 'aria-hidden' => 'true']),
+        'eledialeitnerflow-box-arrow'
+    );
 
     for ($b = 1; $b <= $boxcount; $b++) {
         $count = $boxdist[$b] ?? 0;
@@ -146,20 +150,15 @@ if ($canattempt) {
         $boxurl = new moodle_url('/mod/eledialeitnerflow/attempt.php', [
             'id' => $cm->id, 'start' => 1, 'box' => $b,
         ]);
-        $boxattrs = [
-            'aria-label' => $boxlabel . ': ' . $count,
-            'title' => $boxtitle,
-        ];
         if ($count > 0) {
-            $boxattrs['style'] = 'cursor: pointer;';
-            echo html_writer::start_tag('a', array_merge($boxattrs, [
+            echo html_writer::start_tag('a', [
                 'href' => $boxurl->out(false),
                 'class' => "eledialeitnerflow-box eledialeitnerflow-box-{$b} text-decoration-none",
-            ]));
+                'aria-label' => $boxlabel . ': ' . $count . ' – ' . $boxtitle,
+                'title' => $boxtitle,
+            ]);
         } else {
-            echo html_writer::start_div("eledialeitnerflow-box eledialeitnerflow-box-{$b}", array_merge($boxattrs, [
-                'role' => 'status',
-            ]));
+            echo html_writer::start_div("eledialeitnerflow-box eledialeitnerflow-box-{$b}");
         }
         echo html_writer::start_div('eledialeitnerflow-box-visual');
         echo html_writer::tag('div', $count, ['class' => 'eledialeitnerflow-box-count']);
@@ -172,18 +171,12 @@ if ($canattempt) {
         }
 
         if ($b < $boxcount) {
-            echo html_writer::tag('div', '&#10140;', [
-                'class' => 'eledialeitnerflow-box-arrow',
-                'aria-hidden' => 'true',
-            ]);
+            echo $arrow;
         }
     }
 
     // Arrow before learned box.
-    echo html_writer::tag('div', '&#10140;', [
-        'class' => 'eledialeitnerflow-box-arrow',
-        'aria-hidden' => 'true',
-    ]);
+    echo $arrow;
 
     // Learned box.
     $learnedlabel = get_string('learned', 'mod_eledialeitnerflow');
@@ -191,13 +184,14 @@ if ($canattempt) {
     if ($stats->total > 0 && $stats->learned >= $stats->total) {
         $learnedclass .= ' eledialeitnerflow-box-highlight';
     }
-    echo html_writer::start_div($learnedclass, [
-        'role' => 'status',
-        'aria-label' => $learnedlabel . ': ' . $stats->learned,
-    ]);
+    echo html_writer::start_div($learnedclass);
     echo html_writer::start_div('eledialeitnerflow-box-visual');
     echo html_writer::tag('div', $stats->learned, ['class' => 'eledialeitnerflow-box-count']);
-    echo html_writer::tag('div', $learnedlabel . ' &#10003;', ['class' => 'eledialeitnerflow-box-label']);
+    echo html_writer::tag(
+        'div',
+        $learnedlabel . ' ' . html_writer::tag('i', '', ['class' => 'fa fa-check', 'aria-hidden' => 'true']),
+        ['class' => 'eledialeitnerflow-box-label']
+    );
     echo html_writer::end_div();
     echo html_writer::end_div();
 
@@ -207,42 +201,34 @@ if ($canattempt) {
     if ($stats->total > 0) {
         $pctlearned = round($stats->learned / $stats->total * 100, 1);
 
-        echo html_writer::start_div('progress mb-1 mt-3', ['style' => 'height: 12px;']);
+        // One progressbar for assistive technology (share learned); the coloured
+        // segments per box are decoration. Segment widths are data-driven.
+        $progresslabel = $stats->learned . ' / ' . $stats->total . ' '
+            . get_string('learned', 'mod_eledialeitnerflow')
+            . ' (' . round($pctlearned) . '%)';
+        echo html_writer::start_div('progress eledialeitnerflow-progress mb-1 mt-3', [
+            'role' => 'progressbar',
+            'aria-valuenow' => round($pctlearned),
+            'aria-valuemin' => 0,
+            'aria-valuemax' => 100,
+            'aria-valuetext' => $progresslabel,
+            'aria-label' => get_string('progress'),
+        ]);
         for ($b = 1; $b <= $boxcount; $b++) {
             $cnt = $boxdist[$b] ?? 0;
             if ($cnt > 0) {
                 $pct = round($cnt / $stats->total * 100, 1);
-                echo html_writer::div(
-                    '',
-                    "progress-bar lf-seg-box{$b}",
-                    ['style' => "width:{$pct}%", 'role' => 'progressbar',
-                    'aria-valuenow' => $pct,
-                    'aria-valuemin' => 0,
-                    'aria-valuemax' => 100]
-                );
+                echo html_writer::div('', "progress-bar eledialeitnerflow-seg-box{$b}", ['style' => "width:{$pct}%"]);
             }
         }
         if ($stats->learned > 0) {
             $pct = round($stats->learned / $stats->total * 100, 1);
-            echo html_writer::div(
-                '',
-                'progress-bar lf-seg-learned',
-                ['style' => "width:{$pct}%", 'role' => 'progressbar',
-                'aria-valuenow' => $pct,
-                'aria-valuemin' => 0,
-                'aria-valuemax' => 100]
-            );
+            echo html_writer::div('', 'progress-bar eledialeitnerflow-seg-learned', ['style' => "width:{$pct}%"]);
         }
         echo html_writer::end_div();
 
-        // Label below progress bar — centered, prominent.
-        echo html_writer::div(
-            $stats->learned . ' / ' . $stats->total . ' '
-            . get_string('learned', 'mod_eledialeitnerflow')
-            . ' (' . round($pctlearned) . '%)',
-            'text-center text-muted mt-2 mb-3',
-            ['style' => 'font-size: 1.05rem;']
-        );
+        // Label below progress bar.
+        echo html_writer::div($progresslabel, 'text-center text-muted mt-2 mb-3', ['aria-hidden' => 'true']);
     }
 
     echo html_writer::end_div(); // Card-body.
@@ -254,11 +240,8 @@ if ($canattempt) {
     if ($stats->total === 0) {
         echo $OUTPUT->notification(get_string('nocardsinpool', 'mod_eledialeitnerflow'), 'warning');
     } else if ($stats->learned >= $stats->total) {
-        // All learned — Moodle alert + celebration.
-        echo html_writer::start_div('alert alert-success d-flex align-items-center', ['role' => 'status']);
-        echo html_writer::span('&#127881;', 'mr-2 me-2', ['aria-hidden' => 'true', 'style' => 'font-size: 1.5rem;']);
-        echo html_writer::tag('strong', get_string('alllearned', 'mod_eledialeitnerflow'));
-        echo html_writer::end_div();
+        // All learned.
+        echo $OUTPUT->notification(get_string('alllearned', 'mod_eledialeitnerflow'), 'success', false);
 
         echo html_writer::start_div('d-flex gap-2 flex-wrap');
         $reseturl = new moodle_url('/mod/eledialeitnerflow/view.php', [
@@ -269,7 +252,10 @@ if ($canattempt) {
         echo html_writer::link(
             $reseturl,
             get_string('resetandrestart', 'mod_eledialeitnerflow'),
-            ['class' => 'btn btn-outline-secondary']
+            [
+                'class' => 'btn btn-outline-danger',
+                'data-confirm' => get_string('resetandrestartconfirm', 'mod_eledialeitnerflow'),
+            ]
         );
         echo html_writer::end_div();
     } else if ($activesession) {
@@ -278,13 +264,11 @@ if ($canattempt) {
         $totalq   = count(json_decode($activesession->questionids, true));
         $correctq = (int) $activesession->questionscorrect;
 
-        echo html_writer::start_div('alert alert-info', ['role' => 'status']);
-        echo get_string('activesessioninfo', 'mod_eledialeitnerflow', (object) [
+        echo $OUTPUT->notification(get_string('activesessioninfo', 'mod_eledialeitnerflow', (object) [
             'answered' => $answered,
             'total'    => $totalq,
             'correct'  => $correctq,
-        ]);
-        echo html_writer::end_div();
+        ]), 'info', false);
 
         echo html_writer::start_div('d-flex gap-2 flex-wrap');
 
@@ -316,7 +300,10 @@ if ($canattempt) {
         echo html_writer::link(
             $cancelurl,
             get_string('endsession', 'mod_eledialeitnerflow'),
-            ['class' => 'btn btn-outline-danger']
+            [
+                'class' => 'btn btn-outline-danger',
+                'data-confirm' => get_string('endsessionconfirm', 'mod_eledialeitnerflow'),
+            ]
         );
 
         echo html_writer::end_div();
@@ -344,11 +331,11 @@ if ($canattempt) {
 
         // Card title with session count and average.
         echo html_writer::start_div('d-flex justify-content-between align-items-center mb-3');
-        echo html_writer::tag('h5', get_string('sessionhistory', 'mod_eledialeitnerflow'), ['class' => 'card-title mb-0']);
+        echo html_writer::tag('h3', get_string('sessionhistory', 'mod_eledialeitnerflow'), ['class' => 'h5 card-title mb-0']);
         echo html_writer::start_div('d-flex gap-3 align-items-center');
         echo html_writer::span(
             get_string('totalsessions', 'mod_eledialeitnerflow', $sessionstats->sessioncount),
-            'badge bg-secondary text-dark'
+            'badge bg-light text-dark border'
         );
         echo html_writer::span(
             get_string('avgcorrect', 'mod_eledialeitnerflow', $sessionstats->avgpercent),
@@ -367,22 +354,24 @@ if ($canattempt) {
             }
             $recentpct = ($recenttotal > 0) ? round(($recentcorrect / $recenttotal) * 100) : 0;
 
+            // Status as glyph plus text; colour is only an extra signal.
             $diff = $recentpct - $sessionstats->avgpercent;
             if ($diff > 5) {
-                $badgeclass = 'badge bg-success';
-                $arrow      = '&#8599;'; // Up-right arrow.
+                $trendclass = 'text-success';
+                $trendicon  = 'fa-arrow-trend-up';
                 $diffstr    = '+' . $diff . '%';
             } else if ($diff < -5) {
-                $badgeclass = 'badge bg-danger';
-                $arrow      = '&#8600;'; // Down-right arrow.
+                $trendclass = 'text-danger';
+                $trendicon  = 'fa-arrow-trend-down';
                 $diffstr    = $diff . '%';
             } else {
-                $badgeclass = 'badge bg-secondary text-dark';
-                $arrow      = '&#8594;'; // Right arrow.
+                $trendclass = 'text-muted';
+                $trendicon  = 'fa-arrow-right';
                 $diffstr    = '±' . abs($diff) . '%';
             }
+            $trendicon = html_writer::tag('i', '', ['class' => 'fa ' . $trendicon, 'aria-hidden' => 'true']);
             echo html_writer::div(
-                html_writer::span($arrow . ' ' . $diffstr, $badgeclass)
+                html_writer::span($trendicon . ' ' . $diffstr, 'eledialeitnerflow-trend ' . $trendclass)
                 . ' '
                 . html_writer::span(
                     get_string('trend_recent', 'mod_eledialeitnerflow', (object) [
@@ -396,16 +385,25 @@ if ($canattempt) {
         }
 
         // Session history table (Moodle table component).
-        echo html_writer::start_tag('table', ['class' => 'table table-sm table-hover mb-0']);
+        echo html_writer::start_div('table-responsive');
+        echo html_writer::start_tag('table', ['class' => 'generaltable table table-sm mb-0']);
         echo html_writer::start_tag('thead');
         echo html_writer::start_tag('tr');
-        echo html_writer::tag('th', get_string('date'), ['class' => 'small text-muted']);
-        echo html_writer::tag('th', get_string('correctrate', 'mod_eledialeitnerflow'), ['class' => 'small text-muted']);
-        echo html_writer::tag('th', get_string('progress'), ['class' => 'small text-muted', 'style' => 'width: 40%;']);
+        echo html_writer::tag('th', get_string('date'), ['class' => 'small text-muted', 'scope' => 'col']);
+        echo html_writer::tag(
+            'th',
+            get_string('correctrate', 'mod_eledialeitnerflow'),
+            ['class' => 'small text-muted', 'scope' => 'col']
+        );
+        echo html_writer::tag(
+            'th',
+            get_string('progress'),
+            ['class' => 'small text-muted eledialeitnerflow-col-progress', 'scope' => 'col']
+        );
         echo html_writer::tag(
             'th',
             get_string('sessionduration', 'mod_eledialeitnerflow'),
-            ['class' => 'small text-muted text-end']
+            ['class' => 'small text-muted text-end', 'scope' => 'col']
         );
         echo html_writer::end_tag('tr');
         echo html_writer::end_tag('thead');
@@ -421,22 +419,19 @@ if ($canattempt) {
             if (!empty($sess->timecompleted) && !empty($sess->timecreated)) {
                 $secs = (int) $sess->timecompleted - (int) $sess->timecreated;
                 if ($secs < 60) {
-                    $duration = '< 1 min';
-                } else if ($secs < 3600) {
-                    $duration = round($secs / 60) . ' min';
+                    $duration = get_string('durationunderminute', 'mod_eledialeitnerflow');
                 } else {
-                    $duration = round($secs / 3600, 1) . ' h';
+                    $duration = format_time($secs < 3600 ? (int) round($secs / 60) * 60 : $secs);
                 }
             }
 
-            // Progress bar color based on percent.
-            $barclass = 'bg-primary';
+            // Progress bar colour based on percent (the percentage is also shown as text).
             if ($pct >= 80) {
-                $barclass = 'lf-seg-learned';
+                $barclass = 'eledialeitnerflow-seg-learned';
             } else if ($pct >= 50) {
-                $barclass = 'lf-seg-box3';
+                $barclass = 'eledialeitnerflow-seg-box3';
             } else {
-                $barclass = 'lf-seg-box1';
+                $barclass = 'eledialeitnerflow-seg-box1';
             }
 
             echo html_writer::start_tag('tr');
@@ -459,16 +454,14 @@ if ($canattempt) {
 
             // Mini progress bar.
             echo html_writer::start_tag('td');
-            echo html_writer::start_div('progress', ['style' => 'height: 12px;']);
-            echo html_writer::div(
-                '',
-                'progress-bar ' . $barclass,
-                ['style' => "width:{$pct}%",
-                 'role' => 'progressbar',
+            echo html_writer::start_div('progress eledialeitnerflow-progress', [
+                'role' => 'progressbar',
                 'aria-valuenow' => $pct,
                 'aria-valuemin' => 0,
-                'aria-valuemax' => 100]
-            );
+                'aria-valuemax' => 100,
+                'aria-label' => get_string('correctrate', 'mod_eledialeitnerflow'),
+            ]);
+            echo html_writer::div('', 'progress-bar ' . $barclass, ['style' => "width:{$pct}%"]);
             echo html_writer::end_div();
             echo html_writer::end_tag('td');
 
@@ -480,6 +473,7 @@ if ($canattempt) {
 
         echo html_writer::end_tag('tbody');
         echo html_writer::end_tag('table');
+        echo html_writer::end_div(); // Table-responsive.
 
         echo html_writer::end_div(); // Card-body.
         echo html_writer::end_div(); // Card.
@@ -501,8 +495,11 @@ if ($canattempt) {
         FROM {eledialeitnerflow_ext_results} r JOIN {eledialeitnerflow_ext_attempts} a ON a.id = r.registrationid
         WHERE a.eledialeitnerflowid = :id AND a.userid = :userid', ['id' => $leitnerflow->id, 'userid' => $USER->id]);
     if ($externalcount) {
-        echo html_writer::div(get_string('externalreviewcount', 'mod_eledialeitnerflow', $externalcount), 'alert alert-info');
+        echo $OUTPUT->notification(get_string('externalreviewcount', 'mod_eledialeitnerflow', $externalcount), 'info', false);
     }
 }
+
+// Confirm dialogs for destructive links (data-confirm).
+$PAGE->requires->js_call_amd('mod_eledialeitnerflow/confirm_reset', 'init');
 
 echo $OUTPUT->footer();

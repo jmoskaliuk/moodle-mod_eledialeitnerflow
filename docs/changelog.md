@@ -160,3 +160,14 @@ Additive Sessionfelder (mode=review als Altbestand-Default, sceneid, sceneversio
 ## 2026102401–2026102402 — Trennung des lokalen Fahrup-Piloten
 
 Generische autorisierte QE-Review-API mit eindeutigen Belegen und gemeinsamer Kartenschreibsperre. Szenen und Übungen nach eigenem `mod_fahrup` überführt; Pilotdaten vor Schema-Bereinigung geprüft migrieren. Vorhandene Kartenstände nicht neu werten. Frische Installation enthält keine Szenendaten. Backup/Restore und Privacy umfassen generische Provenienz; keine Fahrup-Abhängigkeit in LeitnerFlow. Lokal geprüft, keine Releasefreigabe oder Remoteveröffentlichung.
+
+## 2026102500 — Oberfläche auf eLeDia-UX-System (LernHive) umgestellt
+
+Keine Schemaänderung, kein Upgrade-Schritt; die Versionsnummer steigt nur, damit Moodle die neuen Styles und AMD-Builds ausliefert.
+
+- `styles.css`: `--lf-*` entfernt. Alle Werte lesen `--lh-*` mit dem Fallback aus dem Token-Vertrag 1.4.0 (DevFlow `ux/tokens/contract.json`), Farben fallen auf die Bootstrap-Variablen zurück. Box-Stufen als Plugin-Variablen `--eledialeitnerflow-stage-*`, abgeleitet aus `--lh-warning` (früh) und `--lh-primary` (spät), gemischt in OKLCH; „Gelernt“ nutzt `--lh-success`. Alle Selektoren unter `body.path-mod-eledialeitnerflow`, `lf-*`-Klassen in `eledialeitnerflow-*` umbenannt, `!important` nur noch für die Unterdrückung der Nutzertour (Flexitour setzt Inline-Styles). `prefers-reduced-motion` abgeschaltet für Animationen.
+- `view.php`: Hinweise über `$OUTPUT->notification()`, kein Emoji, Pfeile und Haken als FontAwesome, ein `progressbar` mit Wert statt mehrerer, Kartenüberschriften `h3`, Trend als Glyphe plus Text, Tabellen mit `scope`, Dauer über `format_time()`. „Lerneinheit beenden“ und „Zurücksetzen und neu starten“ fragen über `core/notification` nach.
+- `attempt.php`: Box-Fluss als geordnete Liste mit `aria-current="step"`, Rückmeldungen über `$OUTPUT->notification()`, keine Inline-Styles mehr, Glow-Farben aus CSS statt aus JS.
+- `report.php`: Kennzahlen als neutrale Karten, Suche über `core/search_input`, Einträge pro Seite über `single_select` (kein `onchange`), Sortierung mit `aria-sort`, Zahlen rechtsbündig, Fortschrittsbalken mit ARIA.
+- Neue Strings: `durationunderminute`, `endsessionconfirm`, `resetandrestartconfirm`, `searchparticipants`. Ausrufezeichen aus neutralen Systemmeldungen entfernt (`alllearned`, `cardlearned`, `detailed_learned`, `sessioncomplete`).
+- Plugin-Shell (Zone A) bewusst nicht eingebaut: LeitnerFlow ist eigenständig (ohne `local_lernhive`) und eine Aktivität im Kurs. Moodles Aktivitätskopf bleibt.

@@ -4,6 +4,24 @@ All notable changes to **mod_eledialeitnerflow** (LeitnerFlow) are documented in
 this file — it is the single, canonical changelog for the plugin. Dates use
 ISO 8601. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- The interface follows the eLeDia UX system (LernHive): colours, radii and shadows come
+  from the shared `--lh-*` tokens and fall back to the theme's Bootstrap colours, so the
+  activity matches the site theme. Box colours run from warm (Box 1) to cool (last box).
+- Feedback and hints use Moodle's standard notifications; no emoji in the interface.
+- "End session" and "Reset and start over" now ask for confirmation.
+- Teacher report: neutral summary cards, Moodle's standard search field, sortable columns
+  announce their sort order to screen readers.
+
+### Accessibility
+
+- One progress bar with its value instead of several unlabeled segments; the current box on
+  the session page is marked with `aria-current`; status is shown as icon plus text.
+- Animations are switched off when the browser asks for reduced motion.
+
 ## [1.0.1] – 2026-10-13
 
 Compatibility release for Moodle 5.3.

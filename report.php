@@ -90,14 +90,14 @@ $PAGE->activityheader->set_description('');
 $viewurl = new moodle_url('/mod/eledialeitnerflow/view.php', ['id' => $cmid]);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('report', 'mod_eledialeitnerflow'), 4);
+echo $OUTPUT->heading(get_string('report', 'mod_eledialeitnerflow'), 3);
 
 // Fetch aggregated stats for all enrolled students.
 $students = leitner_engine::get_all_students_stats($leitnerflow, $course->id, $context);
 
 $hasstartedstudents = array_filter($students, fn($s) => $s->sessions > 0);
 if (empty($hasstartedstudents)) {
-    echo $OUTPUT->notification(get_string('nostudents', 'mod_eledialeitnerflow'), 'info');
+    echo $OUTPUT->notification(get_string('nostudents', 'mod_eledialeitnerflow'), 'info', false);
     echo $OUTPUT->single_button($viewurl, get_string('back'), 'get');
     echo $OUTPUT->footer();
     exit;
@@ -154,46 +154,36 @@ $questioncount = !empty($allstudents) ? reset($allstudents)->stats->total : 0;
 
 echo html_writer::start_div('row mb-4');
 $summaries = [
-    [get_string('participants'), $totalcount, 'bg-primary'],
-    [get_string('questionsinpool', 'mod_eledialeitnerflow'), $questioncount, 'lf-bg-darkblue'],
-    [get_string('avglearnedpercent', 'mod_eledialeitnerflow'), $avgpct . ' %', 'bg-success'],
+    [get_string('participants'), $totalcount],
+    [get_string('questionsinpool', 'mod_eledialeitnerflow'), $questioncount],
+    [get_string('avglearnedpercent', 'mod_eledialeitnerflow'), $avgpct . ' %'],
 ];
 foreach ($summaries as $sum) {
     echo html_writer::start_div('col-md-4 mb-2');
-    echo html_writer::start_div('card text-white ' . $sum[2]);
+    echo html_writer::start_div('card h-100');
     echo html_writer::start_div('card-body text-center py-2');
-    echo html_writer::tag('div', $sum[1], ['class' => 'h3 mb-0']);
-    echo html_writer::tag('small', $sum[0]);
+    echo html_writer::tag('div', $sum[1], ['class' => 'eledialeitnerflow-kpi-value']);
+    echo html_writer::tag('div', $sum[0], ['class' => 'small text-muted']);
     echo html_writer::end_div();
     echo html_writer::end_div();
     echo html_writer::end_div();
 }
 echo html_writer::end_div();
 
-// Search + per-page form.
-$searchurl = new moodle_url('/mod/eledialeitnerflow/report.php', [
-    'id' => $cmid, 'tsort' => $tsort, 'tdir' => $tdir, 'perpage' => $perpage,
-]);
-echo html_writer::start_tag('form', [
-    'method' => 'get',
-    'action' => $searchurl->out_omit_querystring(),
-    'class'  => 'd-flex gap-2 mb-3 align-items-center flex-wrap',
-]);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'id', 'value' => $cmid]);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'tsort', 'value' => $tsort]);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'tdir', 'value' => $tdir]);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'perpage', 'value' => $perpage]);
-echo html_writer::empty_tag('input', [
-    'type'        => 'text',
-    'name'        => 'search',
-    'value'       => $search,
-    'placeholder' => get_string('search'),
-    'class'       => 'form-control',
-    'style'       => 'max-width: 300px;',
-    'aria-label'  => get_string('search'),
-]);
-echo html_writer::tag('button', get_string('search'), [
-    'type' => 'submit', 'class' => 'btn btn-outline-secondary',
+// Search (core search input) and per-page selector (core single select).
+$searchurl = new moodle_url('/mod/eledialeitnerflow/report.php');
+echo html_writer::start_div('d-flex gap-2 mb-3 align-items-center flex-wrap');
+echo $OUTPUT->render_from_template('core/search_input', [
+    'action' => $searchurl->out(false),
+    'inputname' => 'search',
+    'query' => $search,
+    'searchstring' => get_string('searchparticipants', 'mod_eledialeitnerflow'),
+    'hiddenfields' => [
+        ['name' => 'id', 'value' => $cmid],
+        ['name' => 'tsort', 'value' => $tsort],
+        ['name' => 'tdir', 'value' => $tdir],
+        ['name' => 'perpage', 'value' => $perpage],
+    ],
 ]);
 if ($search !== '') {
     $clearurl = new moodle_url('/mod/eledialeitnerflow/report.php', [
@@ -201,22 +191,17 @@ if ($search !== '') {
     ]);
     echo html_writer::link($clearurl, get_string('clear'), ['class' => 'btn btn-link']);
 }
-
-// Per-page selector.
-echo html_writer::start_div('ms-auto d-flex align-items-center gap-2');
-echo html_writer::tag('label', get_string('perpage', 'moodle', ''), [
-    'for' => 'report-perpage', 'class' => 'small text-muted mb-0',
+$perpageurl = new moodle_url('/mod/eledialeitnerflow/report.php', [
+    'id' => $cmid, 'tsort' => $tsort, 'tdir' => $tdir, 'search' => $search,
 ]);
 $perpageoptions = [10 => '10', 25 => '25', 50 => '50', 100 => '100'];
-echo html_writer::select($perpageoptions, 'perpage', $perpage, false, [
-    'id'       => 'report-perpage',
-    'class'    => 'form-select form-select-sm',
-    'style'    => 'width: auto;',
-    'onchange' => 'this.form.submit();',
-]);
+echo html_writer::div(
+    $OUTPUT->single_select($perpageurl, 'perpage', $perpageoptions, $perpage, null, null, [
+        'label' => get_string('perpage', 'moodle', ''),
+    ]),
+    'ms-auto small'
+);
 echo html_writer::end_div();
-
-echo html_writer::end_tag('form');
 
 /**
  * Build a sort link for a table header.
@@ -245,13 +230,15 @@ function _eledialeitnerflow_sort_link(
     ]);
     $arrow = '';
     if ($tsort === $column) {
-        $arrow = ($tdir === 'ASC') ? ' &#9650;' : ' &#9660;';
+        $icon = ($tdir === 'ASC') ? 'fa-sort-up' : 'fa-sort-down';
+        $arrow = ' ' . html_writer::tag('i', '', ['class' => 'fa ' . $icon, 'aria-hidden' => 'true']);
     }
     return html_writer::link($url, $label . $arrow, ['class' => 'text-nowrap']);
 }
 
 // Render the student table.
-echo html_writer::start_tag('table', ['class' => 'table table-striped table-hover generaltable']);
+echo html_writer::start_div('table-responsive');
+echo html_writer::start_tag('table', ['class' => 'generaltable table table-sm']);
 echo html_writer::start_tag('thead');
 echo html_writer::start_tag('tr');
 $headers = [
@@ -262,16 +249,25 @@ $headers = [
     ['key' => 'progress', 'label' => get_string('progress')],
     ['key' => 'sessions', 'label' => get_string('sessionhistory', 'mod_eledialeitnerflow')],
     ['key' => 'lastsession', 'label' => get_string('lastsession', 'mod_eledialeitnerflow')],
-    ['key' => '', 'label' => ''],
+    ['key' => '', 'label' => get_string('actions')],
 ];
-foreach ($headers as $h) {
+$numericcols = ['learned', 'sessions'];
+foreach ($headers as $i => $h) {
+    $thattrs = ['scope' => 'col'];
+    if (in_array($h['key'], $numericcols, true) || $i === 2 || $i === 3) {
+        $thattrs['class'] = 'text-end';
+    }
     if (!empty($h['key'])) {
+        if ($tsort === $h['key']) {
+            $thattrs['aria-sort'] = ($tdir === 'ASC') ? 'ascending' : 'descending';
+        }
         echo html_writer::tag(
             'th',
-            _eledialeitnerflow_sort_link($h['key'], $h['label'], $tsort, $tdir, $cmid, $perpage, $search)
+            _eledialeitnerflow_sort_link($h['key'], $h['label'], $tsort, $tdir, $cmid, $perpage, $search),
+            $thattrs
         );
     } else {
-        echo html_writer::tag('th', $h['label']);
+        echo html_writer::tag('th', $h['label'], $thattrs);
     }
 }
 echo html_writer::end_tag('tr');
@@ -282,12 +278,14 @@ foreach ($students as $student) {
     $stats = $student->stats;
     $pct   = $stats->percent_learned;
 
-    $progressbar = html_writer::start_div('progress', ['style' => 'height: 14px; min-width: 80px;']);
-    $progressbar .= html_writer::div(
-        '',
-        'progress-bar bg-success',
-        ['style' => "width:{$pct}%", 'title' => "{$pct}%"]
-    );
+    $progressbar = html_writer::start_div('progress eledialeitnerflow-progress--report flex-grow-1', [
+        'role' => 'progressbar',
+        'aria-valuenow' => $pct,
+        'aria-valuemin' => 0,
+        'aria-valuemax' => 100,
+        'aria-label' => get_string('progress') . ': ' . $student->fullname,
+    ]);
+    $progressbar .= html_writer::div('', 'progress-bar eledialeitnerflow-seg-learned', ['style' => "width:{$pct}%"]);
     $progressbar .= html_writer::end_div();
 
     $lastsessionstr = $student->lastsession
@@ -319,11 +317,14 @@ foreach ($students as $student) {
         'td',
         $userpic . ' ' . html_writer::link($profileurl, $student->fullname)
     );
-    echo html_writer::tag('td', html_writer::span($stats->learned, 'badge bg-success text-white'));
-    echo html_writer::tag('td', html_writer::span($stats->open, 'badge bg-secondary text-dark'));
-    echo html_writer::tag('td', html_writer::span($stats->errors, 'badge bg-danger text-white'));
-    echo html_writer::tag('td', $progressbar . html_writer::span(" {$pct} %", 'ms-1 small'));
-    echo html_writer::tag('td', $student->sessions);
+    echo html_writer::tag('td', $stats->learned, ['class' => 'text-end']);
+    echo html_writer::tag('td', $stats->open, ['class' => 'text-end']);
+    echo html_writer::tag('td', $stats->errors, ['class' => 'text-end']);
+    echo html_writer::tag(
+        'td',
+        html_writer::div($progressbar . html_writer::span("{$pct} %", 'small text-nowrap'), 'd-flex align-items-center gap-2')
+    );
+    echo html_writer::tag('td', $student->sessions, ['class' => 'text-end']);
     echo html_writer::tag('td', $lastsessionstr);
     echo html_writer::tag('td', $resetbtn);
     echo html_writer::end_tag('tr');
@@ -331,6 +332,7 @@ foreach ($students as $student) {
 
 echo html_writer::end_tag('tbody');
 echo html_writer::end_tag('table');
+echo html_writer::end_div(); // Table-responsive.
 
 // Paging bar.
 echo $OUTPUT->paging_bar($totalcount, $page, $perpage, $baseurl);

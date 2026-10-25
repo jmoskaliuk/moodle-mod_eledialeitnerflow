@@ -271,28 +271,8 @@ echo $OUTPUT->header();
 // Centered question container (like Moodle Quiz).
 echo html_writer::start_div('eledialeitnerflow-attempt-container');
 
-// Box-flow pills (centered, no "Learned" box).
-$boxcount = (int) $leitnerflow->boxcount;
-echo html_writer::start_div('text-center my-3');
-echo html_writer::start_div('d-inline-flex align-items-center gap-2');
-for ($b = 1; $b <= $boxcount; $b++) {
-    $pillclass = 'badge rounded-pill px-3 py-2 ';
-    if ($b === $currentbox) {
-        $pillclass .= 'bg-primary fs-6';
-    } else {
-        $pillclass .= 'bg-light text-dark border';
-    }
-    echo html_writer::span(
-        get_string('box_n', 'mod_eledialeitnerflow', $b),
-        $pillclass,
-        ['data-box' => $b]
-    );
-    if ($b < $boxcount) {
-        echo html_writer::span('&#10140;', 'text-muted');
-    }
-}
-echo html_writer::end_div();
-echo html_writer::end_div();
+// Box flow (centered, no "Learned" box).
+_eledialeitnerflow_render_boxflow((int) $leitnerflow->boxcount, $currentbox);
 
 // Question form.
 $actionurl = new moodle_url('/mod/eledialeitnerflow/attempt.php', ['id' => $cmid, 'sessid' => $sessid]);
@@ -320,12 +300,15 @@ $cancelurl = new moodle_url('/mod/eledialeitnerflow/view.php', [
 echo html_writer::start_div('d-flex justify-content-between align-items-center mt-3 mb-3');
 echo html_writer::start_div('d-flex gap-2 align-items-center');
 echo $OUTPUT->single_button($viewurl, get_string('backtooverview', 'mod_eledialeitnerflow'), 'get');
-echo $OUTPUT->single_button($cancelurl, get_string('endsession', 'mod_eledialeitnerflow'), 'get');
+echo html_writer::link($cancelurl, get_string('endsession', 'mod_eledialeitnerflow'), [
+    'class' => 'btn btn-outline-danger',
+    'data-confirm' => get_string('endsessionconfirm', 'mod_eledialeitnerflow'),
+]);
 echo html_writer::end_div();
 echo html_writer::span(
     get_string('question') . ' ' . ($currentindex + 1) . ' / ' . $totalquestions
     . ' &middot; '
-    . html_writer::tag('b', $session->questionscorrect) . ' / ' . $session->questionsasked
+    . html_writer::tag('strong', $session->questionscorrect) . ' / ' . $session->questionsasked
     . ' ' . get_string('correct', 'mod_eledialeitnerflow'),
     'text-muted'
 );
@@ -333,7 +316,41 @@ echo html_writer::end_div();
 
 echo html_writer::end_div(); // Eledialeitnerflow-attempt-container.
 
+// Confirm dialog for "End session" (data-confirm).
+$PAGE->requires->js_call_amd('mod_eledialeitnerflow/confirm_reset', 'init');
+
 echo $OUTPUT->footer();
+
+/**
+ * Render the read-only box flow with the current box marked.
+ *
+ * @param int $boxcount Number of Leitner boxes.
+ * @param int $currentbox The box to mark as current.
+ * @return void
+ */
+function _eledialeitnerflow_render_boxflow(int $boxcount, int $currentbox): void {
+    echo html_writer::start_div('text-center my-3');
+    echo html_writer::start_tag('ol', [
+        'class' => 'eledialeitnerflow-boxflow',
+        'aria-label' => get_string('boxdistribution', 'mod_eledialeitnerflow'),
+    ]);
+    for ($b = 1; $b <= $boxcount; $b++) {
+        $label = get_string('box_n', 'mod_eledialeitnerflow', $b);
+        $attrs = ['class' => 'eledialeitnerflow-stagetag', 'data-box' => $b];
+        if ($b === $currentbox) {
+            $attrs['class'] .= ' eledialeitnerflow-stagetag--current';
+            $attrs['aria-current'] = 'step';
+            $label = html_writer::tag('i', '', ['class' => 'fa fa-location-dot', 'aria-hidden' => 'true']) . ' ' . $label;
+        }
+        $item = html_writer::span($label, $attrs['class'], array_diff_key($attrs, ['class' => 1]));
+        if ($b < $boxcount) {
+            $item .= html_writer::tag('i', '', ['class' => 'fa fa-arrow-right text-muted', 'aria-hidden' => 'true']);
+        }
+        echo html_writer::tag('li', $item, ['class' => 'eledialeitnerflow-boxflow-item']);
+    }
+    echo html_writer::end_tag('ol');
+    echo html_writer::end_div();
+}
 
 /**
  * Render current question with feedback overlay.
@@ -399,32 +416,20 @@ function _eledialeitnerflow_render_with_feedback(
     echo html_writer::start_div('eledialeitnerflow-attempt-container');
 
     // Feedback banner above the box pills.
-    $alertclass = $correct ? 'alert alert-success' : 'alert alert-warning';
+    $notifytype = $correct ? 'success' : 'warning';
 
     if ($feedbackstyle === 1) {
         // MINIMAL: Short factual text.
         $msg = _eledialeitnerflow_get_feedback_text(1, $correct, $islearned, $frombox, $tobox);
-        echo html_writer::div(
-            $msg,
-            $alertclass . ' text-center lf-feedback-banner mb-2 py-2',
-            ['style' => 'font-size: 0.9rem;']
-        );
+        echo html_writer::div($OUTPUT->notification($msg, $notifytype, false), 'eledialeitnerflow-feedback-banner text-center');
     } else if ($feedbackstyle === 2) {
         // ANIMATED: Encouraging random text.
         $msg = _eledialeitnerflow_get_feedback_text(2, $correct, $islearned, $frombox, $tobox);
-        echo html_writer::div(
-            $msg,
-            $alertclass . ' text-center lf-feedback-banner mb-2 py-2',
-            ['style' => 'font-size: 0.9rem;']
-        );
+        echo html_writer::div($OUTPUT->notification($msg, $notifytype, false), 'eledialeitnerflow-feedback-banner text-center');
     } else if ($feedbackstyle === 3) {
         // DETAILED: Full feedback block with box change info.
         $msg = _eledialeitnerflow_get_detailed_text($correct, $islearned, $frombox, $tobox);
-        echo html_writer::div(
-            $msg,
-            $alertclass . ' text-center mb-2 py-2',
-            ['style' => 'font-size: 1rem;']
-        );
+        echo html_writer::div($OUTPUT->notification($msg, $notifytype, false), 'text-center');
     } else if ($feedbackstyle === 4) {
         // GAMIFIED: Points + streak + milestones.
         _eledialeitnerflow_render_gamified_feedback(
@@ -437,24 +442,8 @@ function _eledialeitnerflow_render_with_feedback(
         );
     }
 
-    // Box-flow pills (highlight target box).
-    $boxcount = (int) $leitnerflow->boxcount;
-    echo html_writer::start_div('text-center my-3');
-    echo html_writer::start_div('d-inline-flex align-items-center gap-2');
-    for ($b = 1; $b <= $boxcount; $b++) {
-        $pillclass = 'badge rounded-pill px-3 py-2 ';
-        $pillclass .= ($b === $tobox) ? 'bg-primary fs-6' : 'bg-light text-dark border';
-        echo html_writer::span(
-            get_string('box_n', 'mod_eledialeitnerflow', $b),
-            $pillclass,
-            ['data-box' => $b]
-        );
-        if ($b < $boxcount) {
-            echo html_writer::span('&#10140;', 'text-muted');
-        }
-    }
-    echo html_writer::end_div();
-    echo html_writer::end_div();
+    // Box flow (highlight target box).
+    _eledialeitnerflow_render_boxflow((int) $leitnerflow->boxcount, $tobox);
 
     // Render the answered question (readonly).
     echo $quba->render_question($slot, $displayoptions, ($answeredindex + 1) . '');
@@ -478,7 +467,7 @@ function _eledialeitnerflow_render_with_feedback(
     echo html_writer::span(
         get_string('question') . ' ' . ($answeredindex + 1) . ' / ' . $totalquestions
         . ' &middot; '
-        . html_writer::tag('b', $session->questionscorrect) . ' / ' . $session->questionsasked
+        . html_writer::tag('strong', $session->questionscorrect) . ' / ' . $session->questionsasked
         . ' ' . get_string('correct', 'mod_eledialeitnerflow'),
         'text-muted'
     );
@@ -591,6 +580,8 @@ function _eledialeitnerflow_render_gamified_feedback(
     int $currentstreak,
     int $totallearned
 ): void {
+    global $OUTPUT;
+
     // Points: Correct = 10, correct + advance = 15, learned = 25.
     $points = 0;
     if ($correct) {
@@ -603,13 +594,13 @@ function _eledialeitnerflow_render_gamified_feedback(
         }
     }
 
-    echo html_writer::start_div('lf-gamified-feedback text-center mb-2');
+    echo html_writer::start_div('text-center mb-2 py-2');
 
     // Points display (animated via CSS).
     if ($points > 0) {
         echo html_writer::div(
             '+' . get_string('points', 'mod_eledialeitnerflow', $points),
-            'lf-points-float ' . ($correct ? 'text-success' : 'text-warning')
+            'eledialeitnerflow-points text-success'
         );
     }
 
@@ -617,13 +608,13 @@ function _eledialeitnerflow_render_gamified_feedback(
     if ($correct && $currentstreak >= 2) {
         echo html_writer::div(
             get_string('streakcounter', 'mod_eledialeitnerflow', $currentstreak),
-            'lf-streak-badge badge bg-warning text-dark px-3 py-2 fs-6'
+            'badge bg-warning text-dark px-3 py-2 fs-6 mt-1'
         );
     } else if (!$correct && $currentstreak === 0) {
         // Streak was just broken (it was reset to 0 in POST handler).
         echo html_writer::div(
             get_string('streakbroken', 'mod_eledialeitnerflow'),
-            'lf-streak-broken text-muted small'
+            'eledialeitnerflow-streak-broken text-muted small'
         );
     }
 
@@ -643,19 +634,14 @@ function _eledialeitnerflow_render_gamified_feedback(
     }
 
     if ($milestone) {
-        echo html_writer::div($milestone, 'lf-milestone alert alert-info text-center py-2 mt-1');
+        echo html_writer::div($OUTPUT->notification($milestone, 'info', false), 'eledialeitnerflow-milestone');
     }
 
     // Regular feedback text (encouraging style).
     $msg = _eledialeitnerflow_get_feedback_text(2, $correct, $islearned, $frombox, $tobox);
-    $alertclass = $correct ? 'alert alert-success' : 'alert alert-warning';
-    echo html_writer::div(
-        $msg,
-        $alertclass . ' text-center py-2 mt-1',
-        ['style' => 'font-size: 0.9rem;']
-    );
+    echo $OUTPUT->notification($msg, $correct ? 'success' : 'warning', false);
 
-    echo html_writer::end_div(); // Lf-gamified-feedback.
+    echo html_writer::end_div(); // Gamified feedback.
 }
 
 /**
@@ -710,8 +696,8 @@ function _eledialeitnerflow_finish_session(stdClass $session, stdClass $leitnerf
         'correct' => $session->questionscorrect,
         'total'   => $session->questionsasked,
     ]);
-    echo $OUTPUT->notification($result, 'success');
+    echo $OUTPUT->notification($result, 'success', false);
 
-    echo $OUTPUT->single_button($viewurl, get_string('continue'), 'get');
+    echo $OUTPUT->single_button($viewurl, get_string('continue'), 'get', ['type' => single_button::BUTTON_PRIMARY]);
     echo $OUTPUT->footer();
 }

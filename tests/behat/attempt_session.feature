@@ -54,6 +54,7 @@ Feature: Student attempts a LeitnerFlow study session
     And I am on "Course 1" course homepage
     And I follow "Test Leitner"
     And I click on "Start study session" "link"
-    When I click on "End session" "button"
+    When I click on "End session" "link"
+    And I click on "End session" "button" in the ".modal-dialog" "css_element"
     Then I should see "Session cancelled"
     And I should see "Start study session"
